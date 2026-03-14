@@ -8,8 +8,7 @@
 ![Status](https://img.shields.io/badge/status-active_development-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**Версия:** 0.2.0 (активная разработка)  
-**Последнее обновление:** 10.03.2026
+**Версия:** 0.1 (активная разработка)  
 
 ## Краткое описание проекта
 

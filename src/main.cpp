@@ -1,10 +1,4 @@
 // main.cpp
-// ────────────────────────────────────────────────────────────────
-// Dorm Energy Simulator — CLI entry point
-// C++20 console application for energy consumption simulation
-// Parses command-line arguments using CLI11
-// Supports: --version, simulate subcommand with --days, --output, --verbose
-// ────────────────────────────────────────────────────────────────
 
 #include <iostream>
 #include <string>
@@ -12,62 +6,43 @@
 #include <format>           
 #include <CLI/CLI.hpp> 
 
-#include "../include/measurement.hpp"
-#include "../include/simulator.hpp"
-#include "../include/anomaly_detector.hpp"
-#include "../include/csv_writer.hpp"       
-
-
-void print_version() noexcept {
-    std::cout << std::format("Dorm Energy Simulator\n"
-                             "Version: 1.1\n"
-                             "Author: Pasha\n",
-                             __DATE__);
-}
-
-void run_simulation(int days, std::string_view output_file, bool verbose) {
-    std::cout << "Starting simulation:\n"
-              << std::format("  Days:           {}\n", days)
-              << std::format("  Output file:    {}\n", output_file);
-
-    if (verbose) {
-        std::cout << "  Verbose mode:   enabled\n";
-    }
-
-    std::cout << std::format("Simulation in progress... (generating {} days of data)\n", days);
-    std::cout << std::format("Results saved to {}\n", output_file);
-}
-
+#include "dorm_energy/simulation/generator.hpp"
+#include "dorm_energy/detection/anomaly_detector.hpp"
+#include "dorm_energy/core/measurement.hpp"    
 
 int main(int argc, char* argv[]){
-    // ────────────────────────────────────────────────────────────────
-    // Application setup
-    // ────────────────────────────────────────────────────────────────
-
-    CLI::App app{"Dorm Energy Simulator — Energy consumption simulation and monitoring in a student dormitory"};
+   
+    CLI::App app{"Dorm Energy Simulator — Имитация энергопотребления в общежитии"};
     
+    // ────────────────────────────────────────────────────────────────
+    // Глобальный флаг версии
+    // ────────────────────────────────────────────────────────────────
+
     bool version_flag{false};
-    app.add_flag("--version, -v", version_flag, "Show version");
+    app.add_flag("--version, -v", version_flag, "Показать версию программы");
 
     // ────────────────────────────────────────────────────────────────
-    // Subcommand: simulate
+    // Подкоманда: simulate
     // ────────────────────────────────────────────────────────────────
-    auto* sim = app.add_subcommand("simulate", "Run energy consumption simulation");  
+    auto* simulate = app.add_subcommand("simulate", "Запустить симуляцию энергопотребления");  
 
     int days{30}; // default 
-    sim->add_option("--days,-d", days, "Simulation days")
+    simulate->add_option("--days,-d", days, "Количество дней симуляции")
             ->default_val(30)
             ->check(CLI::Range(1, 365, "days"));
 
-    std::string output_file{"result.csv"};
-    sim->add_option("--output,-o", output_file, "Save results")
-       ->default_val("result.csv");
-
     bool verbose{false};
-    sim->add_flag("--verbose,-v", verbose, "Logs");   
+    simulate->add_flag("--verbose,-v", verbose, "Подробный вывод");
+    
+    bool inject_anomalies = false;
+    simulate->add_flag("--anomalies", inject_anomalies, "Включить искусственные аномалии");
+    
+    std::string output_mode = "console";
+    simulate->add_option("--output", output_mode, "Режим вывода (console)")
+            ->default_val("console");
     
     // ────────────────────────────────────────────────────────────────
-    // Parse arguments
+    // Парсинг аргументов
     // ────────────────────────────────────────────────────────────────
 
     try {
@@ -78,23 +53,53 @@ int main(int argc, char* argv[]){
     }
     
     // ────────────────────────────────────────────────────────────────
-    // Business logic — narrow scopes
+    // Обработка флага версии
     // ────────────────────────────────────────────────────────────────
-
-    if(version_flag){
-        print_version();
-        return 0;
-    }
-
-    if(sim->parsed()){
-        auto data = generate_simulation(days);
-        detect_anomalies(data);
-        save_to_csv(data, output_file);
-        return 0;
-    }
-
-    std::cerr << "No command provided.\n\n";
-    std::cout << app.help() << "\n";
     
+    if (version_flag) {
+        std::cout << "Dorm Energy Simulator v1.1\n"
+                  << "Автор: Pasha\n"
+                  << "Дата сборки: " << __DATE__ << "\n";
+        return 0;
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    // Основная логика подкоманды simulate
+    // ────────────────────────────────────────────────────────────────
+    
+    if (simulate->parsed()) {
+        std::cout << "Запуск симуляции энергопотребления...\n";
+        std::cout << std::format("Дней: {} | Аномалии: {}\n", days, inject_anomalies ? "включены" : "выключены");
+
+        // Настройка генератора
+        dorm_energy::simulation::GeneratorConfig gen_config;
+        gen_config.days = days;
+        gen_config.inject_anomalies = inject_anomalies;
+
+        dorm_energy::simulation::SyntheticDataGenerator generator{gen_config};
+        auto data = generator.generate();
+
+        // Детекция аномалий
+        dorm_energy::detection::AnomalyDetectorConfig det_config;
+        dorm_energy::detection::AnomalyDetector detector{det_config};
+
+        int anomaly_count = detector.detect(data);
+
+        // Вывод результатов
+        std::cout << std::format("\nСимуляция завершена!\n");
+        std::cout << std::format("Сгенерировано измерений: {}\n", data.size());
+        std::cout << std::format("Обнаружено аномалий: {}\n", anomaly_count);
+
+        if (verbose) {
+            std::cout << "\nПервые 10 измерений:\n";
+            for (size_t i = 0; i < std::min<size_t>(10, data.size()); ++i) {
+                std::cout << dorm_energy::core::to_string(data[i]) << "\n";
+            }
+        }
+
+        return 0;
+    }
+
+    std::cout << app.help() << "\n";
     return 1;
 }

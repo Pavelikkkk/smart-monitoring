@@ -5,12 +5,15 @@
 #include <string_view>
 #include <format>           
 #include <CLI/CLI.hpp> 
+#include <clocale>
 
 #include "dorm_energy/simulation/generator.hpp"
 #include "dorm_energy/detection/anomaly_detector.hpp"
 #include "dorm_energy/core/measurement.hpp"    
 
 int main(int argc, char* argv[]){
+
+    std::setlocale(LC_ALL, "ru_RU.UTF-8");
    
     CLI::App app{"Dorm Energy Simulator — Имитация энергопотребления в общежитии"};
     

@@ -10,10 +10,10 @@ namespace dorm_energy::detection {
  * @brief Конфигурация детектора аномалий
  */
 struct AnomalyDetectorConfig {
-    double high_power_threshold = 40.0;    
-    double night_low_threshold  = 2.0;      
-    int    night_start_hour     = 0;        
-    int    night_end_hour       = 6;       
+    float high_power_threshold{40.0f}; 
+    float night_low_threshold{2.0f};
+    std::chrono::hours night_start_hour{0};
+    std::chrono::hours night_end_hour{6};
 
     AnomalyDetectorConfig() = default;
 };
@@ -34,7 +34,7 @@ public:
      * @param data данные для анализа 
      * @return количество найденных аномалий
      */
-    int detect(core::SimulationData& data) const;
+    int detect(const core::SimulationData& data) const;
 
     /**
      * @brief Возвращает список только аномальных измерений

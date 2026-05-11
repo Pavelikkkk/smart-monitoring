@@ -1,3 +1,9 @@
 [submodule "external/CLI11"]
 	path = external/CLI11
 	url = https://github.com/CLIUtils/CLI11
+[submodule "external/nlohmann_json"]
+	path = external/nlohmann_json
+	url = https://github.com/nlohmann/json.git
+[submodule "external/paho-mqtt-cpp"]
+	path = external/paho-mqtt-cpp
+	url = https://github.com/eclipse/paho.mqtt.cpp.git

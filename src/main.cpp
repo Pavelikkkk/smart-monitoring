@@ -1,5 +1,4 @@
 // main.cpp
-
 #include "dorm_energy/app/application.hpp"
 
 int main(int argc, char* argv[]){

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 project(dorm-energy-sim
-    VERSION 1.1
+    VERSION 2.0
     DESCRIPTION "Имитация и мониторинг энергопотребления в общежитии"
     LANGUAGES CXX
 )
@@ -13,12 +13,12 @@ project(dorm-energy-sim
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(MSVC)
     add_compile_options(/W4 /WX) 
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
-    add_compile_options(-Wshadow -Wnon-virtual-dtor -Wold-style-cast)
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wshadow -Wnon-virtual-dtor)
 endif()
 
 message(STATUS "Compiler warnings enabled with -Werror")
@@ -28,6 +28,7 @@ message(STATUS "Compiler warnings enabled with -Werror")
 # ============================================
 
 add_subdirectory(external/CLI11)
+add_subdirectory(external/nlohmann_json EXCLUDE_FROM_ALL)
 
 # ============================================
 # Основная библиотека проекта
@@ -40,6 +41,7 @@ add_library(dorm_energy_core STATIC
     src/app/application.cpp
     src/logging/logger.cpp
     src/mqtt/mqtt_client.cpp
+    src/mqtt/message_parser.cpp
 )
 
 target_include_directories(dorm_energy_core PUBLIC
@@ -52,42 +54,17 @@ target_include_directories(dorm_energy_core PUBLIC
 
 target_link_libraries(dorm_energy_core 
  PUBLIC 
-    CLI11::CLI11)
+    CLI11::CLI11
+    nlohmann_json::nlohmann_json
+)
 
 add_executable(dorm-sim
     src/main.cpp
 )
-
 target_link_libraries(dorm-sim 
-  PRIVATE
-    CLI11::CLI11
+ PRIVATE 
+    dorm_energy_core
 )
-
-# ============================================
-# Санитайзеры
-# ============================================
-
-# function(enable_sanitizers TARGET_NAME)
-#     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-#         if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-#             target_compile_options(${TARGET_NAME} PRIVATE 
-#                 -fsanitize=address,undefined 
-#                 -g 
-#                 -O1 
-#                 -fno-omit-frame-pointer
-#             )
-#             target_link_options(${TARGET_NAME} PRIVATE 
-#                 -fsanitize=address,undefined
-#             )
-#             message(STATUS "Sanitizers enabled for ${TARGET_NAME}")
-#         else()
-#             message(STATUS "Sanitizers not supported for compiler ${CMAKE_CXX_COMPILER_ID}")
-#         endif()
-#     endif()
-# endfunction()
-
-# enable_sanitizers(dorm_energy_core)
-# enable_sanitizers(dorm-sim)
 
 # ============================================
 # ТЕСТЫ

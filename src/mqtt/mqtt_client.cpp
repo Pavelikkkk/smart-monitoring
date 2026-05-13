@@ -1,9 +1,12 @@
-#include "dorm_energy/mqtt/mqtt_client.hpp"
-#include "dorm_energy/mqtt/message_parser.hpp"
+// src/mqtt/mqtt_client.cpp
+
 #include <iostream>
 #include <format>
 #include <thread>
 #include <chrono>
+
+#include "dorm_energy/mqtt/mqtt_client.hpp"
+#include "dorm_energy/mqtt/message_parser.hpp"
 
 namespace dorm_energy::mqtt
 {
@@ -54,7 +57,6 @@ namespace dorm_energy::mqtt
                                         {
         while (true) {
             core::PowerMeasurement m;
-            // Меняй значения, чтобы тестировать разные сценарии
             std::string fake_json = R"({"power_kw": 18.5, "hour": 14})";
 
             if (MessageParser::parse(fake_json, m))

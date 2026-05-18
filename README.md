@@ -30,6 +30,9 @@ mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 
+# Запуск демона 
+.dorm-sim daemon
+
 # Запуск симуляции
 ./dorm-sim simulate --days 30 --anomalies --verbose
 

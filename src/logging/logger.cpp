@@ -1,6 +1,9 @@
 // src/logging/logger.cpp
 #include "dorm_energy/logging/logger.hpp"
 
+#include <format>
+#include <iostream>
+
 namespace dorm_energy::logging
 {
 

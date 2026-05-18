@@ -34,14 +34,17 @@ add_subdirectory(external/nlohmann_json EXCLUDE_FROM_ALL)
 # Основная библиотека проекта
 # ============================================
 
-add_library(dorm_energy_core STATIC
+add_library(dorm_energy_core STATIC # возможно нужно разделить
     src/core/measurement.cpp
     src/detection/anomaly_detector.cpp    
     src/simulation/generator.cpp
     src/app/application.cpp
+    src/app/commands.cpp
     src/logging/logger.cpp
     src/mqtt/mqtt_client.cpp
     src/mqtt/message_parser.cpp
+    src/storage/repository.cpp
+    src/app/runtime.cpp
 )
 
 target_include_directories(dorm_energy_core PUBLIC

@@ -1,14 +1,11 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
 #include "../core/measurement.hpp"
+#include "../interfaces.hpp"
 
 namespace dorm_energy::storage
 {
-
-    struct StorageConfig
+    struct StorageConfig 
     {
         std::string host = "localhost";
         std::string port = "5432";
@@ -17,15 +14,16 @@ namespace dorm_energy::storage
         std::string password = "password";
     };
 
-    class MeasurementRepository
+    class MeasurementRepository : public IMeasurementRepository
     {
     public:
-        explicit MeasurementRepository(StorageConfig config = {});
-        ~MeasurementRepository();
+        explicit MeasurementRepository(
+            StorageConfig config = StorageConfig{});
+        ~MeasurementRepository() override;
 
         bool connect();
-        bool save(const core::PowerMeasurement &measurement);
-        bool save_batch(const core::SimulationData &data);
+        void save(const core::PowerMeasurement &measurement) override;
+        void save_batch(const core::SimulationData &data) override;
 
         // получение данных позже
         // std::vector<core::PowerMeasurement> get_last_hour() const;

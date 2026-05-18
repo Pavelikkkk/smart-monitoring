@@ -2,42 +2,33 @@
 #pragma once
 
 #include <CLI/CLI.hpp>
-#include <atomic>
-#include <csignal>
 
-#include "../simulation/generator.hpp"
-#include "../detection/anomaly_detector.hpp"
-#include "../logging/logger.hpp"
-#include "../mqtt/mqtt_client.hpp"
-#include "../storage/repository.hpp"
+#include "../interfaces.hpp"
+#include "commands.hpp"
 
 namespace dorm_energy
 {
-
     class Application
     {
     public:
-        explicit Application(logging::Logger logger = logging::Logger{},
-                             mqtt::MqttClient mqtt_client = {});
+        explicit Application(
+            std::unique_ptr<ILogger> logger,
+            std::unique_ptr<IMqttClient> mqtt_client,
+            std::unique_ptr<IDataGenerator> generator,
+            std::unique_ptr<IAnomalyDetector> detector,
+            std::unique_ptr<IMeasurementRepository> repository);
 
-        ~Application() = default;
-
-        int run(int argc, char *argv[]);
+        int run(int argc, char **argv);
 
         Application(const Application &) = delete;
         Application &operator=(const Application &) = delete;
 
     private:
-        int handle_simulate(const CLI::App &subcommand);
-        int handle_daemon();
-
-        logging::Logger logger_;
-        mqtt::MqttClient mqtt_client_;
-        simulation::SyntheticDataGenerator generator_;
-        detection::AnomalyDetector detector_;
-        storage::MeasurementRepository repository_;
-
-        static inline std::atomic<bool> running_{true};
+        std::unique_ptr<ILogger> logger_;
+        std::unique_ptr<IMqttClient> mqtt_client_;
+        std::unique_ptr<IDataGenerator> generator_;
+        std::unique_ptr<IAnomalyDetector> detector_;
+        std::unique_ptr<IMeasurementRepository> repository_;
     };
 
 } // namespace dorm_energy

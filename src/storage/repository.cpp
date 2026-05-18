@@ -3,7 +3,8 @@
 #include <iostream>
 #include <format>
 
-#include "dorm_energy/storage/repository.hpp"
+#include "dorm_energy/interfaces.hpp"
+#include "dorm_energy/storage/repository.hpp" // почему так а не просто repository.hpp
 
 namespace dorm_energy::storage
 {
@@ -16,7 +17,7 @@ namespace dorm_energy::storage
         // disconnect
     }
 
-    bool MeasurementRepository::connect()
+    bool MeasurementRepository::connect() // методы bool или void и почему
     {
         std::cout << "[DB] Подключение к PostgreSQL/TimescaleDB...\n";
         // TODO: pqxx::connection
@@ -25,25 +26,26 @@ namespace dorm_energy::storage
         return true;
     }
 
-    bool MeasurementRepository::save(const core::PowerMeasurement &m)
+    void MeasurementRepository::save(const core::PowerMeasurement &m)
     {
         if (!connected_)
-            return false;
+            return;
 
         std::cout << std::format("[DB] Сохранено: {} кВт в {}:00{}\n",
-                                 m.power_kw, m.hour_of_day,
+                                 m.power_kw,
+                                 m.hour_of_day,
                                  m.is_anomaly ? " (АНОМАЛИЯ)" : "");
-        return true;
     }
 
-    bool MeasurementRepository::save_batch(const core::SimulationData &data)
+    void MeasurementRepository::save_batch(const core::SimulationData &data)
     {
-        std::cout << std::format("[DB] Сохранена пачка из {} измерений\n", data.size());
+        std::cout << std::format(
+            "[DB] Сохранена пачка из {} измерений\n",
+            data.size());
+
         for (const auto &m : data)
         {
             save(m);
         }
-        return true;
     }
-
 } // namespace dorm_energy::storage

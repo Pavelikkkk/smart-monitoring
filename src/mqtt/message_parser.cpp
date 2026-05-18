@@ -12,7 +12,7 @@ namespace dorm_energy::mqtt
     {
         try
         {
-            auto j = nlohmann::json::parse(payload);
+            auto j = nlohmann::json::parse(payload); 
 
             out.timestamp = std::chrono::system_clock::now();
             out.hour_of_day = j.value("hour", 0);

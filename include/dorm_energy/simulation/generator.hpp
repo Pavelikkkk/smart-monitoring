@@ -2,13 +2,12 @@
 #pragma once
 
 #include <random>
-#include <vector>
 
 #include "../core/measurement.hpp"
+#include "../interfaces.hpp"
 
 namespace dorm_energy::simulation
 {
-
     /**
      * @brief Конфигурация генератора синтетических данных
      */
@@ -35,7 +34,7 @@ namespace dorm_energy::simulation
     /**
      * @brief Генератор реалистичных данных энергопотребления общежития
      */
-    class SyntheticDataGenerator
+    class SyntheticDataGenerator : public IDataGenerator
     {
     public:
         /**
@@ -48,7 +47,7 @@ namespace dorm_energy::simulation
          * @brief Генерирует данные за указанное количество дней
          * @return SimulationData — вектор измерений мощности
          */
-        core::SimulationData generate() const;
+        core::SimulationData generate() const override;
 
         /**
          * @brief Генерирует данные
@@ -56,7 +55,9 @@ namespace dorm_energy::simulation
          * @param seed фиксированный seed
          * @return SimulationData
          */
-        static core::SimulationData generate_deterministic( // почему нельзя через {}
+
+        // Статический метод для удобства тестирования  нужен ли он тту
+        static core::SimulationData generate_deterministic(
             int days = 30,
             unsigned seed = 42,
             bool inject_anomalies = false,
@@ -68,7 +69,7 @@ namespace dorm_energy::simulation
          * @param day_of_week день недели (0=понедельник ... 6=воскресенье) // добавить параметр day_start
          * @param gen генератор случайных чисел
          */
-        core::SimulationData generate_day(
+        core::SimulationData generate_day( // нужно ли
             int day_of_week,
             core::TimePoint day_start,
             std::mt19937 &gen) const;

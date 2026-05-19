@@ -19,22 +19,6 @@ namespace dorm_energy
         virtual void error(const std::string &message) const = 0;
     };
 
-    class IMqttClient
-    {
-    public:
-        virtual ~IMqttClient() = default;
-
-        virtual void connect(const std::string &broker = "tcp://127.0.0.1:1883",
-                             const std::string &client_id = "dorm-sim") = 0;
-
-        virtual void subscribe(const std::string &topic = "devices/+/power") = 0;
-
-        using MessageCallback = std::function<void(const core::PowerMeasurement &)>;
-        virtual void set_message_callback(MessageCallback callback) = 0;
-
-        virtual void start_simulation_mode() = 0;
-    };
-
     class IDataGenerator
     {
     public:
@@ -68,6 +52,33 @@ namespace dorm_energy
     public:
         virtual ~IMessageHandler() = default;
         virtual void handle(const core::PowerMeasurement &measurement) = 0;
+    };
+
+    class IMqttClient
+    {
+    public:
+        virtual ~IMqttClient() = default;
+
+        virtual void connect(const std::string &broker = "tcp://127.0.0.1:1883",
+                             const std::string &client_id = "dorm-sim") = 0;
+
+        virtual void subscribe(const std::string &topic = "devices/+/power") = 0;
+
+        virtual void start() = 0;
+        virtual void stop() = 0;
+
+        virtual void set_handler(std::unique_ptr<IMessageHandler> handler) = 0;
+
+        using MessageCallback = std::function<void(const core::PowerMeasurement &)>;
+        virtual void set_message_callback(MessageCallback callback) = 0;
+    };
+
+    class INotifier
+    {
+    public:
+        virtual ~INotifier() = default;
+        virtual void send_alert(const core::PowerMeasurement &measurement,
+                                const std::string &reason = "") = 0;
     };
 
 } // namespace dorm_energy

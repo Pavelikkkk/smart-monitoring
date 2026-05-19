@@ -1,51 +1,36 @@
-// src/storage/repository.cpp
-
-#include <iostream>
 #include <format>
 
-#include "dorm_energy/interfaces.hpp"
-#include "dorm_energy/storage/repository.hpp" // почему так а не просто repository.hpp
+#include "dorm_energy/storage/repository.hpp"
+#include "dorm_energy/logging/logger.hpp"
 
 namespace dorm_energy::storage
 {
 
-    MeasurementRepository::MeasurementRepository(StorageConfig config)
-        : config_(std::move(config)) {}
-
-    MeasurementRepository::~MeasurementRepository()
+    MeasurementRepository::MeasurementRepository(StorageConfig config,
+                                                 std::unique_ptr<ILogger> logger)
+        : config_(std::move(config)), logger_(std::move(logger))
     {
-        // disconnect
+        if (!logger_)
+            logger_ = std::make_unique<logging::Logger>("repository");
+
+        logger_->info("MeasurementRepository инициализирован (режим заглушки)");
     }
 
-    bool MeasurementRepository::connect() // методы bool или void и почему
-    {
-        std::cout << "[DB] Подключение к PostgreSQL/TimescaleDB...\n";
-        // TODO: pqxx::connection
-        connected_ = true;
-        std::cout << "[DB] ✅ Подключено успешно (заглушка)\n";
-        return true;
-    }
+    MeasurementRepository::~MeasurementRepository() = default;
 
-    void MeasurementRepository::save(const core::PowerMeasurement &m)
+    void MeasurementRepository::save(const core::PowerMeasurement &measurement)
     {
-        if (!connected_)
-            return;
-
-        std::cout << std::format("[DB] Сохранено: {} кВт в {}:00{}\n",
-                                 m.power_kw,
-                                 m.hour_of_day,
-                                 m.is_anomaly ? " (АНОМАЛИЯ)" : "");
+        logger_->debug(std::format("Сохранено в БД: {:.2f} кВт (час {:02d})",
+                                   measurement.power_kw, measurement.hour_of_day));
     }
 
     void MeasurementRepository::save_batch(const core::SimulationData &data)
     {
-        std::cout << std::format(
-            "[DB] Сохранена пачка из {} измерений\n",
-            data.size());
+        if (data.empty())
+            return;
 
-        for (const auto &m : data)
-        {
-            save(m);
-        }
+        logger_->info(std::format("Сохранено батчем в БД: {} измерений", data.size()));
+        // TODO: позже TimescaleDB
     }
+
 } // namespace dorm_energy::storage

@@ -45,6 +45,8 @@ add_library(dorm_energy_core STATIC # возможно нужно раздели
     src/mqtt/message_parser.cpp
     src/storage/repository.cpp
     src/app/runtime.cpp
+    src/app/message_handler.cpp
+    src/app/notifier.cpp
 )
 
 target_include_directories(dorm_energy_core PUBLIC

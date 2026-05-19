@@ -4,22 +4,24 @@
 #include <clocale>
 #include <thread>
 
-#include "dorm_energy/app/application.hpp" 
+#include "dorm_energy/app/application.hpp"
 
-namespace dorm_energy
+namespace dorm_energy::app
 {
 
-    Application::Application( 
+    Application::Application(
         std::unique_ptr<ILogger> logger,
         std::unique_ptr<IMqttClient> mqtt_client,
         std::unique_ptr<IDataGenerator> generator,
         std::unique_ptr<IAnomalyDetector> detector,
-        std::unique_ptr<IMeasurementRepository> repository)
+        std::unique_ptr<IMeasurementRepository> repository,
+        std::unique_ptr<IMessageHandler> handler)
         : logger_(std::move(logger)),
           mqtt_client_(std::move(mqtt_client)),
           generator_(std::move(generator)),
           detector_(std::move(detector)),
-          repository_(std::move(repository))
+          repository_(std::move(repository)),
+          handler_(std::move(handler))
     {
     }
 
@@ -68,7 +70,7 @@ namespace dorm_energy
 
         if (daemon->parsed())
         {
-            DaemonCommand cmd(std::move(logger_), std::move(mqtt_client_), std::move(detector_));
+            DaemonCommand cmd(std::move(logger_), std::move(mqtt_client_), std::move(repository_));
             return cmd.execute();
         }
 

@@ -5,11 +5,15 @@
 #include <thread>
 
 #include "dorm_energy/app/commands.hpp"
+#include "dorm_energy/app/message_handler.hpp"
+#include "dorm_energy/app/notifier.hpp"
 #include "dorm_energy/mqtt/message_parser.hpp"
 #include "dorm_energy/app/application.hpp"
 #include "dorm_energy/app/runtime.hpp"
+#include "dorm_energy/logging/logger.hpp"
+#include "dorm_energy/detection/anomaly_detector.hpp"
 
-namespace dorm_energy
+namespace dorm_energy::app
 {
     SimulateCommand::SimulateCommand(
         std::unique_ptr<ILogger> logger,
@@ -63,41 +67,33 @@ namespace dorm_energy
     DaemonCommand::DaemonCommand(
         std::unique_ptr<ILogger> logger,
         std::unique_ptr<IMqttClient> mqtt_client,
-        std::unique_ptr<IAnomalyDetector> detector)
-        : logger_(std::move(logger)), 
+        std::unique_ptr<IMeasurementRepository> repository)
+        : logger_(std::move(logger)),
           mqtt_client_(std::move(mqtt_client)),
-          detector_(std::move(detector))
+          repository_(std::move(repository))
     {
     }
 
     int DaemonCommand::execute()
     {
-        logger_->info("Dorm Energy Simulator запущен в режиме ДЕМОНА");
-
-        Runtime::init();
-
-        auto measurement_handler = [this](const core::PowerMeasurement &m)
-        {
-            if (detector_->isAnomaly(m))
-            {
-                logger_->warn(std::format(" АНОМАЛИЯ! {:.2f} кВт в {}:00",
-                                          m.power_kw, m.hour_of_day));
-            }
-            else
-            {
-                logger_->info(std::format(" Измерение: {:.2f} кВт (час {})",
-                                          m.power_kw, m.hour_of_day));
-            }
-        };
-
-        mqtt_client_->set_message_callback(measurement_handler);
-        mqtt_client_->start_simulation_mode();
-
         logger_->info("Демон запущен. Нажмите Ctrl+C для остановки");
+
+        auto handler = std::make_unique<app::MessageHandler>(
+            std::make_unique<logging::Logger>("message-handler"),
+            std::make_unique<detection::AnomalyDetector>(),
+            std::make_unique<app::ConsoleNotifier>(
+                std::make_unique<logging::Logger>("notifier")),
+            std::move(repository_));
+
+        mqtt_client_->set_handler(std::move(handler));
+        mqtt_client_->start();
+
+        Runtime::set_on_stop_callback([this]()
+                                      { mqtt_client_->stop(); });
 
         while (Runtime::is_running())
         {
-            std::this_thread::sleep_for(std::chrono::seconds(5));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
 
         logger_->info("Демон остановлен.");

@@ -4,7 +4,7 @@
 #include <csignal>
 #include <functional>
 
-namespace dorm_energy
+namespace dorm_energy::app
 {
 
     class Runtime

@@ -3,7 +3,7 @@
 #include "dorm_energy/app/runtime.hpp"
 #include <iostream>
 
-namespace dorm_energy
+namespace dorm_energy::app
 {
 
     void Runtime::init()

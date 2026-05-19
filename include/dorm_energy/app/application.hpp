@@ -6,7 +6,7 @@
 #include "../interfaces.hpp"
 #include "commands.hpp"
 
-namespace dorm_energy
+namespace dorm_energy::app
 {
     class Application
     {
@@ -16,7 +16,8 @@ namespace dorm_energy
             std::unique_ptr<IMqttClient> mqtt_client,
             std::unique_ptr<IDataGenerator> generator,
             std::unique_ptr<IAnomalyDetector> detector,
-            std::unique_ptr<IMeasurementRepository> repository);
+            std::unique_ptr<IMeasurementRepository> repository,
+            std::unique_ptr<IMessageHandler> handler);
 
         int run(int argc, char **argv);
 
@@ -29,6 +30,7 @@ namespace dorm_energy
         std::unique_ptr<IDataGenerator> generator_;
         std::unique_ptr<IAnomalyDetector> detector_;
         std::unique_ptr<IMeasurementRepository> repository_;
+        std::unique_ptr<IMessageHandler> handler_;
     };
 
 } // namespace dorm_energy

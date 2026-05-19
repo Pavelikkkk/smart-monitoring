@@ -4,14 +4,14 @@
 #include <CLI/CLI.hpp>
 #include "../interfaces.hpp"
 
-namespace dorm_energy
+namespace dorm_energy::app
 {
 
     class ICommand // вынести в интерфейс
     {
     public:
         virtual ~ICommand() = default;
-        virtual int execute() = 0; 
+        virtual int execute() = 0;
     };
 
     class SimulateCommand : public ICommand
@@ -27,7 +27,7 @@ namespace dorm_energy
         int execute() override;
 
     private:
-        std::unique_ptr<ILogger> logger_; 
+        std::unique_ptr<ILogger> logger_;
         std::unique_ptr<IDataGenerator> generator_;
         std::unique_ptr<IAnomalyDetector> detector_;
         std::unique_ptr<IMeasurementRepository> repository_;
@@ -37,17 +37,17 @@ namespace dorm_energy
     class DaemonCommand : public ICommand
     {
     public:
-        DaemonCommand(
+        explicit DaemonCommand(
             std::unique_ptr<ILogger> logger,
             std::unique_ptr<IMqttClient> mqtt_client,
-            std::unique_ptr<IAnomalyDetector> detector);
+            std::unique_ptr<IMeasurementRepository> repository); 
 
         int execute() override;
 
     private:
         std::unique_ptr<ILogger> logger_;
         std::unique_ptr<IMqttClient> mqtt_client_;
-        std::unique_ptr<IAnomalyDetector> detector_;
+        std::unique_ptr<IMeasurementRepository> repository_;
     };
 
 } // namespace dorm_energy

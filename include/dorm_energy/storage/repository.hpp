@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../core/measurement.hpp"
 #include "../interfaces.hpp"
+#include "../core/measurement.hpp"
+#include <memory>
 
 namespace dorm_energy::storage
 {
-    struct StorageConfig 
+    struct StorageConfig
     {
         std::string host = "localhost";
         std::string port = "5432";
@@ -18,19 +19,17 @@ namespace dorm_energy::storage
     {
     public:
         explicit MeasurementRepository(
-            StorageConfig config = StorageConfig{});
+            StorageConfig config = {},
+            std::unique_ptr<ILogger> logger = nullptr);
+
         ~MeasurementRepository() override;
 
-        bool connect();
         void save(const core::PowerMeasurement &measurement) override;
         void save_batch(const core::SimulationData &data) override;
 
-        // получение данных позже
-        // std::vector<core::PowerMeasurement> get_last_hour() const;
-
     private:
         StorageConfig config_;
-        // void* connection_ = nullptr; // pqxx::connection* позже
+        std::unique_ptr<ILogger> logger_;
         bool connected_ = false;
     };
 

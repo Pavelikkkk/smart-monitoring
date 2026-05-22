@@ -3,7 +3,7 @@
 
 #include "dorm_energy/core/measurement.hpp"
 
-namespace dorm_energy::domain::storage
+namespace dorm_energy::storage
 {
 
     /**

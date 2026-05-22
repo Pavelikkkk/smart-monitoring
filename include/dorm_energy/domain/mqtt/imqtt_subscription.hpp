@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace dorm_energy::domain::mqtt
+namespace dorm_energy::mqtt
 {
 
     /**

@@ -3,7 +3,7 @@
 
 #include "dorm_energy/core/measurement.hpp"
 
-namespace dorm_energy::domain::simulation
+namespace dorm_energy::simulation
 {
     /**
      * @brief Интерфейс для генерации синтетических данных

@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace dorm_energy::domain::logging
+namespace dorm_energy::logging
 {
     /**
      * @brief Уровни логирования

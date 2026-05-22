@@ -7,7 +7,7 @@
 #include "dorm_energy/core/measurement.hpp"
 
 
-namespace dorm_energy::domain::mqtt
+namespace dorm_energy::mqtt
 {
 
     /**

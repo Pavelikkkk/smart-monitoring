@@ -2,82 +2,61 @@
 #pragma once
 
 #include "dorm_energy/application/application.hpp"
+#include "dorm_energy/application/config/app_config.hpp"
+#include "dorm_energy/application/commands/simulate_command.hpp"
+#include "dorm_energy/application/commands/daemon_command.hpp"
+#include "dorm_energy/infrastructure/cli/cli_parser.hpp"
+
+#include "dorm_energy/domain/logging/ilogger.hpp"
+#include "dorm_energy/domain/simulation/idata_generator.hpp"
+#include "dorm_energy/domain/detection/ianomaly_detector.hpp"
+#include "dorm_energy/domain/storage/imeasurement_repository.hpp"
+#include "dorm_energy/application/imessage_handler.hpp"
+#include "dorm_energy/application/inotifier.hpp"
+#include "dorm_energy/domain/mqtt/imqtt_connection.hpp"
+#include "dorm_energy/domain/mqtt/imqtt_subscription.hpp"
+#include "dorm_energy/domain/mqtt/imqtt_message_dispatcher.hpp"
 
 #include <memory>
-
-namespace dorm_energy
-{
-    namespace domain::logging
-    {
-        class ILogger;
-    }
-    namespace domain::simulation
-    {
-        class IDataGenerator;
-    }
-    namespace domain::detection
-    {
-        class IAnomalyDetector;
-    }
-    namespace domain::storage
-    {
-        class IMeasurementRepository;
-    }
-    namespace domain::mqtt
-    {
-        class IMqttConnection;
-        class IMqttSubscription;
-        class IMqttMessageDispatcher;
-    }
-    namespace application
-    {
-        class IMessageHandler;
-        class INotifier;
-        class CliParser;
-        class SimulateCommand;
-        class DaemonCommand;
-        class DaemonApplication;
-    }
-}
 
 namespace dorm_energy::application
 {
 
     /**
      * @brief Отвечает за создание всех зависимостей и сборку Application.
-     * Это Composition Root приложения.
      */
     class ApplicationBuilder
     {
     public:
         ApplicationBuilder();
-        ~ApplicationBuilder() = default;
 
         /**
-         * @brief Собирает и возвращает готовое приложение
+         * @brief Устанавливает конфигурацию для билдера
          */
-        std::unique_ptr<dorm_energy::application::Application> build();
+        ApplicationBuilder &withConfig(AppConfig config);
+
+        std::unique_ptr<Application> build();
 
     private:
-        // === Фабричные методы создания зависимостей ===
-        std::unique_ptr<domain::logging::ILogger> createLogger();
-        std::unique_ptr<domain::simulation::IDataGenerator> createGenerator();
-        std::unique_ptr<domain::detection::IAnomalyDetector> createDetector();
-        std::unique_ptr<domain::storage::IMeasurementRepository> createRepository();
-        std::unique_ptr<application::IMessageHandler> createMessageHandler();
-        std::unique_ptr<application::INotifier> createNotifier();
+        AppConfig config_;
 
-        std::unique_ptr<domain::mqtt::IMqttConnection> createMqttConnection();
-        std::unique_ptr<domain::mqtt::IMqttSubscription> createMqttSubscription();
-        std::unique_ptr<domain::mqtt::IMqttMessageDispatcher> createMqttDispatcher();
+        std::unique_ptr<dorm_energy::logging::ILogger> createLogger();
+        std::unique_ptr<dorm_energy::simulation::IDataGenerator> createGenerator();
+        std::unique_ptr<dorm_energy::detection::IAnomalyDetector> createDetector();
+        std::unique_ptr<dorm_energy::storage::IMeasurementRepository> createRepository();
+        std::unique_ptr<dorm_energy::application::IMessageHandler> createMessageHandler();
+        std::unique_ptr<dorm_energy::application::INotifier> createNotifier();
 
-        // === Создание команд ===
-        std::unique_ptr<CliParser> createCliParser();
-        std::unique_ptr<SimulateCommand> createSimulateCommand();
-        std::unique_ptr<DaemonCommand> createDaemonCommand();
+        std::unique_ptr<dorm_energy::mqtt::IMqttConnection> createMqttConnection();
+        std::unique_ptr<dorm_energy::mqtt::IMqttSubscription> createMqttSubscription();
+        std::unique_ptr<dorm_energy::mqtt::IMqttMessageDispatcher> createMqttDispatcher();
 
-        // Вспомогательный метод для создания DaemonApplication
-        std::unique_ptr<DaemonApplication> createDaemonApplication();
+        std::unique_ptr<dorm_energy::cli::CliParser> createCliParser();
+
+        std::unique_ptr<dorm_energy::application::SimulateCommand> createSimulateCommand();
+        std::unique_ptr<dorm_energy::application::DaemonCommand> createDaemonCommand();
+
+        void applyCliOverrides(dorm_energy::cli::CommandOptions cliOptions);
     };
 
 } // namespace dorm_energy::application

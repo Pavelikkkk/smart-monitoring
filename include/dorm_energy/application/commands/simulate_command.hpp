@@ -1,7 +1,7 @@
 // include/dorm_energy/application/commands/simulate_command.hpp
 #pragma once
 
-#include "dorm_energy/infrastructure/cli/cli_parser.hpp"
+#include "dorm_energy/application/cli/command_options.hpp"
 
 #include "dorm_energy/domain/logging/ilogger.hpp"
 #include "dorm_energy/domain/simulation/idata_generator.hpp"

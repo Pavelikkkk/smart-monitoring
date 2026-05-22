@@ -4,7 +4,7 @@
 #include "dorm_energy/core/measurement.hpp"
 #include <vector>
 
-namespace dorm_energy::domain::detection
+namespace dorm_energy::detection
 {
 
     /**

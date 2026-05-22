@@ -12,4 +12,4 @@ namespace dorm_energy::cli
         Daemon
     };
 
-}
+} // namespace dorm_energy::cli

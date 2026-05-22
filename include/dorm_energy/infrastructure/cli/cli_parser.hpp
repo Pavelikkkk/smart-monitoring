@@ -1,15 +1,15 @@
-// include/dorm_energy/application/cli/cli_parser.hpp
+// include/dorm_energy/infrastructure/cli/cli_parser.hpp
 #pragma once
 
-#include "dorm_energy\application\cli\command_options.hpp"
+#include "dorm_energy/application/cli/command_options.hpp"
 
 #include <CLI/CLI.hpp>
 
 #include <memory>
 
-namespace dorm_energy::application::cli
+namespace dorm_energy::cli
 {
-    
+
     enum class ParseResult
     {
         Continue,

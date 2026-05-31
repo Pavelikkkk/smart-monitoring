@@ -23,6 +23,22 @@ namespace dorm_energy::simulation
         core::ReadingsBatch generate_for_days(int days) const override;
 
     private:
+        struct RoomState
+        {
+            bool motion;
+
+            double power;
+            double light;
+
+            std::string deviceId;
+
+            std::chrono::system_clock::time_point timestamp;
+        };
+
+        RoomState generate_room_state(
+            const std::string &deviceId,
+            std::chrono::system_clock::time_point timestamp) const;
+
         mutable std::mt19937 rng_;
         bool inject_anomalies_;
         double anomaly_rate_;
@@ -30,6 +46,13 @@ namespace dorm_energy::simulation
         core::SensorReading generate_one_reading(
             std::chrono::system_clock::time_point base_time,
             int reading_index) const;
+
+        RoomState generateRoomState(
+            const std::string &deviceId,
+            std::chrono::system_clock::time_point timestamp) const;
+
+        int extract_hour(
+            std::chrono::system_clock::time_point tp) const;
     };
 
 } // namespace dorm_energy::simulation

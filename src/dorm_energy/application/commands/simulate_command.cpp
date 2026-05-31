@@ -5,6 +5,7 @@
 #include "dorm_energy/domain/simulation/idata_generator.hpp"
 #include "dorm_energy/domain/storage/imeasurement_repository.hpp"
 #include "dorm_energy/domain/logging/ilogger.hpp"
+#include "dorm_energy/infrastructure/simulation/csv_exporter.hpp"
 
 #include <fmt/format.h>
 #include <iostream>
@@ -40,6 +41,8 @@ namespace dorm_energy::application
         core::ReadingsBatch batch = generator_->generate_for_days(options.simulateDays);
 
         logger_->info("Generated " + std::to_string(batch.size()) + " sensor readings");
+
+        simulation::CsvExporter::exportReadings(batch, "../../data/training_dataset.csv"); // вынести в конфиг путь изменение пути
 
         int anomalyCount = detector_->countAnomalies(batch);
         logger_->info("Detected anomalies: " + std::to_string(anomalyCount));

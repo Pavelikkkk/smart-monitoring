@@ -49,7 +49,7 @@ namespace dorm_energy::application
         int simulationDays_{30};
         unsigned randomSeed_{42};
         bool injectAnomalies_{true};
-        double anomalyRate_{0.3};
+        double anomalyRate_{0.03};
 
         std::string dbHost_{"localhost"};
         std::string dbPort_{"5432"};

@@ -18,7 +18,6 @@ namespace dorm_energy::application
         AppConfig config = loadFromEnvFile(".env");
         AppConfig envConfig = loadFromEnvironment();
 
-        // Приоритет: переменные окружения перезаписывают .env
         if (!envConfig.getDbHost().empty())
             config.dbHost_ = envConfig.getDbHost();
         if (!envConfig.getDbPort().empty())

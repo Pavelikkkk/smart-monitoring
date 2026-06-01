@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import json
 
 from sklearn.preprocessing import StandardScaler
 
@@ -156,6 +157,21 @@ torch.save(
     model.state_dict(),
     "models/model.pth"
 )
+
+scaler_data = {
+    "mean": scaler.mean_.tolist(),
+    "scale": scaler.scale_.tolist()
+}
+
+with open(
+    "models/scaler.json",
+    "w"
+) as file:
+    json.dump(
+        scaler_data,
+        file,
+        indent=4
+    )
 
 # ============================================================
 # THRESHOLD CALCULATION

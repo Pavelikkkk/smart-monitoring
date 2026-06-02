@@ -1,6 +1,8 @@
 #pragma once
 
 #include "dorm_energy/application/inotifier.hpp"
+#include "dorm_energy/core/room_state.hpp"
+#include "dorm_energy/domain/detection/anomaly_info.hpp"
 #include "telegram_config.hpp"
 #include "telegram_queue.hpp"
 #include "telegram_poller.hpp"
@@ -17,13 +19,13 @@ namespace dorm_energy::notifier
         explicit TelegramNotifier(TelegramConfig cfg);
         ~TelegramNotifier();
 
-        bool sendAlert(const core::SensorReading &reading,
-                       core::AlertSeverity severity = core::AlertSeverity::Warning,
-                       const std::string &reason = "") override;
+        bool sendAlert(
+            const core::RoomState &state,
+            const detection::AnomalyInfo &info) override;
 
-        std::size_t sendAlerts(const std::vector<core::SensorReading> &readings,
-                               core::AlertSeverity severity = core::AlertSeverity::Warning,
-                               const std::string &reason = "") override;
+        std::size_t sendAlerts(
+            const std::vector<core::RoomState> &states,
+            const detection::AnomalyInfo &info) override;
 
     private:
         TelegramConfig config_;
@@ -36,9 +38,9 @@ namespace dorm_energy::notifier
         std::atomic<std::chrono::seconds> currentBackoff_{std::chrono::seconds{5}};
 
         bool sendMessage(const std::string &text);
-        std::string buildAlertMessage(const core::SensorReading &reading,
-                                      core::AlertSeverity severity,
-                                      const std::string &reason) const;
+        std::string buildAlertMessage(
+            const core::RoomState &state,
+            const detection::AnomalyInfo &info) const;
 
         void startQueueWorker();
         void stopQueueWorker();

@@ -9,24 +9,32 @@ using json = nlohmann::json;
 
 namespace dorm_energy::notifier
 {
-
-    TelegramPoller::TelegramPoller(const TelegramConfig &config)
+    TelegramPoller::TelegramPoller(
+        const TelegramConfig &config)
         : config_(config)
     {
+        curl_global_init(CURL_GLOBAL_DEFAULT); // перенсти в main
+
         if (!config_.botToken.empty())
         {
-            baseUrl_ = "https://api.telegram.org/bot" + config_.botToken;
-            std::cout << "[TelegramPoller] Initialized\n";
+            baseUrl_ =
+                "https://api.telegram.org/bot" + config_.botToken;
+
+            std::cout
+                << "[TelegramPoller] Initialized\n";
         }
     }
 
     TelegramPoller::~TelegramPoller()
     {
         stop();
+        curl_global_cleanup();
     }
 
     void TelegramPoller::start()
     {
+        std::cout
+            << "[TelegramPoller] start()\n";
         if (running_ || baseUrl_.empty())
             return;
 
@@ -67,11 +75,15 @@ namespace dorm_energy::notifier
                     continue;
                 }
 
-                std::string url = baseUrl_ + "/getUpdates?offset=" + std::to_string(lastUpdateId_ + 1) + "&timeout=2&allowed_updates=[\"callback_query\"]";
-
+                std::string url =
+                    "https://api.telegram.org";
                 std::string response;
 
                 curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+                curl_easy_setopt(
+                    curl,
+                    CURLOPT_NOSIGNAL,
+                    1L);
                 curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
                 curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,
                                  [](char *ptr, size_t size, size_t nmemb, void *data) -> size_t
@@ -80,6 +92,9 @@ namespace dorm_energy::notifier
                                      return size * nmemb;
                                  });
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+                std::cout
+                    << "[TelegramPoller] before perform\n";
 
                 CURLcode res = curl_easy_perform(curl);
                 curl_easy_cleanup(curl);
@@ -96,7 +111,7 @@ namespace dorm_energy::notifier
                         {
                             long updateId = update.value("update_id", 0L);
                             if (updateId > lastUpdateId_)
-                                lastUpdateId_ = updateId; // Простое сравнение
+                                lastUpdateId_ = updateId;
 
                             if (update.contains("callback_query"))
                             {
@@ -169,6 +184,7 @@ namespace dorm_energy::notifier
 
         curl_easy_setopt(curl, CURLOPT_URL, (baseUrl_ + "/editMessageText").c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 6L);
 
         CURLcode res = curl_easy_perform(curl);

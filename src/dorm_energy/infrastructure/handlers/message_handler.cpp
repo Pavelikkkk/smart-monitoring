@@ -78,9 +78,8 @@ namespace dorm_energy::handlers
             anomalyInfo.score);
 
         notifier_->sendAlert(
-            reading,
-            anomalyInfo.severity,
-            anomalyInfo.description);
+            *state,
+            anomalyInfo);
 
         return true;
     }

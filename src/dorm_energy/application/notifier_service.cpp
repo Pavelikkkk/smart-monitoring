@@ -10,9 +10,9 @@ namespace dorm_energy::application
             notifiers_.push_back(std::move(notifier));
     }
 
-    bool NotifierService::sendAlert(const core::SensorReading &reading,
-                                    core::AlertSeverity severity,
-                                    const std::string &reason)
+    bool NotifierService::sendAlert(const core::RoomState &state,
+                                    const detection::AnomalyInfo &info)
+
     {
         if (notifiers_.empty())
             return false;
@@ -20,23 +20,22 @@ namespace dorm_energy::application
         bool success = true;
         for (const auto &notifier : notifiers_)
         {
-            if (!notifier->sendAlert(reading, severity, reason))
+            if (!notifier->sendAlert(state, info))
                 success = false;
         }
         return success;
     }
 
-    std::size_t NotifierService::sendAlerts(const std::vector<core::SensorReading> &readings,
-                                            core::AlertSeverity severity,
-                                            const std::string &reason)
+    std::size_t NotifierService::sendAlerts(const std::vector<core::RoomState> &states,
+                                            const detection::AnomalyInfo &info)
     {
-        if (notifiers_.empty() || readings.empty())
+        if (notifiers_.empty() || states.empty())
             return 0;
 
         std::size_t totalSent = 0;
         for (const auto &notifier : notifiers_)
         {
-            totalSent += notifier->sendAlerts(readings, severity, reason);
+            totalSent += notifier->sendAlerts(states, info);
         }
 
         return totalSent;

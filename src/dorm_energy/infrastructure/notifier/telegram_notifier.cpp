@@ -25,6 +25,8 @@ namespace dorm_energy::notifier
             std::cout << "[TelegramNotifier] Initialized (chat_id: " << config_.chatId << ")\n";
 
             startQueueWorker();
+            std::cout
+                << "[TelegramNotifier] Poller exists\n";
             // poller_.start();
         }
     }
@@ -35,42 +37,36 @@ namespace dorm_energy::notifier
         // poller_.stop();
     }
 
-    // ====================== PUBLIC INTERFACE ======================
-
-    bool TelegramNotifier::sendAlert(const core::SensorReading &reading,
-                                     core::AlertSeverity severity,
-                                     const std::string &reason)
+    bool TelegramNotifier::sendAlert(const core::RoomState &state,
+                                     const detection::AnomalyInfo &info)
     {
         if (!config_.enabled || apiUrl_.empty())
             return false;
 
-        std::string text = buildAlertMessage(reading, severity, reason);
+        std::string text = buildAlertMessage(state, info);
 
         if (sendMessage(text))
             return true;
 
-        queue_.push(reading, severity, reason);
+        // queue_.push(state, info.severity, info.description);
         std::cout << "[TelegramNotifier] Message queued (size: " << queue_.size() << ")\n";
         return false;
     }
 
-    std::size_t TelegramNotifier::sendAlerts(const std::vector<core::SensorReading> &readings,
-                                             core::AlertSeverity severity,
-                                             const std::string &reason)
+    std::size_t TelegramNotifier::sendAlerts(const std::vector<core::RoomState> &states,
+                                             const detection::AnomalyInfo &info)
     {
-        if (readings.empty())
+        if (states.empty())
             return 0;
 
         std::size_t sent = 0;
-        for (const auto &r : readings)
+        for (const auto &state : states)
         {
-            if (sendAlert(r, severity, reason))
+            if (sendAlert(state, info))
                 ++sent;
         }
         return sent;
     }
-
-    // ====================== PRIVATE ======================
 
     bool TelegramNotifier::sendMessage(const std::string &text)
     {
@@ -98,35 +94,89 @@ namespace dorm_energy::notifier
         return res == CURLE_OK;
     }
 
-    std::string TelegramNotifier::buildAlertMessage(const core::SensorReading &reading,
-                                                    core::AlertSeverity severity,
-                                                    const std::string &reason) const
+    std::string TelegramNotifier::buildAlertMessage(
+        const core::RoomState &state,
+        const detection::AnomalyInfo &info) const
     {
         std::ostringstream oss;
 
-        std::string emoji = (severity == core::AlertSeverity::Critical) ? "🚨" : (severity == core::AlertSeverity::Warning) ? "⚠️"
-                                                                                                                            : "ℹ️";
+        std::string emoji =
+            (info.severity == core::AlertSeverity::Critical)
+                ? "🚨"
+            : (info.severity == core::AlertSeverity::Warning)
+                ? "⚠️"
+                : "ℹ️";
 
-        oss << emoji << " *" << core::toString(severity) << " АНОМАЛИЯ*\n\n";
-        oss << "📍 *Устройство:* `" << reading.deviceId << "`\n";
-        oss << "🔧 *Тип:* `" << reading.sensorType << "`\n";
-        oss << "⚡ *Значение:* `" << reading.value << "`";
-        if (!reading.unit.empty())
-            oss << " " << reading.unit;
-        oss << "\n";
-        oss << "⏰ *Время:* `" << std::chrono::system_clock::to_time_t(reading.timestamp) << "`\n";
+        oss << emoji
+            << " *"
+            << core::toString(info.severity)
+            << " АНОМАЛИЯ*\n\n";
 
-        if (!reason.empty())
-            oss << "\n🔍 *Причина:* " << reason << "\n";
+        oss << "🏠 *Комната:* `"
+            << state.roomId
+            << "`\n";
+
+        oss << "⚡ *Power:* `"
+            << std::fixed
+            << std::setprecision(2)
+            << state.power
+            << "` kW\n";
+
+        oss << "🚶 *Motion:* `"
+            << (state.motion ? "true" : "false")
+            << "`\n";
+
+        oss << "💡 *Light:* `"
+            << std::fixed
+            << std::setprecision(2)
+            << state.light
+            << "` lx\n";
+
+        oss << "🚨 *Тип:* `"
+            << info.anomalyType
+            << "`\n";
+
+        if (info.score > 0.0)
+        {
+            oss << "🤖 *ML Score:* `"
+                << std::fixed
+                << std::setprecision(3)
+                << info.score
+                << "`\n";
+        }
+
+        auto tt =
+            std::chrono::system_clock::to_time_t(
+                state.timestamp);
+
+        std::ostringstream ts;
+
+        ts << std::put_time(
+            std::localtime(&tt),
+            "%Y-%m-%d %H:%M:%S");
+
+        oss << "⏰ *Время:* `"
+            << ts.str()
+            << "`\n";
+
+        if (!info.description.empty())
+        {
+            oss << "\n🔍 *Причина:* "
+                << info.description
+                << "\n";
+        }
 
         oss << "\n_Нажми кнопку ниже после принятия_";
 
         std::string msg = oss.str();
 
-        const std::string special = "_*[]()~`>#+-=|{}.!";
+        const std::string special =
+            "_*[]()~`>#+-=|{}.!";
+
         for (char c : special)
         {
             size_t pos = 0;
+
             while ((pos = msg.find(c, pos)) != std::string::npos)
             {
                 msg.insert(pos, "\\");
@@ -136,8 +186,6 @@ namespace dorm_energy::notifier
 
         return msg;
     }
-
-    // ====================== QUEUE ======================
 
     void TelegramNotifier::startQueueWorker()
     {
@@ -177,7 +225,7 @@ namespace dorm_energy::notifier
                     auto current = currentBackoff_.load();
                     long long seconds = current.count() * 2;
                     if (seconds > 900)
-                        seconds = 900; 
+                        seconds = 900;
                     currentBackoff_ = std::chrono::seconds{seconds};
                 }
             }
@@ -193,18 +241,7 @@ namespace dorm_energy::notifier
     }
     bool TelegramNotifier::flushQueue()
     {
-        auto alerts = queue_.getAllAndClear();
-        if (alerts.empty())
-            return true;
-
-        std::size_t sent = 0;
-        for (const auto &a : alerts)
-        {
-            std::string text = buildAlertMessage(a.reading, a.severity, a.reason);
-            if (sendMessage(text))
-                ++sent;
-        }
-        return sent > 0;
+        return true;
     }
 
     void TelegramNotifier::logQueueStatus()

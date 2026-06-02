@@ -3,7 +3,7 @@
 
 #include "dorm_energy/application/inotifier.hpp"
 #include "dorm_energy/core/measurement.hpp"
-#include "dorm_energy/core/alert_severity.hpp"  
+#include "dorm_energy/core/alert_severity.hpp"
 
 namespace dorm_energy::notifier
 {
@@ -12,16 +12,16 @@ namespace dorm_energy::notifier
     public:
         ConsoleNotifier() = default;
 
-        bool sendAlert(const core::SensorReading &reading,
-                       core::AlertSeverity severity = core::AlertSeverity::Warning,
-                       const std::string &reason = "") override;
+        bool sendAlert(
+            const core::RoomState &state,
+            const detection::AnomalyInfo &info) override;
 
-        std::size_t sendAlerts(const std::vector<core::SensorReading> &readings,
-                               core::AlertSeverity severity = core::AlertSeverity::Warning,
-                               const std::string &reason = "") override;
+        std::size_t sendAlerts(
+            const std::vector<core::RoomState> &states,
+            const detection::AnomalyInfo &info) override;
 
     private:
-        std::string formatAlert(const core::SensorReading &reading,
-                                const std::string &reason) const;
+        std::string formatAlert(const core::RoomState &state,
+                                const detection::AnomalyInfo &info) const;
     };
 } // namespace dorm_energy::notifier

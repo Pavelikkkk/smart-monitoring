@@ -1,55 +1,72 @@
-// src/dorm_energy/infrastructure/notifier/console_notifier.cpp
 #include "dorm_energy/infrastructure/notifier/console_notifier.hpp"
-#include "dorm_energy/core/measurement.hpp"
 
 #include <iostream>
-#include <vector>
-#include <string>
+#include <sstream>
+#include <iomanip>
 
 namespace dorm_energy::notifier
 {
 
-    std::string ConsoleNotifier::formatAlert(const core::SensorReading &reading,
-                                             const std::string &reason) const
+    std::string ConsoleNotifier::formatAlert(
+        const core::RoomState &state,
+        const detection::AnomalyInfo &info) const
     {
         std::ostringstream oss;
-        oss << " [ANOMALY] ";
 
-        if (!reason.empty())
+        oss << "[ANOMALY] "
+            << state.roomId
+            << " -> "
+            << info.anomalyType;
+
+        if (info.score > 0.0)
         {
-            oss << reason << " — ";
+            oss << " score="
+                << std::fixed
+                << std::setprecision(3)
+                << info.score;
         }
 
-        oss << core::toString(reading);
         return oss.str();
     }
 
-    bool ConsoleNotifier::sendAlert(const core::SensorReading &reading,
-                                    core::AlertSeverity severity,
-                                    const std::string &reason)
+    bool ConsoleNotifier::sendAlert(
+        const core::RoomState &state,
+        const detection::AnomalyInfo &info)
     {
-        std::cout << "[" << core::toString(severity) << "] "
-                  << formatAlert(reading, reason) << std::endl;
+        std::cout
+            << "["
+            << core::toString(info.severity)
+            << "] "
+            << formatAlert(state, info)
+            << '\n';
+
         return true;
     }
 
-    std::size_t ConsoleNotifier::sendAlerts(const std::vector<core::SensorReading> &readings,
-                                            core::AlertSeverity severity,
-                                            const std::string &reason)
+    std::size_t ConsoleNotifier::sendAlerts(
+        const std::vector<core::RoomState> &states,
+        const detection::AnomalyInfo &info)
     {
-        if (readings.empty())
-            return 0;
-
-        std::size_t sent = 0;
-        for (const auto &reading : readings)
+        if (states.empty())
         {
-            if (sendAlert(reading, severity, reason))
-                ++sent;
+            return 0;
         }
 
-        std::cout << " Dispatched " << sent << " alerts to console ["
-                  << core::toString(severity) << "]\n"
-                  << std::endl;
+        std::size_t sent = 0;
+
+        for (const auto &state : states)
+        {
+            if (sendAlert(state, info))
+            {
+                ++sent;
+            }
+        }
+
+        std::cout
+            << "Dispatched "
+            << sent
+            << " alerts to console\n";
+
         return sent;
     }
 

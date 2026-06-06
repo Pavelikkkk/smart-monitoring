@@ -9,6 +9,7 @@
 #include "dorm_energy/domain/mqtt/imqtt_subscription.hpp"
 #include "dorm_energy/domain/mqtt/imqtt_message_dispatcher.hpp"
 #include "dorm_energy/application/imessage_handler.hpp"
+#include "dorm_energy/infrastructure/web/server/web_server.hpp"
 
 #include <memory>
 
@@ -19,11 +20,12 @@ namespace dorm_energy::application
     public:
         explicit DaemonCommand(
             std::shared_ptr<dorm_energy::logging::ILogger> logger,
-            AppConfig config, 
+            AppConfig config,
             std::shared_ptr<dorm_energy::mqtt::IMqttConnection> mqtt_connection,
             std::shared_ptr<dorm_energy::mqtt::IMqttSubscription> mqtt_subscription,
             std::shared_ptr<dorm_energy::mqtt::IMqttMessageDispatcher> mqtt_dispatcher,
-            std::unique_ptr<application::IMessageHandler> message_handler);
+            std::unique_ptr<application::IMessageHandler> message_handler,
+            std::shared_ptr<dorm_energy::web::WebServer> web_server);
 
         int execute(const cli::CommandOptions &options);
 
@@ -36,6 +38,8 @@ namespace dorm_energy::application
         std::shared_ptr<dorm_energy::mqtt::IMqttMessageDispatcher> mqtt_dispatcher_;
 
         std::unique_ptr<application::IMessageHandler> message_handler_;
+
+        std::shared_ptr<dorm_energy::web::WebServer> web_server_;
     };
 
 } // namespace dorm_energy::application

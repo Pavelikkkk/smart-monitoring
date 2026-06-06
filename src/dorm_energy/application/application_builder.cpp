@@ -12,6 +12,7 @@
 #include "dorm_energy/infrastructure/cli/cli_parser.hpp"
 #include "dorm_energy/infrastructure/detection/onnx_detector.hpp"
 #include "dorm_energy/infrastructure/detection/hybrid_detector.hpp"
+#include "dorm_energy/infrastructure/web/server/web_server.hpp"
 
 namespace dorm_energy::application
 {
@@ -119,12 +120,25 @@ namespace dorm_energy::application
 
         return service;
     }
+    std::shared_ptr<dorm_energy::detection::RoomStateAggregator> ApplicationBuilder::createAggregator()
+    {
+        if (!aggregator_)
+        {
+            aggregator_ =
+                std::make_shared<
+                    dorm_energy::detection::RoomStateAggregator>();
+        }
+
+        return aggregator_;
+    }
+    
     std::unique_ptr<application::IMessageHandler> ApplicationBuilder::createMessageHandler()
     {
         return std::make_unique<handlers::MessageHandler>(
             createDetector(),
             createRepository(),
-            createNotifier());
+            createNotifier(),
+            createAggregator());
     }
 
     std::shared_ptr<mqtt::MqttClient> ApplicationBuilder::createSharedMqttClient()
@@ -176,6 +190,12 @@ namespace dorm_energy::application
             createDetector(),
             createRepository());
     }
+    std::shared_ptr<web::WebServer> ApplicationBuilder::createWebServer()
+    {
+        return std::make_shared<web::WebServer>(
+            createAggregator(),
+            createRepository());
+    }
 
     std::unique_ptr<DaemonCommand> ApplicationBuilder::createDaemonCommand()
     {
@@ -185,7 +205,8 @@ namespace dorm_energy::application
             createMqttConnection(),
             createMqttSubscription(),
             createMqttDispatcher(),
-            createMessageHandler());
+            createMessageHandler(),
+            createWebServer());
     }
 
     std::unique_ptr<Application> ApplicationBuilder::build()

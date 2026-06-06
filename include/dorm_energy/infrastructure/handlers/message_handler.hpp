@@ -19,7 +19,8 @@ namespace dorm_energy::handlers
         explicit MessageHandler(
             std::unique_ptr<dorm_energy::detection::IStateDetector> detector,
             std::shared_ptr<dorm_energy::storage::IMeasurementRepository> repository,
-            std::unique_ptr<dorm_energy::application::INotifier> notifier);
+            std::unique_ptr<dorm_energy::application::INotifier> notifier,
+            std::shared_ptr<dorm_energy::detection::RoomStateAggregator> aggregator);
 
         bool handle(const core::SensorReading &reading) override;
         std::size_t handleBatch(const std::vector<core::SensorReading> &readings) override;
@@ -30,7 +31,7 @@ namespace dorm_energy::handlers
         std::unique_ptr<dorm_energy::detection::IStateDetector> detector_;
         std::shared_ptr<dorm_energy::storage::IMeasurementRepository> repository_;
         std::unique_ptr<dorm_energy::application::INotifier> notifier_;
-        dorm_energy::detection::RoomStateAggregator aggregator_; // нужли ли умные указатели
+        std::shared_ptr<dorm_energy::detection::RoomStateAggregator> aggregator_;
         detection::AnomalyTracker tracker_;
 
         void persistCurrentBatch();

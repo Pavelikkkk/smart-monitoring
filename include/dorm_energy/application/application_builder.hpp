@@ -21,6 +21,7 @@
 #include "dorm_energy/application/notifier_service.hpp"
 #include "dorm_energy/infrastructure/notifier/console_notifier.hpp"
 #include "dorm_energy/infrastructure/notifier/telegram_notifier.hpp"
+#include "dorm_energy/infrastructure/web/server/web_server.hpp"
 
 #include <memory>
 
@@ -45,6 +46,7 @@ namespace dorm_energy::application
     private:
         AppConfig config_;
         std::shared_ptr<storage::IMeasurementRepository> repository_;
+        std::shared_ptr<dorm_energy::detection::RoomStateAggregator> aggregator_;
 
         std::shared_ptr<dorm_energy::logging::ILogger> createLogger();
 
@@ -64,6 +66,8 @@ namespace dorm_energy::application
 
         std::unique_ptr<dorm_energy::application::SimulateCommand> createSimulateCommand();
         std::unique_ptr<dorm_energy::application::DaemonCommand> createDaemonCommand();
+        std::shared_ptr<dorm_energy::web::WebServer> createWebServer();
+        std::shared_ptr<dorm_energy::detection::RoomStateAggregator> createAggregator();
 
         void applyCliOverrides(dorm_energy::cli::CommandOptions cliOptions);
     };

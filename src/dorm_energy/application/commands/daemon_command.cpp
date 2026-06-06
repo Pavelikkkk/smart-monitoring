@@ -1,6 +1,7 @@
 // src/dorm_energy/application/commands/daemon_command.cpp
 #include "dorm_energy/application/commands/daemon_command.hpp"
 #include "dorm_energy/application/runtime.hpp"
+#include "dorm_energy/infrastructure/web/server/web_server.hpp"
 
 #include <fmt/format.h>
 #include <chrono>
@@ -15,16 +16,18 @@ namespace dorm_energy::application
         std::shared_ptr<dorm_energy::mqtt::IMqttConnection> mqtt_connection,
         std::shared_ptr<dorm_energy::mqtt::IMqttSubscription> mqtt_subscription,
         std::shared_ptr<dorm_energy::mqtt::IMqttMessageDispatcher> mqtt_dispatcher,
-        std::unique_ptr<application::IMessageHandler> message_handler)
+        std::unique_ptr<application::IMessageHandler> message_handler,
+        std::shared_ptr<dorm_energy::web::WebServer> web_server)
         : logger_(std::move(logger)),
           config_(std::move(config)),
           mqtt_connection_(std::move(mqtt_connection)),
           mqtt_subscription_(std::move(mqtt_subscription)),
           mqtt_dispatcher_(std::move(mqtt_dispatcher)),
-          message_handler_(std::move(message_handler))
+          message_handler_(std::move(message_handler)),
+          web_server_(std::move(web_server))
     {
         if (!logger_ || !mqtt_connection_ || !mqtt_subscription_ ||
-            !mqtt_dispatcher_ || !message_handler_)
+            !mqtt_dispatcher_ || !message_handler_ || !web_server_)
         {
             throw std::invalid_argument("DaemonCommand: all dependencies must be provided");
         }
@@ -33,12 +36,14 @@ namespace dorm_energy::application
     int DaemonCommand::execute(const cli::CommandOptions &options)
     {
         logger_->info("Launching Dorm Energy Daemon (MQTT listener)...");
-
+        web_server_->start();
         Runtime::setOnStopCallback([this]()
                                    {
         logger_->info("Stop signal received. Performing graceful shutdown...");
         if (message_handler_) message_handler_->flush();
         if (mqtt_connection_) mqtt_connection_->stop();
+        if (web_server_)
+            web_server_->stop();
         logger_->info("Daemon shutdown completed."); });
 
         Runtime::init();
@@ -79,6 +84,7 @@ namespace dorm_energy::application
         }
 
         mqtt_connection_->stop();
+        web_server_->stop();
         return 0;
     }
 

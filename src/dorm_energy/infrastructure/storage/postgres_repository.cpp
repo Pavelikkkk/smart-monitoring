@@ -208,4 +208,192 @@ namespace dorm_energy::storage
             return false;
         }
     }
+    std::vector<storage::AnomalyDto>
+    PostgresMeasurementRepository::getLatestAnomalies(
+        std::size_t limit)
+    {
+        std::vector<AnomalyDto> result;
+
+        pqxx::work txn(*connection_);
+
+        auto rows =
+            txn.exec_params(
+                R"(
+            SELECT
+                device_id,
+                anomaly_type,
+                severity,
+                score,
+                description,
+                detected_at
+            FROM anomalies
+            ORDER BY detected_at DESC
+            LIMIT $1
+            )",
+                limit);
+
+        for (auto const &row : rows)
+        {
+            AnomalyDto dto;
+
+            dto.room =
+                row["device_id"].c_str();
+
+            dto.type =
+                row["anomaly_type"].c_str();
+
+            dto.severity =
+                row["severity"].c_str();
+
+            dto.score =
+                row["score"].as<double>(0.0);
+
+            dto.description =
+                row["description"].c_str();
+
+            dto.detectedAt =
+                row["detected_at"].c_str();
+
+            result.push_back(dto);
+        }
+
+        return result;
+    }
+
+    std::vector<storage::PowerPointDto>
+    PostgresMeasurementRepository::getPowerHistory(
+        int hours)
+    {
+        std::vector<PowerPointDto> result;
+
+        pqxx::work txn(*connection_);
+
+        auto rows =
+            txn.exec_params(
+                R"(
+            SELECT
+                time_bucket('1 hour', recorded_at) AS bucket,
+                AVG(numeric_value) AS avg_power
+            FROM sensor_readings
+            WHERE sensor_type = 'power'
+              AND recorded_at >= NOW() - ($1 || ' hours')::interval
+            GROUP BY bucket
+            ORDER BY bucket
+            )",
+                hours);
+
+        for (auto const &row : rows)
+        {
+            PowerPointDto dto;
+
+            dto.time =
+                row["bucket"].c_str();
+
+            dto.power =
+                row["avg_power"].as<double>(0.0);
+
+            result.push_back(dto);
+        }
+
+        return result;
+    }
+
+    std::vector<storage::DeviceDto>
+    PostgresMeasurementRepository::getDevices()
+    {
+        std::vector<DeviceDto> result;
+
+        pqxx::work txn(*connection_);
+
+        auto rows =
+            txn.exec(
+                R"(
+            SELECT
+                d.device_id,
+                d.device_name,
+                COALESCE(d.device_model, '') AS device_model,
+                COALESCE(d.firmware_version, '') AS firmware_version,
+                COALESCE(r.room_name, '') AS room_name,
+                d.is_online,
+                COALESCE(
+                    d.last_seen_at::text,
+                    ''
+                ) AS last_seen_at
+            FROM devices d
+            LEFT JOIN rooms r
+                ON r.id = d.room_id
+            ORDER BY d.device_name
+            )");
+
+        for (auto const &row : rows)
+        {
+            DeviceDto dto;
+
+            dto.deviceId =
+                row["device_id"].c_str();
+
+            dto.deviceName =
+                row["device_name"].c_str();
+
+            dto.deviceModel =
+                row["device_model"].c_str();
+
+            dto.firmwareVersion =
+                row["firmware_version"].c_str();
+
+            dto.roomName =
+                row["room_name"].c_str();
+
+            dto.isOnline =
+                row["is_online"].as<bool>(false);
+
+            dto.lastSeenAt =
+                row["last_seen_at"].c_str();
+
+            result.push_back(dto);
+        }
+
+        return result;
+    }
+
+    std::vector<storage::BuildingDto>
+    PostgresMeasurementRepository::getBuildings()
+    {
+        std::vector<BuildingDto> result;
+
+        pqxx::work txn(*connection_);
+
+        auto rows =
+            txn.exec(
+                R"(
+            SELECT
+                id,
+                name,
+                COALESCE(address, '') AS address,
+                COALESCE(description, '') AS description
+            FROM buildings
+            ORDER BY name
+            )");
+
+        for (auto const &row : rows)
+        {
+            BuildingDto dto;
+
+            dto.id =
+                row["id"].as<int>();
+
+            dto.name =
+                row["name"].c_str();
+
+            dto.address =
+                row["address"].c_str();
+
+            dto.description =
+                row["description"].c_str();
+
+            result.push_back(dto);
+        }
+
+        return result;
+    }
 } // namespace dorm_energy::storage

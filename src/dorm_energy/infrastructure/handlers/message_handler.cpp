@@ -10,12 +10,14 @@ namespace dorm_energy::handlers
     MessageHandler::MessageHandler(
         std::unique_ptr<dorm_energy::detection::IStateDetector> detector,
         std::shared_ptr<dorm_energy::storage::IMeasurementRepository> repository,
-        std::unique_ptr<dorm_energy::application::INotifier> notifier)
+        std::unique_ptr<dorm_energy::application::INotifier> notifier,
+        std::shared_ptr<dorm_energy::detection::RoomStateAggregator> aggregator)
         : detector_(std::move(detector)),
           repository_(std::move(repository)),
-          notifier_(std::move(notifier))
+          notifier_(std::move(notifier)),
+          aggregator_(std::move(aggregator))
     {
-        if (!detector_ || !repository_ || !notifier_)
+        if (!detector_ || !repository_ || !notifier_ || !aggregator_)
         {
             throw std::invalid_argument(
                 "MessageHandler: all dependencies must be provided");
@@ -36,7 +38,7 @@ namespace dorm_energy::handlers
         }
 
         auto state =
-            aggregator_.update(reading);
+            aggregator_->update(reading);
 
         if (!state)
         {
@@ -49,7 +51,7 @@ namespace dorm_energy::handlers
             *state;
 
         context.history =
-            &aggregator_.getHistory(
+            &aggregator_->getHistory(
                 state->roomId);
 
         auto anomalyInfo =

@@ -19,6 +19,11 @@ namespace dorm_energy::detection
         const std::deque<core::RoomState> &getHistory(
             const std::string &roomId) const;
 
+        const std::unordered_map<
+            std::string,
+            core::RoomState> &
+        getCurrentStates() const;
+
     private:
         std::unordered_map<
             std::string,

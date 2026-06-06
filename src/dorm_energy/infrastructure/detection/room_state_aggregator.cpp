@@ -74,4 +74,12 @@ namespace dorm_energy::detection
         return it->second;
     }
 
+    const std::unordered_map<
+        std::string,
+        core::RoomState> &
+    RoomStateAggregator::getCurrentStates() const
+    {
+        return states_;
+    }
+
 } // namespace dorm_energy::detection

@@ -3,6 +3,10 @@
 
 #include "dorm_energy/core/measurement.hpp"
 #include "dorm_energy/core/alert_severity.hpp"
+#include "dorm_energy/domain/storage/anomaly_dto.hpp"
+#include "dorm_energy/domain/storage/power_point_dto.hpp"
+#include "dorm_energy/domain/storage/device_dto.hpp"
+#include "dorm_energy/domain/storage/building_dto.hpp"
 
 namespace dorm_energy::storage
 {
@@ -24,6 +28,20 @@ namespace dorm_energy::storage
                                  core::AlertSeverity severity,
                                  const std::string &description,
                                  double score = 0.0) = 0;
+
+        virtual std::vector<AnomalyDto>
+        getLatestAnomalies(
+            std::size_t limit = 20) = 0;
+
+        virtual std::vector<PowerPointDto>
+        getPowerHistory(
+            int hours = 24) = 0;
+
+        virtual std::vector<DeviceDto>
+        getDevices() = 0;
+        
+        virtual std::vector<BuildingDto>
+        getBuildings() = 0;
 
         // virtual void shutdown() = 0;
     };

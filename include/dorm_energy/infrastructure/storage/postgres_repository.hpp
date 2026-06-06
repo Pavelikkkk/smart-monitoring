@@ -4,6 +4,8 @@
 #include "dorm_energy/domain/storage/imeasurement_repository.hpp"
 #include "dorm_energy/core/measurement.hpp"
 #include "dorm_energy/core/alert_severity.hpp"
+#include "dorm_energy/domain/storage/device_dto.hpp"
+#include "dorm_energy/domain/storage/building_dto.hpp"
 
 #include <pqxx/pqxx>
 #include <memory>
@@ -33,6 +35,20 @@ namespace dorm_energy::storage
                          double score) override;
 
         void flush() override;
+
+        std::vector<AnomalyDto>
+        getLatestAnomalies(
+            std::size_t limit = 20) override;
+
+        std::vector<PowerPointDto>
+        getPowerHistory(
+            int hours = 24) override;
+
+        std::vector<DeviceDto>
+        getDevices() override;
+
+        std::vector<BuildingDto>
+        getBuildings() override;
 
     private:
         void connect();

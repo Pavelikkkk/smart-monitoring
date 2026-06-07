@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 import { getDevices } from "../services/api";
 
 type Device = {
@@ -25,7 +27,8 @@ export default function Devices() {
         await getDevices();
 
       setDevices(data);
-    } catch (err) {
+    }
+    catch (err) {
       console.error(err);
     }
   }
@@ -36,80 +39,72 @@ export default function Devices() {
         Devices
       </h1>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-        <table className="w-full">
+        {devices.map((device) => (
+          <Link
+            key={device.deviceId}
+            to={`/devices/${device.deviceId}`}
+            className="
+              block
+              bg-slate-800
+              border
+              border-slate-700
+              rounded-xl
+              p-6
+              hover:border-cyan-500
+              transition
+            "
+          >
+            <div className="flex justify-between mb-4">
 
-          <thead className="bg-slate-700">
+              <h2 className="text-xl font-bold text-cyan-400">
+                {device.deviceName}
+              </h2>
 
-            <tr>
-              <th className="p-4 text-left">
-                Device
-              </th>
-
-              <th className="p-4 text-left">
-                Room
-              </th>
-
-              <th className="p-4 text-left">
-                Model
-              </th>
-
-              <th className="p-4 text-left">
-                Firmware
-              </th>
-
-              <th className="p-4 text-left">
-                Status
-              </th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {devices.map((device) => (
-              <tr
-                key={device.deviceId}
-                className="border-t border-slate-700"
+              <span
+                className={
+                  device.isOnline
+                    ? "text-green-400"
+                    : "text-red-400"
+                }
               >
-                <td className="p-4">
-                  {device.deviceName}
-                </td>
+                ●
+              </span>
 
-                <td className="p-4">
-                  {device.roomName}
-                </td>
+            </div>
 
-                <td className="p-4">
-                  {device.deviceModel}
-                </td>
+            <div className="space-y-2">
 
-                <td className="p-4">
-                  {device.firmwareVersion}
-                </td>
+              <div>
+                <span className="text-slate-400">
+                  Room:
+                </span>{" "}
+                {device.roomName}
+              </div>
 
-                <td className="p-4">
-                  <span
-                    className={
-                      device.isOnline
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }
-                  >
-                    {device.isOnline
-                      ? "Online"
-                      : "Offline"}
-                  </span>
-                </td>
+              <div>
+                <span className="text-slate-400">
+                  Model:
+                </span>{" "}
+                {device.deviceModel}
+              </div>
 
-              </tr>
-            ))}
+              <div>
+                <span className="text-slate-400">
+                  Firmware:
+                </span>{" "}
+                {device.firmwareVersion}
+              </div>
 
-          </tbody>
+            </div>
 
-        </table>
+            <div className="mt-4 text-cyan-400 text-sm font-semibold">
+              View Device →
+            </div>
+
+          </Link>
+        ))}
 
       </div>
     </>

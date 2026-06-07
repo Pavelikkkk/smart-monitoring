@@ -1,4 +1,4 @@
-import Sidebar from "../components/Sidebar";
+
 import DashboardHeader from "../components/DashboardHeader";
 
 type Props = {
@@ -9,7 +9,7 @@ export default function DashboardLayout({
   children,
 }: Props) {
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-[#0B1220] text-white">
 
       <DashboardHeader />
 

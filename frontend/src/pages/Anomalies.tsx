@@ -47,13 +47,13 @@ export default function Anomalies() {
   ) {
     switch (severity) {
       case "CRITICAL":
-        return "text-red-400";
+        return "text-rose-400";
 
       case "WARNING":
         return "text-yellow-400";
 
       default:
-        return "text-orange-200";
+        return "text-cyan-400";
     }
   }
 
@@ -68,7 +68,7 @@ export default function Anomalies() {
           Anomalies
         </h1>
 
-        <p className="text-slate-400">
+        <p className="text-slate-500">
           Monitor rule-based and
           machine learning alerts.
         </p>
@@ -88,12 +88,12 @@ export default function Anomalies() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             ⚠️ Total Alerts
           </p>
 
@@ -104,32 +104,32 @@ export default function Anomalies() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             🤖 ML Alerts
           </p>
 
-          <h2 className="text-3xl font-bold text-cyan-300">
+          <h2 className="text-3xl font-bold text-cyan-400">
             {mlCount}
           </h2>
         </div>
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             🔥 Critical
           </p>
 
-          <h2 className="text-3xl font-bold text-red-400">
+          <h2 className="text-3xl font-bold text-rose-400">
             {criticalCount}
           </h2>
         </div>
@@ -149,9 +149,9 @@ export default function Anomalies() {
         }
         className="
           w-full
-          bg-slate-800
+          bg-[#111827]
           border
-          border-slate-700
+          border-cyan-900/40
           rounded-2xl
           p-5
           outline-none
@@ -184,12 +184,12 @@ export default function Anomalies() {
               <div
                 key={`${anomaly.room}-${anomaly.type}-${index}`}
                 className="
-                  bg-slate-800
+                  bg-[#111827]
                   border
-                  border-slate-700
+                  border-cyan-900/40
                   rounded-2xl
                   p-6
-                  hover:border-orange-300
+                  hover:border-cyan-400
                   transition
                 "
               >
@@ -220,14 +220,14 @@ export default function Anomalies() {
                 <div className="space-y-3">
 
                   <div>
-                    <span className="text-slate-400">
+                    <span className="text-slate-500">
                       Room:
                     </span>{" "}
                     {anomaly.room}
                   </div>
 
                   <div>
-                    <span className="text-slate-400">
+                    <span className="text-slate-500">
                       Severity:
                     </span>{" "}
 
@@ -245,7 +245,7 @@ export default function Anomalies() {
                   </div>
 
                   <div>
-                    <span className="text-slate-400">
+                    <span className="text-slate-500">
                       Score:
                     </span>{" "}
                     {Number(
@@ -253,7 +253,7 @@ export default function Anomalies() {
                     ).toFixed(3)}
                   </div>
 
-                  <div className="text-slate-400 text-sm">
+                  <div className="text-slate-500 text-sm">
 
                     {new Date(
                       anomaly.detectedAt
@@ -284,11 +284,11 @@ export default function Anomalies() {
             className="
               px-8
               py-4
-              rounded-xl
-              bg-orange-300
+              rounded-2xl
+              text-cyan-400
               text-slate-900
               font-semibold
-              hover:bg-orange-200
+              hover:bg-cyan-400
               transition
             "
           >

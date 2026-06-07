@@ -4,7 +4,7 @@ import {
   getStats,
   getHealth,
   getAnomalies,
-  getRooms,
+  //getRooms,
   getDevices,
 } from "../services/api";
 
@@ -82,7 +82,7 @@ export default function Analytics() {
           Analytics Dashboard
         </h1>
 
-        <p className="text-slate-400">
+        <p className="text-slate-500">
           Real-time energy monitoring and
           anomaly detection analytics.
         </p>
@@ -137,9 +137,9 @@ export default function Analytics() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             border
-            border-slate-700
+            border-cyan-900/40
             rounded-2xl
             p-6
           "
@@ -197,9 +197,9 @@ export default function Analytics() {
           "
         >
 
-          <div className="bg-slate-800 rounded-2xl p-6">
+          <div className="bg-[#111827] rounded-2xl p-6">
 
-            <p className="text-slate-400 mb-2">
+            <p className="text-slate-500 mb-2">
               Database
             </p>
 
@@ -209,9 +209,9 @@ export default function Analytics() {
 
           </div>
 
-          <div className="bg-slate-800 rounded-2xl p-6">
+          <div className="bg-[#111827] rounded-2xl p-6">
 
-            <p className="text-slate-400 mb-2">
+            <p className="text-slate-500 mb-2">
               ML Engine
             </p>
 
@@ -221,9 +221,9 @@ export default function Analytics() {
 
           </div>
 
-          <div className="bg-slate-800 rounded-2xl p-6">
+          <div className="bg-[#111827] rounded-2xl p-6">
 
-            <p className="text-slate-400 mb-2">
+            <p className="text-slate-500 mb-2">
               Notifications
             </p>
 
@@ -250,10 +250,10 @@ export default function Analytics() {
           {anomalies.length === 0 && (
             <div
               className="
-                bg-slate-800
+                bg-[#111827]
                 rounded-2xl
                 p-6
-                text-slate-400
+                text-slate-500
               "
             >
               No anomalies detected

@@ -30,7 +30,7 @@ export default function AnomaliesChart() {
   }, []);
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+    <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-6">
 
       <h2 className="text-2xl font-bold mb-6">
         Anomalies By Type
@@ -62,7 +62,13 @@ export default function AnomaliesChart() {
               ))}
             </Pie>
 
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#111827",
+                border: "1px solid #164e63",
+                borderRadius: "12px"
+              }}
+            />
 
           </PieChart>
 

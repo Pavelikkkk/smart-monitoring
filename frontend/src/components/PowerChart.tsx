@@ -75,7 +75,7 @@ export default function PowerChart() {
             Energy Usage Analytics
           </h3>
 
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-500 text-sm">
             Last 24 hours power consumption
           </p>
         </div>
@@ -86,28 +86,28 @@ export default function PowerChart() {
 
       <div className="grid grid-cols-3 gap-4 mb-6">
 
-        <div className="bg-slate-900 rounded-lg p-4">
-          <p className="text-slate-400 text-sm">
+        <div className="bg-[#0B1220] rounded-lg p-4">
+          <p className="text-slate-500 text-sm">
             Current
           </p>
 
-          <h3 className="text-2xl font-bold text-orange-200">
+          <h3 className="text-2xl font-bold text-cyan-400">
             {current.toFixed(2)}
           </h3>
         </div>
 
-        <div className="bg-slate-900 rounded-lg p-4">
-          <p className="text-slate-400 text-sm">
+        <div className="bg-[#0B1220] rounded-lg p-4">
+          <p className="text-slate-500 text-sm">
             Average
           </p>
 
-          <h3 className="text-2xl font-bold text-green-400">
+          <h3 className="text-2xl font-bold text-emerald-400">
             {average}
           </h3>
         </div>
 
-        <div className="bg-slate-900 rounded-lg p-4">
-          <p className="text-slate-400 text-sm">
+        <div className="bg-[#0B1220] rounded-lg p-4">
+          <p className="text-slate-500 text-sm">
             Peak
           </p>
 

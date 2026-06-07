@@ -1,6 +1,6 @@
 const API_URL =
   import.meta.env.PROD
-    ? "https://potential-centered-talent-correction.trycloudflare.com"
+    ? "https://ing-clay-exposure-refrigerator.trycloudflare.com"
     : "http://localhost:8080";
 
 export async function getStats() {

@@ -91,7 +91,7 @@ export default function BuildingDetails() {
           {building.name}
         </h1>
 
-        <p className="text-slate-400">
+        <p className="text-slate-500">
           {building.address}
         </p>
 
@@ -110,48 +110,48 @@ export default function BuildingDetails() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             🚪 Rooms
           </p>
 
-          <h2 className="text-3xl font-bold text-orange-200">
+          <h2 className="text-3xl font-bold text-cyan-400">
             {rooms.length}
           </h2>
         </div>
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             📡 Devices
           </p>
 
-          <h2 className="text-3xl font-bold text-cyan-300">
+          <h2 className="text-3xl font-bold text-cyan-400">
             {devices.length}
           </h2>
         </div>
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             ⚡ Status
           </p>
 
-          <h2 className="text-3xl font-bold text-green-400">
+          <h2 className="text-3xl font-bold text-emerald-400">
             ACTIVE
           </h2>
         </div>
@@ -164,13 +164,13 @@ export default function BuildingDetails() {
         to={`/buildings/${id}/analytics`}
         className="
           block
-          bg-orange-300
+          bg-cyan-500
           text-slate-900
           rounded-2xl
           p-5
           font-semibold
           text-center
-          hover:bg-orange-200
+          hover:bg-cyan-400
           transition
         "
       >
@@ -190,9 +190,9 @@ export default function BuildingDetails() {
         }
         className="
           w-full
-          bg-slate-800
+          bg-[#111827]
           border
-          border-slate-700
+          border-cyan-900/40
           rounded-2xl
           p-5
           outline-none
@@ -228,12 +228,12 @@ export default function BuildingDetails() {
               <div
                 key={room.id}
                 className="
-                  bg-slate-800
+                  bg-[#111827]
                   border
-                  border-slate-700
+                  border-cyan-900/40
                   rounded-2xl
                   p-5
-                  hover:border-orange-300
+                  hover:border-cyan-400
                   transition
                 "
               >
@@ -248,7 +248,7 @@ export default function BuildingDetails() {
                   {room.roomName}
                 </h3>
 
-                <p className="text-slate-400 mb-4">
+                <p className="text-slate-500 mb-4">
                   {room.roomType}
                 </p>
 
@@ -295,11 +295,11 @@ export default function BuildingDetails() {
               className="
               px-8
               py-4
-              rounded-xl
-              bg-orange-300
+              rounded-2xl
+              bg-cyan-500
               text-slate-900
               font-semibold
-              hover:bg-orange-200
+              hover:bg-cyan-400
               transition
             "
             >

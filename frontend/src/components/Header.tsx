@@ -8,7 +8,7 @@ export default function Header() {
         top-0
         z-30
         backdrop-blur-md
-        bg-slate-900/80
+        bg-[#0B1220]/80
         border-b
         border-slate-800
       "
@@ -52,21 +52,21 @@ export default function Header() {
         >
           <Link
             to="/buildings"
-            className="hover:text-orange-300 transition"
+                      className="hover:text-cyan-400 transition"
           >
             Buildings
           </Link>
 
           <Link
             to="/devices"
-            className="hover:text-orange-300 transition"
+                      className="hover:text-cyan-400 transition"
           >
             Devices
           </Link>
-          
+
           <Link
             to="/anomalies"
-            className="hover:text-orange-300 transition"
+                      className="hover:text-cyan-400 transition"
           >
             Anomalies
           </Link>

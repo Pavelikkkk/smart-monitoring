@@ -7,7 +7,7 @@ export default function Settings() {
 
       <div className="grid gap-4">
 
-        <div className="bg-slate-800 rounded-xl p-6">
+        <div className="bg-[#111827] rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-4">
             Detection
           </h2>
@@ -15,7 +15,7 @@ export default function Settings() {
           <p>Power Threshold: 150 kW</p>
         </div>
 
-        <div className="bg-slate-800 rounded-xl p-6">
+        <div className="bg-[#111827] rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-4">
             Machine Learning
           </h2>
@@ -23,12 +23,12 @@ export default function Settings() {
           <p>ML Threshold: 0.80</p>
         </div>
 
-        <div className="bg-slate-800 rounded-xl p-6">
+        <div className="bg-[#111827] rounded-2xl p-6">
           <h2 className="text-xl font-bold mb-4">
             Telegram
           </h2>
 
-          <p className="text-green-400">
+          <p className="text-emerald-400">
             Connected
           </p>
         </div>

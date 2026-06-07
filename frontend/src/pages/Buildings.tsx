@@ -66,7 +66,7 @@ export default function Buildings() {
           Buildings
         </h1>
 
-        <p className="text-slate-400 text-lg">
+        <p className="text-slate-500 text-lg">
           Manage monitored buildings and
           energy analytics.
         </p>
@@ -84,8 +84,8 @@ export default function Buildings() {
         "
       >
 
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-          <p className="text-slate-400">
+        <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
+          <p className="text-slate-500">
             🏢 Buildings
           </p>
 
@@ -94,8 +94,8 @@ export default function Buildings() {
           </h2>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-          <p className="text-slate-400">
+        <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
+          <p className="text-slate-500">
             🚪 Rooms
           </p>
 
@@ -104,8 +104,8 @@ export default function Buildings() {
           </h2>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5">
-          <p className="text-slate-400">
+        <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
+          <p className="text-slate-500">
             📡 Devices
           </p>
 
@@ -127,9 +127,9 @@ export default function Buildings() {
         }
         className="
           w-full
-          bg-slate-800
+          bg-[#111827]
           border
-          border-slate-700
+          border-cyan-900/40
           rounded-2xl
           p-5
           text-lg
@@ -158,12 +158,12 @@ export default function Buildings() {
               key={building.id}
               to={`/buildings/${building.id}`}
               className="
-                bg-slate-800
+                bg-[#111827]
                 border
-                border-slate-700
+                border-cyan-900/40
                 rounded-2xl
                 p-6
-                hover:border-orange-300
+                hover:border-cyan-400
                 hover:-translate-y-1
                 transition
               "
@@ -176,14 +176,14 @@ export default function Buildings() {
                 className="
                   text-2xl
                   font-bold
-                  text-orange-200
+                  text-cyan-400
                   mb-2
                 "
               >
                 {building.name}
               </h2>
 
-              <p className="text-slate-400 mb-4">
+              <p className="text-slate-500 mb-4">
                 {building.address}
               </p>
 
@@ -195,7 +195,7 @@ export default function Buildings() {
 
               <div
                 className="
-                  text-orange-300
+                  text-cyan-400
                   font-semibold
                 "
               >
@@ -223,11 +223,11 @@ export default function Buildings() {
               className="
               px-8
               py-4
-              rounded-xl
+              rounded-2xl
               bg-orange-400
               text-slate-900
               font-semibold
-              hover:bg-orange-300
+              hover:text-cyan-400
               transition
             "
             >

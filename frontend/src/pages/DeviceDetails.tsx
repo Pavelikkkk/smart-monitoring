@@ -82,8 +82,8 @@ export default function DeviceDetails() {
           <span
             className={
               device.isOnline
-                ? "text-green-400 text-2xl"
-                : "text-red-400 text-2xl"
+                ? "text-emerald-400 text-2xl"
+                : "text-rose-400 text-2xl"
             }
           >
             ●
@@ -95,7 +95,7 @@ export default function DeviceDetails() {
 
         </div>
 
-        <p className="text-slate-400 text-lg">
+        <p className="text-slate-500 text-lg">
           {device.roomName}
         </p>
 
@@ -115,12 +115,12 @@ export default function DeviceDetails() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             Device ID
           </p>
 
@@ -128,7 +128,7 @@ export default function DeviceDetails() {
             className="
               text-xl
               font-bold
-              text-orange-300
+              text-cyan-400
             "
           >
             {device.deviceId}
@@ -137,12 +137,12 @@ export default function DeviceDetails() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             Model
           </p>
 
@@ -153,12 +153,12 @@ export default function DeviceDetails() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             Firmware
           </p>
 
@@ -169,20 +169,20 @@ export default function DeviceDetails() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             Status
           </p>
 
           <h2
             className={
               device.isOnline
-                ? "text-xl font-bold text-green-400"
-                : "text-xl font-bold text-red-400"
+                ? "text-xl font-bold text-emerald-400"
+                : "text-xl font-bold text-rose-400"
             }
           >
             {
@@ -199,9 +199,9 @@ export default function DeviceDetails() {
 
       <div
         className="
-          bg-slate-800
+          bg-[#111827]
           border
-          border-slate-700
+          border-cyan-900/40
           rounded-2xl
           p-6
         "
@@ -215,7 +215,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               Device Name
             </span>
 
@@ -227,7 +227,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               Room
             </span>
 
@@ -239,7 +239,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               Device Model
             </span>
 
@@ -251,7 +251,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               Firmware
             </span>
 
@@ -263,7 +263,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               Last Seen
             </span>
 

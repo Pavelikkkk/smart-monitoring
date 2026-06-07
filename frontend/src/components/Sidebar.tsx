@@ -14,10 +14,10 @@ export default function Sidebar() {
                 className="
             w-12
             h-12
-            rounded-xl
-            bg-slate-800
+            rounded-2xl
+            bg-[#111827]
             border
-            border-slate-700
+            border-cyan-900/40
             hover:bg-slate-700
             transition
         "
@@ -90,7 +90,7 @@ export default function Sidebar() {
                                 }
                                 className="
                   text-2xl
-                  hover:text-orange-300
+                  hover:text-cyan-400
                 "
                             >
                                 ✕
@@ -106,7 +106,7 @@ export default function Sidebar() {
                                 onClick={() =>
                                     setOpen(false)
                                 }
-                                className="block hover:text-orange-300"
+                                className="block hover:text-cyan-400"
                             >
                                 🏢 Buildings
                             </Link>
@@ -116,7 +116,7 @@ export default function Sidebar() {
                                 onClick={() =>
                                     setOpen(false)
                                 }
-                                className="block hover:text-orange-300"
+                                className="block hover:text-cyan-400"
                             >
                                 📡 Devices
                             </Link>
@@ -126,7 +126,7 @@ export default function Sidebar() {
                                 onClick={() =>
                                     setOpen(false)
                                 }
-                                className="block hover:text-orange-300"
+                                className="block hover:text-cyan-400"
                             >
                                 ⚠️ Anomalies
                             </Link>

@@ -34,7 +34,7 @@ export default function Home() {
       <p
         className="
         text-xl
-        text-slate-400
+        text-slate-500
         max-w-3xl
         mb-10
       "
@@ -51,8 +51,8 @@ export default function Home() {
           className="
           px-8
           py-4
-          rounded-xl
-          bg-orange-300
+          rounded-2xl
+          bg-cyan-500
           text-slate-900
           font-semibold
         "
@@ -65,10 +65,10 @@ export default function Home() {
           className="
           px-8
           py-4
-          rounded-xl
+          rounded-2xl
           border
           border-slate-600
-          text-slate-400
+          text-slate-500
         "
         >
           Desktop App (Coming Soon)
@@ -96,7 +96,7 @@ export default function Home() {
           Real-Time Monitoring
         </h2>
 
-        <p className="text-xl text-slate-400">
+        <p className="text-xl text-slate-500">
           ESP32 devices stream live power,
           motion and light measurements
           through MQTT.
@@ -107,16 +107,20 @@ export default function Home() {
       <div
         className="
         h-96
-        bg-slate-800
+        bg-[#111827]
         rounded-3xl
         border
-        border-slate-700
+        border-cyan-900/40
         flex
         items-center
         justify-center
       "
       >
-        Analytics Screenshot
+        <img
+          src="https://images.unsplash.com/photo-1518770660439-4636190af475"
+          alt="IoT Monitoring"
+          className="w-full h-96 object-cover rounded-3xl"
+        />
       </div>
 
     </section>
@@ -138,16 +142,20 @@ export default function Home() {
         order-2
         xl:order-1
         h-96
-        bg-slate-800
+        bg-[#111827]
         rounded-3xl
         border
-        border-slate-700
+        border-cyan-900/40
         flex
         items-center
         justify-center
       "
       >
-        ML Detection Screenshot
+        <img
+          src="https://avatars.mds.yandex.net/i?id=9cb64b10b0a2964b06d946de60c6e61a_l-12651048-images-thumbs&n=13"
+          alt="Smart Building"
+          className="w-full h-96 object-cover rounded-3xl"
+        />
       </div>
 
       <div className="order-1 xl:order-2">
@@ -156,7 +164,7 @@ export default function Home() {
           Hybrid Detection
         </h2>
 
-        <p className="text-xl text-slate-400">
+        <p className="text-xl text-slate-500">
           Rule-based and ONNX-powered
           machine learning anomaly
           detection.
@@ -184,7 +192,7 @@ export default function Home() {
           Analytics Platform
         </h2>
 
-        <p className="text-xl text-slate-400">
+        <p className="text-xl text-slate-500">
           Historical trends, room statistics,
           anomaly reports and energy insights.
         </p>
@@ -194,16 +202,20 @@ export default function Home() {
       <div
         className="
         h-96
-        bg-slate-800
+        bg-[#111827]
         rounded-3xl
         border
-        border-slate-700
+        border-cyan-900/40
         flex
         items-center
         justify-center
       "
       >
-        Dashboard Preview
+        <img
+          src="https://images.unsplash.com/photo-1460925895917-afdab827c52f"
+          alt="Analytics Dashboard"
+          className="w-full h-96 object-cover rounded-3xl"
+        />
       </div>
 
     </section>
@@ -222,12 +234,12 @@ export default function Home() {
 
         <div
           className="
-        bg-slate-800
+        bg-[#111827]
         border
-        border-slate-700
+        border-cyan-900/40
         rounded-3xl
         p-10
-        hover:border-orange-300
+        hover:border-cyan-400
         transition
         "
         >
@@ -292,12 +304,12 @@ export default function Home() {
 
         <div
           className="
-        bg-slate-800
+        bg-[#111827]
         border
-        border-slate-700
+        border-cyan-900/40
         rounded-3xl
         p-10
-        hover:border-orange-300
+        hover:border-cyan-400
         transition
       "
         >
@@ -312,13 +324,13 @@ export default function Home() {
               to="/buildings"
               className="
             block
-            bg-slate-900
-            rounded-xl
+            bg-[#1E293B]
+            rounded-2xl
             p-5
             text-2xl
             font-semibold
             hover:bg-slate-700
-            hover:text-orange-300
+            hover:text-cyan-400
             transition
           "
             >
@@ -329,13 +341,13 @@ export default function Home() {
               to="/devices"
               className="
             block
-            bg-slate-900
-            rounded-xl
+            bg-[#1E293B]
+            rounded-2xl
             p-5
             text-2xl
             font-semibold
             hover:bg-slate-700
-            hover:text-orange-300
+            hover:text-cyan-400
             transition
           "
             >
@@ -346,13 +358,13 @@ export default function Home() {
               to="/anomalies"
               className="
             block
-            bg-slate-900
-            rounded-xl
+            bg-[#1E293B]
+            rounded-2xl
             p-5
             text-2xl
             font-semibold
             hover:bg-slate-700
-            hover:text-orange-300
+            hover:text-cyan-400
             transition
           "
             >
@@ -367,12 +379,12 @@ export default function Home() {
 
         <div
           className="
-        bg-slate-800
+        bg-[#111827]
         border
-        border-slate-700
+        border-cyan-900/40
         rounded-3xl
         p-10
-        hover:border-orange-300
+        hover:border-cyan-400
         transition
       "
         >
@@ -408,7 +420,7 @@ export default function Home() {
     <footer
       className="
     border-t
-    border-slate-700
+    border-cyan-900/40
     mt-24
     py-16
   "
@@ -433,7 +445,7 @@ export default function Home() {
             Monitoring Platform
           </h3>
 
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             Smart IoT platform for energy monitoring,
             anomaly detection and analytics.
           </p>
@@ -446,13 +458,13 @@ export default function Home() {
             Links
           </h4>
 
-          <div className="space-y-3 text-slate-400">
+          <div className="space-y-3 text-slate-500">
 
             <a
               href="https://github.com/Pavelikkkk/dorm-energy-monitoring"
               target="_blank"
               rel="noreferrer"
-              className="block hover:text-orange-300"
+              className="block hover:text-cyan-400"
             >
               GitHub
             </a>
@@ -461,7 +473,7 @@ export default function Home() {
               href="https://t.me/atcocoon"
               target="_blank"
               rel="noreferrer"
-              className="block hover:text-orange-300"
+              className="block hover:text-cyan-400"
             >
               Telegram
             </a>

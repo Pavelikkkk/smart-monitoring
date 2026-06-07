@@ -15,9 +15,9 @@ export default function AlertCard({
   status = "ACTIVE",
 }: Props) {
   const severityColor = {
-    INFO: "text-orange-200",
+    INFO: "text-cyan-400",
     WARNING: "text-yellow-400",
-    CRITICAL: "text-red-400",
+    CRITICAL: "text-rose-400",
   };
 
   const statusColor = {
@@ -27,7 +27,7 @@ export default function AlertCard({
   };
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
+    <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
 
       <div className="flex justify-between items-start mb-4">
 
@@ -36,7 +36,7 @@ export default function AlertCard({
             ⚠ {room}
           </h3>
 
-          <p className="text-slate-400 mt-1">
+          <p className="text-slate-500 mt-1">
             {type}
           </p>
         </div>
@@ -82,11 +82,11 @@ export default function AlertCard({
 
       {score !== undefined && (
         <div className="mt-2">
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-500 text-sm">
             ML Score
           </p>
 
-          <p className="text-orange-200 font-bold">
+          <p className="text-cyan-400 font-bold">
             {score.toFixed(2)}
           </p>
         </div>

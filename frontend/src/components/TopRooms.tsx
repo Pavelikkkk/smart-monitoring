@@ -11,7 +11,7 @@ export default function TopRooms({
   rooms,
 }: Props) {
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+    <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-6">
 
       <h2 className="text-2xl font-bold mb-4">
         Top Active Rooms
@@ -28,7 +28,7 @@ export default function TopRooms({
               {room.roomId}
             </span>
 
-            <span className="text-orange-200 font-bold">
+            <span className="text-cyan-400 font-bold">
               {room.power} W
             </span>
           </div>

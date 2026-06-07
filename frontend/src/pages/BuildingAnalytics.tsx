@@ -117,7 +117,7 @@ export default function BuildingAnalytics() {
           {building.name}
         </h1>
 
-        <p className="text-slate-400">
+              <p className="text-slate-500">
           Energy consumption and anomaly
           analytics for this building.
         </p>
@@ -168,9 +168,9 @@ export default function BuildingAnalytics() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             border
-            border-slate-700
+            border-cyan-900/40
             rounded-2xl
             p-6
           "
@@ -222,10 +222,10 @@ export default function BuildingAnalytics() {
           {anomalies.length === 0 && (
             <div
               className="
-                bg-slate-800
+                bg-[#111827]
                 rounded-2xl
                 p-6
-                text-slate-400
+                text-slate-500
               "
             >
               No anomalies detected

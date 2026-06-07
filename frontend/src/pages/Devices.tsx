@@ -91,7 +91,7 @@ export default function Devices() {
           Devices
         </h1>
 
-        <p className="text-slate-400">
+        <p className="text-slate-500">
           Monitor and manage IoT devices.
         </p>
 
@@ -110,12 +110,12 @@ export default function Devices() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             📡 Devices
           </p>
 
@@ -126,32 +126,32 @@ export default function Devices() {
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             🟢 Online
           </p>
 
-          <h2 className="text-3xl font-bold text-green-400">
+          <h2 className="text-3xl font-bold text-emerald-400">
             {onlineCount}
           </h2>
         </div>
 
         <div
           className="
-            bg-slate-800
+            bg-[#111827]
             rounded-2xl
             p-6
           "
         >
-          <p className="text-slate-400">
+          <p className="text-slate-500">
             🔴 Offline
           </p>
 
-          <h2 className="text-3xl font-bold text-red-400">
+          <h2 className="text-3xl font-bold text-rose-400">
             {offlineCount}
           </h2>
         </div>
@@ -171,9 +171,9 @@ export default function Devices() {
         }
         className="
           w-full
-          bg-slate-800
+          bg-[#111827]
           border
-          border-slate-700
+          border-cyan-900/40
           rounded-2xl
           p-5
           outline-none
@@ -192,10 +192,10 @@ export default function Devices() {
           className={`
             px-5
             py-2
-            rounded-xl
+            rounded-2xl
             ${statusFilter === "all"
-              ? "bg-orange-300 text-slate-900"
-              : "bg-slate-800"
+            ? "text-cyan-400 text-slate-900"
+            : "bg-[#111827]"
             }
           `}
         >
@@ -209,10 +209,10 @@ export default function Devices() {
           className={`
             px-5
             py-2
-            rounded-xl
+            rounded-2xl
             ${statusFilter === "online"
               ? "bg-green-400 text-slate-900"
-              : "bg-slate-800"
+            : "bg-[#111827]"
             }
           `}
         >
@@ -226,10 +226,10 @@ export default function Devices() {
           className={`
             px-5
             py-2
-            rounded-xl
+            rounded-2xl
             ${statusFilter === "offline"
               ? "bg-red-400 text-slate-900"
-              : "bg-slate-800"
+            : "bg-[#111827]"
             }
           `}
         >
@@ -257,12 +257,12 @@ export default function Devices() {
               key={device.deviceId}
               to={`/devices/${device.deviceId}`}
               className="
-                bg-slate-800
+                bg-[#111827]
                 border
-                border-slate-700
+                border-cyan-900/40
                 rounded-2xl
                 p-6
-                hover:border-orange-300
+                hover:border-cyan-400
                 hover:-translate-y-1
                 transition
               "
@@ -282,8 +282,8 @@ export default function Devices() {
                 <span
                   className={
                     device.isOnline
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? "text-emerald-400"
+                      : "text-rose-400"
                   }
                 >
                   ●
@@ -291,7 +291,7 @@ export default function Devices() {
 
               </div>
 
-              <p className="text-slate-400 mb-3">
+              <p className="text-slate-500 mb-3">
                 {device.roomName}
               </p>
 
@@ -310,7 +310,7 @@ export default function Devices() {
               <div
                 className="
                   mt-5
-                  text-orange-300
+                  text-cyan-400
                   font-semibold
                 "
               >

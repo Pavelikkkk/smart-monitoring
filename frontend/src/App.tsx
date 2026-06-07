@@ -2,7 +2,6 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 
 import DashboardLayout from "./layouts/DashboardLayout";
 import Home from "./pages/Home";
-import Analytics from "./pages/Analytics";
 import Buildings from "./pages/Buildings";
 import Devices from "./pages/Devices";
 import Anomalies from "./pages/Anomalies";

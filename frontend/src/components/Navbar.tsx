@@ -17,7 +17,7 @@ export default function Navbar() {
         md:gap-8
         mb-8
         border-b
-        border-slate-700
+        border-cyan-900/40
         pb-4
       "
     >
@@ -25,7 +25,7 @@ export default function Navbar() {
         className="
           text-xl
           font-bold
-          text-orange-200
+          text-cyan-400
         "
       >
         ⚡ Dorm Energy Monitoring

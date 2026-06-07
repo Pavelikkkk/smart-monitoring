@@ -14,13 +14,13 @@ export default function RoomCard({
   status,
 }: Props) {
   const statusColor = {
-    NORMAL: "text-green-400",
+    NORMAL: "text-emerald-400",
     WARNING: "text-yellow-400",
-    CRITICAL: "text-red-400",
+    CRITICAL: "text-rose-400",
   };
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
+    <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
       <div className="flex justify-between mb-4">
         <h2 className="font-bold text-xl">
           🏠 {roomId}

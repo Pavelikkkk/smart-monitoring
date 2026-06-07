@@ -1,26 +1,28 @@
-CREATE TABLE IF NOT EXISTS users
+CREATE TABLE users
 (
-    id                              SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
 
-    username                        TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
 
-    email                           TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE,
 
-    first_name                      TEXT,
+    password_hash TEXT NOT NULL,
 
-    last_name                       TEXT,
+    first_name TEXT,
 
-    role                            TEXT NOT NULL DEFAULT 'VIEWER',
+    last_name TEXT,
 
-    telegram_chat_id                TEXT,
+    role TEXT NOT NULL DEFAULT 'USER',
 
-    preferred_notification_channel  TEXT DEFAULT 'TELEGRAM',
+    telegram_chat_id TEXT,
 
-    is_active                       BOOLEAN NOT NULL DEFAULT TRUE,
+    preferred_notification_channel TEXT DEFAULT 'TELEGRAM',
 
-    last_login_at                   TIMESTAMPTZ,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
 
-    created_at                      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_login_at TIMESTAMPTZ,
 
-    updated_at                      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

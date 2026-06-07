@@ -53,6 +53,13 @@ namespace dorm_energy::storage
         std::vector<RoomDto>
         getRooms() override;
 
+        std::vector<TopConsumerDto>
+        getTopConsumers(
+            int limit = 10) override;
+
+        std::vector<AnomalyStatsDto>
+        getAnomalyStatistics() override;
+
     private:
         void connect();
         bool tryReconnect(int maxAttempts = 3);

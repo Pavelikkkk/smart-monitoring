@@ -8,6 +8,8 @@
 #include "dorm_energy/domain/storage/device_dto.hpp"
 #include "dorm_energy/domain/storage/building_dto.hpp"
 #include "dorm_energy/domain/storage/room_dto.hpp"
+#include "dorm_energy/domain/storage/top_consumer_dto.hpp"
+#include "dorm_energy/domain/storage/anomaly_stats_dto.hpp"
 
 namespace dorm_energy::storage
 {
@@ -46,6 +48,13 @@ namespace dorm_energy::storage
 
         virtual std::vector<RoomDto>
         getRooms() = 0;
+
+        virtual std::vector<TopConsumerDto>
+        getTopConsumers(
+            int limit = 10) = 0;
+
+        virtual std::vector<AnomalyStatsDto>
+        getAnomalyStatistics() = 0;
         // virtual void shutdown() = 0;
     };
 } // namespace dorm_energy::storage

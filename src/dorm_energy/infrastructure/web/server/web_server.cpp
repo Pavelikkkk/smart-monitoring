@@ -274,7 +274,74 @@ namespace dorm_energy::web
 
                 callback(response);
             });
-            
+        drogon::app().registerHandler(
+            "/api/analytics/top-consumers",
+            [this](const drogon::HttpRequestPtr &,
+                   std::function<void(const drogon::HttpResponsePtr &)> &&callback)
+            {
+                Json::Value result(Json::arrayValue);
+
+                auto consumers =
+                    repository_->getTopConsumers(10);
+
+                for (const auto &c : consumers)
+                {
+                    Json::Value item;
+
+                    item["roomName"] =
+                        c.roomName;
+
+                    item["power"] =
+                        c.power;
+
+                    result.append(item);
+                }
+
+                auto response =
+                    drogon::HttpResponse::newHttpJsonResponse(
+                        result);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+            });
+
+        drogon::app().registerHandler(
+            "/api/analytics/anomalies-by-type",
+            [this](const drogon::HttpRequestPtr &,
+                   std::function<void(const drogon::HttpResponsePtr &)> &&callback)
+            {
+                Json::Value result(Json::arrayValue);
+
+                auto stats =
+                    repository_->getAnomalyStatistics();
+
+                for (const auto &s : stats)
+                {
+                    Json::Value item;
+
+                    item["type"] =
+                        s.type;
+
+                    item["count"] =
+                        s.count;
+
+                    result.append(item);
+                }
+
+                auto response =
+                    drogon::HttpResponse::newHttpJsonResponse(
+                        result);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+            });
+
         // ============================================
         // /api/buildings
         // ============================================

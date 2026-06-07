@@ -1,0 +1,93 @@
+:root {
+  /* Backgrounds */
+
+  --bg-primary: #fdf8f3;
+  --bg-secondary: #fffaf5;
+  --bg-card: #ffffff;
+
+  /* Borders */
+
+  --border-color: #f3e3d3;
+
+  /* Text */
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+
+  /* Accent */
+
+  --accent: #f4a261;
+  --accent-hover: #e76f51;
+
+  /* Status */
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Shadows */
+
+  --shadow-card:
+    0 4px 12px rgba(0, 0, 0, 0.05);
+
+  --shadow-hover:
+    0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Global */
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+}
+
+/* Generic Card */
+
+.app-card {
+  background: var(--bg-card);
+
+  border: 1px solid
+    var(--border-color);
+
+  border-radius: 16px;
+
+  box-shadow: var(--shadow-card);
+}
+
+.app-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Accent */
+
+.text-accent {
+  color: var(--accent);
+}
+
+.border-accent {
+  border-color: var(--accent);
+}
+
+.bg-accent-soft {
+  background:
+    rgba(244, 162, 97, 0.12);
+}
+
+/* Status */
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-danger {
+  color: var(--danger);
+}

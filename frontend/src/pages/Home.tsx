@@ -1,169 +1,220 @@
 export default function Home() {
   return (
-    <div className="space-y-12">
-      {/* Hero */}
+    <div className="space-y-16">
 
-      <section className="py-10">
-        <h1 className="text-5xl font-bold mb-6">
-          Dorm Energy Monitoring
+      {/* HERO */}
+
+      <section className="text-center py-16">
+
+        <div className="mb-6 text-7xl">
+          ⚡
+        </div>
+
+        <h1 className="text-6xl font-bold mb-6">
+          Dorm Energy
         </h1>
 
-        <p className="text-xl text-slate-300 max-w-3xl leading-relaxed">
-          Real-time energy analytics and anomaly detection
-          platform for dormitories and smart buildings.
+        <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+          Smart IoT platform for real-time dormitory energy
+          monitoring, anomaly detection and consumption analytics.
         </p>
 
-        <div className="flex flex-wrap gap-4 mt-8">
-          <div className="bg-cyan-500/10 border border-cyan-500 rounded-lg px-4 py-2">
-            MQTT Streaming
-          </div>
+        <div className="flex flex-wrap justify-center gap-4 mt-10">
 
-          <div className="bg-cyan-500/10 border border-cyan-500 rounded-lg px-4 py-2">
-            TimescaleDB
-          </div>
+          <a
+            href="/analytics"
+            className="
+              px-8
+              py-4
+              rounded-xl
+              bg-cyan-500
+              text-white
+              font-semibold
+              hover:bg-cyan-600
+              transition
+            "
+          >
+            Open Dashboard
+          </a>
 
-          <div className="bg-cyan-500/10 border border-cyan-500 rounded-lg px-4 py-2">
-            ONNX ML Detection
-          </div>
+          <button
+            disabled
+            className="
+              px-8
+              py-4
+              rounded-xl
+              border
+              border-slate-600
+              text-slate-400
+              cursor-not-allowed
+            "
+          >
+            Desktop App (Coming Soon)
+          </button>
 
-          <div className="bg-cyan-500/10 border border-cyan-500 rounded-lg px-4 py-2">
-            Telegram Alerts
-          </div>
         </div>
+
       </section>
 
-      {/* Features */}
+      {/* FEATURES */}
 
       <section>
-        <h2 className="text-3xl font-bold mb-6">
+
+        <h2 className="text-3xl font-bold mb-8 text-center">
           Platform Features
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Real-Time Monitoring
+            <h3 className="text-xl font-semibold mb-3">
+              📡 Real-Time Monitoring
             </h3>
 
             <p className="text-slate-400">
-              Live MQTT sensor stream processing and
-              room state aggregation.
+              MQTT-based sensor stream processing
+              with room state aggregation.
             </p>
           </div>
 
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Anomaly Detection
+            <h3 className="text-xl font-semibold mb-3">
+              🤖 ML Detection
             </h3>
 
             <p className="text-slate-400">
-              Rule-based and ONNX-powered machine
-              learning anomaly detection.
+              Hybrid anomaly detection using
+              rules and ONNX Runtime models.
             </p>
           </div>
 
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Energy Analytics
+            <h3 className="text-xl font-semibold mb-3">
+              📊 Analytics
             </h3>
 
             <p className="text-slate-400">
-              Historical consumption trends and
-              power usage visualization.
+              Historical consumption tracking
+              and advanced visualization.
             </p>
           </div>
 
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Notifications
+            <h3 className="text-xl font-semibold mb-3">
+              🔔 Alerts
             </h3>
 
             <p className="text-slate-400">
-              Instant Telegram notifications for
-              critical incidents and alerts.
+              Telegram notifications for
+              critical incidents.
             </p>
           </div>
+
         </div>
+
       </section>
 
-      {/* Architecture */}
+      {/* ARCHITECTURE */}
 
       <section>
-        <h2 className="text-3xl font-bold mb-6">
+
+        <h2 className="text-3xl font-bold mb-8 text-center">
           System Architecture
         </h2>
 
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-8">
+
           <div className="flex flex-col xl:flex-row items-center justify-between gap-6 text-center">
+
             <div>
-              <div className="text-3xl mb-2">📡</div>
+              <div className="text-4xl mb-2">
+                📡
+              </div>
+
               <div className="font-semibold">
                 ESP32 Sensors
               </div>
             </div>
 
-            <div className="text-cyan-400 text-2xl">
+            <div className="text-cyan-400 text-3xl">
               →
             </div>
 
             <div>
-              <div className="text-3xl mb-2">📨</div>
+              <div className="text-4xl mb-2">
+                📨
+              </div>
+
               <div className="font-semibold">
                 MQTT Broker
               </div>
             </div>
 
-            <div className="text-cyan-400 text-2xl">
+            <div className="text-cyan-400 text-3xl">
               →
             </div>
 
             <div>
-              <div className="text-3xl mb-2">⚙️</div>
+              <div className="text-4xl mb-2">
+                ⚙️
+              </div>
+
               <div className="font-semibold">
-                Drogon Backend
+                C++ Backend
               </div>
             </div>
 
-            <div className="text-cyan-400 text-2xl">
+            <div className="text-cyan-400 text-3xl">
               →
             </div>
 
             <div>
-              <div className="text-3xl mb-2">🗄️</div>
+              <div className="text-4xl mb-2">
+                🗄️
+              </div>
+
               <div className="font-semibold">
                 TimescaleDB
               </div>
             </div>
 
-            <div className="text-cyan-400 text-2xl">
+            <div className="text-cyan-400 text-3xl">
               →
             </div>
 
             <div>
-              <div className="text-3xl mb-2">📊</div>
+              <div className="text-4xl mb-2">
+                📊
+              </div>
+
               <div className="font-semibold">
-                Analytics Platform
+                Dashboard
               </div>
             </div>
+
           </div>
+
         </div>
+
       </section>
 
-      {/* Technologies */}
+      {/* TECHNOLOGY STACK */}
 
       <section>
-        <h2 className="text-3xl font-bold mb-6">
+
+        <h2 className="text-3xl font-bold mb-8 text-center">
           Technology Stack
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+
           {[
             "C++20",
             "Drogon",
             "MQTT",
             "TimescaleDB",
             "React",
-            "ONNX Runtime",
+            "ONNX",
           ].map((tech) => (
             <div
               key={tech}
@@ -171,7 +222,7 @@ export default function Home() {
                 bg-slate-800
                 border
                 border-slate-700
-                rounded-lg
+                rounded-xl
                 p-4
                 text-center
                 font-semibold
@@ -180,8 +231,11 @@ export default function Home() {
               {tech}
             </div>
           ))}
+
         </div>
+
       </section>
+
     </div>
   );
 }

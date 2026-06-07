@@ -13,7 +13,7 @@ export default function Anomalies() {
   }, []);
 
   const severityColor = {
-    INFO: "text-cyan-400",
+    INFO: "text-orange-200",
     WARNING: "text-yellow-400",
     CRITICAL: "text-red-400",
   };

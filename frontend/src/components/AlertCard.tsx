@@ -15,7 +15,7 @@ export default function AlertCard({
   status = "ACTIVE",
 }: Props) {
   const severityColor = {
-    INFO: "text-cyan-400",
+    INFO: "text-orange-200",
     WARNING: "text-yellow-400",
     CRITICAL: "text-red-400",
   };
@@ -86,7 +86,7 @@ export default function AlertCard({
             ML Score
           </p>
 
-          <p className="text-cyan-400 font-bold">
+          <p className="text-orange-200 font-bold">
             {score.toFixed(2)}
           </p>
         </div>

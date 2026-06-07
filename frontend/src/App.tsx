@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
 
@@ -12,7 +12,7 @@ import DeviceDetails from "./pages/DeviceDetails";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <MainLayout>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -47,6 +47,6 @@ export default function App() {
           />
         </Routes>
       </MainLayout>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

@@ -3,32 +3,15 @@ import { Link } from "react-router-dom";
 
 import { getBuildings } from "../services/api";
 
-type Building = {
-  id: number;
-  name: string;
-  address: string;
-  description: string;
-};
-
 export default function Buildings() {
   const [buildings, setBuildings] =
-    useState<Building[]>([]);
+    useState<any[]>([]);
 
   useEffect(() => {
-    loadBuildings();
+    getBuildings()
+      .then(setBuildings)
+      .catch(console.error);
   }, []);
-
-  async function loadBuildings() {
-    try {
-      const data =
-        await getBuildings();
-
-      setBuildings(data);
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
 
   return (
     <>
@@ -36,9 +19,10 @@ export default function Buildings() {
         Buildings
       </h1>
 
-      <div className="grid gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
         {buildings.map((building) => (
+
           <Link
             key={building.id}
             to={`/buildings/${building.id}`}
@@ -49,27 +33,23 @@ export default function Buildings() {
               border-slate-700
               rounded-xl
               p-6
-              hover:border-cyan-500
-              hover:bg-slate-750
+              hover:border-orange-200
               transition
             "
           >
-            <h2 className="text-2xl font-bold text-cyan-400 mb-2">
+            <h2 className="text-2xl font-bold text-orange-200 mb-2">
               {building.name}
             </h2>
 
-            <p className="text-slate-300 mb-2">
-              📍 {building.address}
+            <p className="text-slate-400 mb-2">
+              {building.address}
             </p>
 
-            <p className="text-slate-400 mb-4">
+            <p className="text-slate-300">
               {building.description}
             </p>
-
-            <div className="text-cyan-400 text-sm font-semibold">
-              View Building →
-            </div>
           </Link>
+
         ))}
 
       </div>

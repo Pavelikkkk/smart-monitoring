@@ -385,6 +385,78 @@ namespace dorm_energy::web
 
                 callback(response);
             });
+        drogon::app().registerHandler(
+            "/api/analytics/energy-by-room",
+            [this](
+                const drogon::HttpRequestPtr &,
+                std::function<void(
+                    const drogon::HttpResponsePtr &)> &&callback)
+            {
+                Json::Value data(
+                    Json::arrayValue);
+
+                auto rooms =
+                    repository_->getEnergyByRoom();
+
+                for (const auto &room : rooms)
+                {
+                    Json::Value item;
+
+                    item["roomName"] =
+                        room.roomName;
+
+                    item["power"] =
+                        room.avgPower;
+
+                    data.append(item);
+                }
+
+                auto response =
+                    drogon::HttpResponse::
+                        newHttpJsonResponse(data);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+            });
+        drogon::app().registerHandler(
+            "/api/analytics/severity-distribution",
+            [this](
+                const drogon::HttpRequestPtr &,
+                std::function<void(
+                    const drogon::HttpResponsePtr &)> &&callback)
+            {
+                Json::Value data(
+                    Json::arrayValue);
+
+                auto stats =
+                    repository_->getSeverityDistribution();
+
+                for (const auto &s : stats)
+                {
+                    Json::Value item;
+
+                    item["severity"] =
+                        s.severity;
+
+                    item["count"] =
+                        s.count;
+
+                    data.append(item);
+                }
+
+                auto response =
+                    drogon::HttpResponse::
+                        newHttpJsonResponse(data);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                callback(response);
+            });
 
         // ============================================
         // /api/power/history
@@ -441,4 +513,5 @@ namespace dorm_energy::web
             server_thread_.join();
         }
     }
+
 } // namespace dorm_energy::web

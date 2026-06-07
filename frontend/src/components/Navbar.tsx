@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 export default function Navbar() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive
-      ? "text-cyan-400 font-semibold"
-      : "text-slate-300 hover:text-white transition";
+    ? "text-orange-500 font-semibold"
+    : "text-slate-600 hover:text-orange-500 transition";
 
   return (
     <nav
@@ -25,7 +25,7 @@ export default function Navbar() {
         className="
           text-xl
           font-bold
-          text-cyan-400
+          text-orange-200
         "
       >
         ⚡ Dorm Energy Monitoring

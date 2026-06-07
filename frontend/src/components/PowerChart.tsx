@@ -91,7 +91,7 @@ export default function PowerChart() {
             Current
           </p>
 
-          <h3 className="text-2xl font-bold text-cyan-400">
+          <h3 className="text-2xl font-bold text-orange-200">
             {current.toFixed(2)}
           </h3>
         </div>

@@ -75,7 +75,7 @@ export default function BuildingDetails() {
             Rooms
           </p>
 
-          <h2 className="text-3xl font-bold text-cyan-400">
+                  <h2 className="text-3xl font-bold text-orange-200">
             {rooms.length}
           </h2>
         </div>

@@ -15,6 +15,8 @@ import TopRooms from "../components/TopRooms";
 
 import TopConsumersChart from "../components/TopConsumersChart";
 import AnomaliesChart from "../components/AnomaliesChart";
+import EnergyByRoomChart from "../components/EnergyByRoomChart";
+import SeverityDistributionChart from "../components/SeverityDistributionChart";
 
 export default function Analytics() {
   const [stats, setStats] = useState({
@@ -169,13 +171,23 @@ export default function Analytics() {
 
       </div>
 
-      {/* NEW ANALYTICS */}
+      {/* ANALYTICS BLOCK 1 */}
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
 
         <TopConsumersChart />
 
         <AnomaliesChart />
+
+      </div>
+
+      {/* ANALYTICS BLOCK 2 */}
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+
+        <EnergyByRoomChart />
+
+        <SeverityDistributionChart />
 
       </div>
 

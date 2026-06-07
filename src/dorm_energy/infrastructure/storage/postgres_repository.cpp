@@ -511,4 +511,71 @@ namespace dorm_energy::storage
 
         return result;
     }
+    std::vector<storage::EnergyByRoomDto>
+    PostgresMeasurementRepository::getEnergyByRoom()
+    {
+        std::vector<EnergyByRoomDto> result;
+
+        pqxx::work txn(*connection_);
+
+        auto rows =
+            txn.exec(
+                R"(
+            SELECT
+                device_id,
+                AVG(numeric_value) AS avg_power
+            FROM sensor_readings
+            WHERE sensor_type = 'power'
+            GROUP BY device_id
+            ORDER BY avg_power DESC
+            )");
+
+        for (auto const &row : rows)
+        {
+            EnergyByRoomDto dto;
+
+            dto.roomName =
+                row["device_id"].c_str();
+
+            dto.avgPower =
+                row["avg_power"].as<double>(0.0);
+
+            result.push_back(dto);
+        }
+
+        return result;
+    }
+    std::vector<storage::SeverityStatsDto>
+    PostgresMeasurementRepository::getSeverityDistribution()
+    {
+        std::vector<SeverityStatsDto> result;
+
+        pqxx::work txn(*connection_);
+
+        auto rows =
+            txn.exec(
+                R"(
+            SELECT
+                severity,
+                COUNT(*) AS total
+            FROM anomalies
+            GROUP BY severity
+            ORDER BY total DESC
+            )");
+
+        for (auto const &row : rows)
+        {
+            SeverityStatsDto dto;
+
+            dto.severity =
+                row["severity"].c_str();
+
+            dto.count =
+                row["total"].as<int>(0);
+
+            result.push_back(dto);
+        }
+
+        return result;
+    }
 } // namespace dorm_energy::storage

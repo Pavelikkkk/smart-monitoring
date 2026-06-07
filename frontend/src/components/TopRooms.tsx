@@ -28,7 +28,7 @@ export default function TopRooms({
               {room.roomId}
             </span>
 
-            <span className="text-cyan-400 font-bold">
+            <span className="text-orange-200 font-bold">
               {room.power} W
             </span>
           </div>

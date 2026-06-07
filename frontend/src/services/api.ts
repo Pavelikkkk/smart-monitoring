@@ -68,3 +68,20 @@ export async function getAnomalyStatistics() {
 
   return response.json();
 }
+export async function getEnergyByRoom() {
+  const response =
+    await fetch(
+      `${API_URL}/api/analytics/energy-by-room`
+    );
+
+  return response.json();
+}
+
+export async function getSeverityDistribution() {
+  const response =
+    await fetch(
+      `${API_URL}/api/analytics/severity-distribution`
+    );
+
+  return response.json();
+}

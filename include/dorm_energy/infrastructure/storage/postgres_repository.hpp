@@ -6,6 +6,10 @@
 #include "dorm_energy/core/alert_severity.hpp"
 #include "dorm_energy/domain/storage/device_dto.hpp"
 #include "dorm_energy/domain/storage/building_dto.hpp"
+#include "dorm_energy/domain/storage/room_dto.hpp"
+#include "dorm_energy/domain/storage/power_point_dto.hpp"
+#include "dorm_energy/domain/storage/energy_by_room_dto.hpp"
+#include "dorm_energy/domain/storage/severity_stats_dto.hpp"
 
 #include <pqxx/pqxx>
 #include <memory>
@@ -59,6 +63,12 @@ namespace dorm_energy::storage
 
         std::vector<AnomalyStatsDto>
         getAnomalyStatistics() override;
+
+        std::vector<EnergyByRoomDto>
+        getEnergyByRoom() override;
+
+        std::vector<SeverityStatsDto>
+        getSeverityDistribution() override;
 
     private:
         void connect();

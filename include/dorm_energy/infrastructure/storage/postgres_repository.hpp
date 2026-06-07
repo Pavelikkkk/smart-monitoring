@@ -50,6 +50,9 @@ namespace dorm_energy::storage
         std::vector<BuildingDto>
         getBuildings() override;
 
+        std::vector<RoomDto>
+        getRooms() override;
+
     private:
         void connect();
         bool tryReconnect(int maxAttempts = 3);

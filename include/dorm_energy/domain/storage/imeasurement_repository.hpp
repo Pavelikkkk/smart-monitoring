@@ -7,6 +7,7 @@
 #include "dorm_energy/domain/storage/power_point_dto.hpp"
 #include "dorm_energy/domain/storage/device_dto.hpp"
 #include "dorm_energy/domain/storage/building_dto.hpp"
+#include "dorm_energy/domain/storage/room_dto.hpp"
 
 namespace dorm_energy::storage
 {
@@ -43,6 +44,8 @@ namespace dorm_energy::storage
         virtual std::vector<BuildingDto>
         getBuildings() = 0;
 
+        virtual std::vector<RoomDto>
+        getRooms() = 0;
         // virtual void shutdown() = 0;
     };
 } // namespace dorm_energy::storage

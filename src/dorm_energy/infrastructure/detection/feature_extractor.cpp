@@ -1,6 +1,8 @@
 #include "dorm_energy/infrastructure/detection/feature_extractor.hpp"
 
 #include <cmath>
+#include <ctime>
+#include <numbers>
 
 namespace dorm_energy::detection
 {

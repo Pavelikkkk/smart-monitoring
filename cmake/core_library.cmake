@@ -24,9 +24,12 @@ add_library(dorm_energy_core STATIC
     src/dorm_energy/infrastructure/simulation/csv_exporter.cpp
     src/dorm_energy/infrastructure/detection/room_state_aggregator.cpp
     src/dorm_energy/infrastructure/detection/anomaly_tracker.cpp
+    src/dorm_energy/infrastructure/detection/feature_extractor.cpp
     src/dorm_energy/infrastructure/detection/onnx_detector.cpp
     src/dorm_energy/infrastructure/detection/hybrid_detector.cpp
     src/dorm_energy/infrastructure/web/server/web_server.cpp
+    src/dorm_energy/infrastructure/auth/jwt_service.cpp
+    src/dorm_energy/infrastructure/auth/openssl_password_hasher.cpp
 
 
     # Application
@@ -37,6 +40,8 @@ add_library(dorm_energy_core STATIC
     src/dorm_energy/application/application.cpp
     src/dorm_energy/application/runtime.cpp
     src/dorm_energy/application/notifier_service.cpp
+    src/dorm_energy/application/auth/auth_service.cpp
+    
 )
 
 target_include_directories(
@@ -57,5 +62,6 @@ target_link_libraries(dorm_energy_core
         PahoMqttCpp::paho-mqttpp3
         CURL::libcurl
         Drogon::Drogon
+        jwt-cpp::jwt-cpp
         ${ONNXRUNTIME_LIB}
 )

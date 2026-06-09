@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { getDevices } from "../services/api";
+import {
+  getUserDevice,
+} from "../services/api";
 
 type Device = {
   deviceId: string;
@@ -9,6 +11,7 @@ type Device = {
   deviceModel: string;
   firmwareVersion: string;
   roomName: string;
+  buildingName?: string;
   isOnline: boolean;
   lastSeenAt: string;
 };
@@ -23,24 +26,19 @@ export default function DeviceDetails() {
     useState(true);
 
   useEffect(() => {
-    if (id)
-    {
+    if (id) {
       loadDevice();
     }
   }, [id]);
 
   async function loadDevice() {
     try {
-      const devices =
-        await getDevices();
-
       const current =
-        devices.find(
-          (d: Device) =>
-            String(d.deviceId) === String(id)
-        );
+        await getUserDevice(id!);
 
-      setDevice(current || null);
+      setDevice(
+        current ?? null
+      );
     }
     catch (error) {
       console.error(error);
@@ -50,22 +48,28 @@ export default function DeviceDetails() {
     }
   }
 
-  if (loading)
-  {
+  if (loading) {
     return (
-      <div>
+      <div className="text-slate-300">
         Loading...
       </div>
     );
   }
 
-  if (!device)
-  {
+  if (!device) {
     return (
       <div>
+
         <h1 className="text-4xl font-bold">
-          Device not found
+          Device Not Found
         </h1>
+
+        <p className="text-slate-300 mt-4">
+          This device does not exist
+          or is not assigned to your
+          account.
+        </p>
+
       </div>
     );
   }
@@ -95,7 +99,7 @@ export default function DeviceDetails() {
 
         </div>
 
-        <p className="text-slate-500 text-lg">
+        <p className="text-slate-300 text-lg">
           {device.roomName}
         </p>
 
@@ -117,10 +121,10 @@ export default function DeviceDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             Device ID
           </p>
 
@@ -139,10 +143,10 @@ export default function DeviceDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             Model
           </p>
 
@@ -155,10 +159,10 @@ export default function DeviceDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             Firmware
           </p>
 
@@ -171,10 +175,10 @@ export default function DeviceDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             Status
           </p>
 
@@ -185,11 +189,9 @@ export default function DeviceDetails() {
                 : "text-xl font-bold text-rose-400"
             }
           >
-            {
-              device.isOnline
-                ? "ONLINE"
-                : "OFFLINE"
-            }
+            {device.isOnline
+              ? "ONLINE"
+              : "OFFLINE"}
           </h2>
         </div>
 
@@ -201,9 +203,9 @@ export default function DeviceDetails() {
         className="
           bg-[#111827]
           border
-          border-cyan-900/40
+          border-cyan-700/40
           rounded-2xl
-          p-6
+          p-5
         "
       >
 
@@ -215,7 +217,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-500">
+            <span className="text-slate-300">
               Device Name
             </span>
 
@@ -227,7 +229,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-500">
+            <span className="text-slate-300">
               Room
             </span>
 
@@ -237,9 +239,23 @@ export default function DeviceDetails() {
 
           </div>
 
+          {device.buildingName && (
+            <div className="flex justify-between">
+
+              <span className="text-slate-300">
+                Building
+              </span>
+
+              <span>
+                {device.buildingName}
+              </span>
+
+            </div>
+          )}
+
           <div className="flex justify-between">
 
-            <span className="text-slate-500">
+            <span className="text-slate-300">
               Device Model
             </span>
 
@@ -251,7 +267,7 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-500">
+            <span className="text-slate-300">
               Firmware
             </span>
 
@@ -263,15 +279,13 @@ export default function DeviceDetails() {
 
           <div className="flex justify-between">
 
-            <span className="text-slate-500">
+            <span className="text-slate-300">
               Last Seen
             </span>
 
             <span>
-              {
-                device.lastSeenAt ||
-                "N/A"
-              }
+              {device.lastSeenAt ||
+                "N/A"}
             </span>
 
           </div>

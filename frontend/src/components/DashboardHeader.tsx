@@ -8,7 +8,7 @@ export default function DashboardHeader() {
         top-0
         z-40
         backdrop-blur-md
-        bg-[#0B1220]/80
+        bg-[#020617]/80
         border-b
         border-slate-800
         mb-8

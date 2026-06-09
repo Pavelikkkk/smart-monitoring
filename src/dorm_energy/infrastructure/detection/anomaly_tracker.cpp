@@ -1,5 +1,7 @@
 #include "dorm_energy/infrastructure/detection/anomaly_tracker.hpp"
 
+#include <vector>
+
 namespace dorm_energy::detection
 {
 
@@ -7,7 +9,7 @@ namespace dorm_energy::detection
         const core::RoomState &state,
         const AnomalyInfo &anomaly) const
     {
-        return state.roomId +
+        return state.deviceId +
                ":" +
                anomaly.anomalyType;
     }
@@ -30,13 +32,13 @@ namespace dorm_energy::detection
     }
 
     void AnomalyTracker::resolveRoom(
-        const std::string &roomId)
+        const std::string &deviceId)
     {
         std::vector<std::string> remove;
 
         for (const auto &key : active_)
         {
-            if (key.starts_with(roomId + ":"))
+            if (key.starts_with(deviceId + ":"))
             {
                 remove.push_back(key);
             }

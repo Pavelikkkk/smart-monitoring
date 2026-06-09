@@ -11,6 +11,8 @@ find_package(OpenSSL REQUIRED)
 find_package(PahoMqttCpp CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(Drogon CONFIG REQUIRED)
+find_package(jwt-cpp CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 set(ONNXRUNTIME_ROOT
     ${PROJECT_SOURCE_DIR}/third_party/onnxruntime)

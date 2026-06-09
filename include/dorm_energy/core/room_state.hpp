@@ -8,7 +8,7 @@ namespace dorm_energy::core
 
     struct RoomState
     {
-        std::string roomId;
+        std::string deviceId;
 
         std::chrono::system_clock::time_point timestamp;
 

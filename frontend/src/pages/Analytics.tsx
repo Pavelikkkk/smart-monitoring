@@ -1,39 +1,30 @@
 import { useEffect, useState } from "react";
 
 import {
-  getStats,
-  getHealth,
-  getAnomalies,
-  //getRooms,
-  getDevices,
+  getUserStats,
+  getUserAnomalies,
+  getUserDevices,
 } from "../services/api";
 
 import StatCard from "../components/StatCard";
 import AlertCard from "../components/AlertCard";
-import StatusBadge from "../components/StatusBadge";
-import PowerChart from "../components/PowerChart";
 
+import PowerChart from "../components/PowerChart";
 import TopConsumersChart from "../components/TopConsumersChart";
 import AnomaliesChart from "../components/AnomaliesChart";
 import SeverityDistributionChart from "../components/SeverityDistributionChart";
+import EnergyByRoomChart from "../components/EnergyByRoomChart";
 
 export default function Analytics() {
   const [stats, setStats] = useState({
+    buildings: 0,
     rooms: 0,
-    alerts: 0,
-    mlAlerts: 0,
-    mqttOnline: false,
+    devices: 0,
+    anomalies: 0,
   });
 
   const [devices, setDevices] =
     useState<any[]>([]);
-
-  const [health, setHealth] = useState({
-    mqtt: false,
-    database: false,
-    telegram: false,
-    detector: false,
-  });
 
   const [anomalies, setAnomalies] =
     useState<any[]>([]);
@@ -46,19 +37,15 @@ export default function Analytics() {
     try {
       const [
         statsData,
-        healthData,
         anomaliesData,
         devicesData,
       ] = await Promise.all([
-        getStats(),
-        getHealth(),
-        getAnomalies(),
-        getDevices(),
+        getUserStats(),
+        getUserAnomalies(),
+        getUserDevices(),
       ]);
 
       setStats(statsData);
-
-      setHealth(healthData);
 
       setDevices(devicesData);
 
@@ -79,12 +66,13 @@ export default function Analytics() {
       <div>
 
         <h1 className="text-5xl font-bold mb-3">
-          Analytics Dashboard
+          Analytics
         </h1>
 
-        <p className="text-slate-500">
-          Real-time energy monitoring and
-          anomaly detection analytics.
+        <p className="text-slate-300">
+          Monitor energy consumption,
+          device activity and anomaly
+          statistics across your buildings.
         </p>
 
       </div>
@@ -102,6 +90,11 @@ export default function Analytics() {
       >
 
         <StatCard
+          title="Buildings"
+          value={stats.buildings}
+        />
+
+        <StatCard
           title="Rooms"
           value={stats.rooms}
         />
@@ -112,17 +105,8 @@ export default function Analytics() {
         />
 
         <StatCard
-          title="Alerts"
-          value={stats.alerts}
-        />
-
-        <StatCard
-          title="Server"
-          value={
-            stats.mqttOnline
-              ? "Online"
-              : "Offline"
-          }
+          title="Anomalies"
+          value={stats.anomalies}
         />
 
       </div>
@@ -139,13 +123,25 @@ export default function Analytics() {
           className="
             bg-[#111827]
             border
-            border-cyan-900/40
+            border-cyan-700/40
             rounded-2xl
-            p-6
+            p-5
           "
         >
           <PowerChart />
         </div>
+
+      </div>
+
+      {/* ENERGY BY ROOM */}
+
+      <div>
+
+        <h2 className="text-3xl font-bold mb-4">
+          Energy by Room
+        </h2>
+
+        <EnergyByRoomChart />
 
       </div>
 
@@ -156,7 +152,7 @@ export default function Analytics() {
           grid
           grid-cols-1
           xl:grid-cols-2
-          gap-6
+          gap-5
         "
       >
 
@@ -166,76 +162,7 @@ export default function Analytics() {
 
       </div>
 
-      <div
-        className="
-          grid
-          grid-cols-1
-          xl:grid-cols-1
-          gap-6
-        "
-      >
-
-        <SeverityDistributionChart />
-
-      </div>
-
-      {/* SYSTEM */}
-
-      <div>
-
-        <h2 className="text-3xl font-bold mb-4">
-          System Health
-        </h2>
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            xl:grid-cols-4
-            gap-4
-          "
-        >
-
-          <div className="bg-[#111827] rounded-2xl p-6">
-
-            <p className="text-slate-500 mb-2">
-              Database
-            </p>
-
-            <StatusBadge
-              online={health.database}
-            />
-
-          </div>
-
-          <div className="bg-[#111827] rounded-2xl p-6">
-
-            <p className="text-slate-500 mb-2">
-              ML Engine
-            </p>
-
-            <StatusBadge
-              online={health.detector}
-            />
-
-          </div>
-
-          <div className="bg-[#111827] rounded-2xl p-6">
-
-            <p className="text-slate-500 mb-2">
-              Notifications
-            </p>
-
-            <StatusBadge
-              online={health.telegram}
-            />
-
-          </div>
-
-        </div>
-
-      </div>
+      <SeverityDistributionChart />
 
       {/* LATEST ANOMALIES */}
 
@@ -252,8 +179,8 @@ export default function Analytics() {
               className="
                 bg-[#111827]
                 rounded-2xl
-                p-6
-                text-slate-500
+                p-5
+                text-slate-300
               "
             >
               No anomalies detected

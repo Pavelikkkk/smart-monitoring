@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
-  getBuildings,
-  getRooms,
-  getDevices,
+  getUserBuildings,
+  getUserRooms,
+  getUserDevices,
 } from "../services/api";
 
 export default function Buildings() {
@@ -31,9 +31,9 @@ export default function Buildings() {
           roomsData,
           devicesData,
         ] = await Promise.all([
-          getBuildings(),
-          getRooms(),
-          getDevices(),
+          getUserBuildings(),
+          getUserRooms(),
+          getUserDevices(),
         ]);
 
         setBuildings(buildingsData);
@@ -66,7 +66,7 @@ export default function Buildings() {
           Buildings
         </h1>
 
-        <p className="text-slate-500 text-lg">
+        <p className="text-slate-300 text-lg">
           Manage monitored buildings and
           energy analytics.
         </p>
@@ -84,8 +84,8 @@ export default function Buildings() {
         "
       >
 
-        <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
-          <p className="text-slate-500">
+        <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
+          <p className="text-slate-300">
             🏢 Buildings
           </p>
 
@@ -94,8 +94,8 @@ export default function Buildings() {
           </h2>
         </div>
 
-        <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
-          <p className="text-slate-500">
+        <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
+          <p className="text-slate-300">
             🚪 Rooms
           </p>
 
@@ -104,8 +104,8 @@ export default function Buildings() {
           </h2>
         </div>
 
-        <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
-          <p className="text-slate-500">
+        <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
+          <p className="text-slate-300">
             📡 Devices
           </p>
 
@@ -129,7 +129,7 @@ export default function Buildings() {
           w-full
           bg-[#111827]
           border
-          border-cyan-900/40
+          border-cyan-700/40
           rounded-2xl
           p-5
           text-lg
@@ -146,7 +146,7 @@ export default function Buildings() {
           grid-cols-1
           md:grid-cols-2
           xl:grid-cols-3
-          gap-6
+          gap-5
         "
       >
 
@@ -160,9 +160,9 @@ export default function Buildings() {
               className="
                 bg-[#111827]
                 border
-                border-cyan-900/40
+                border-cyan-700/40
                 rounded-2xl
-                p-6
+                p-5
                 hover:border-cyan-400
                 hover:-translate-y-1
                 transition
@@ -183,7 +183,7 @@ export default function Buildings() {
                 {building.name}
               </h2>
 
-              <p className="text-slate-500 mb-4">
+              <p className="text-slate-300 mb-4">
                 {building.address}
               </p>
 
@@ -199,7 +199,7 @@ export default function Buildings() {
                   font-semibold
                 "
               >
-                View Building →
+                Open Dashboard →
               </div>
 
             </Link>

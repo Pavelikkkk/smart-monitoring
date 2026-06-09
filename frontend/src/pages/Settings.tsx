@@ -1,39 +1,90 @@
+import { useEffect, useState } from "react";
+
+import {
+  getAccount,
+  updateTelegramChatId,
+} from "../services/api";
+
 export default function Settings() {
+  const [telegramChatId, setTelegramChatId] =
+    useState("");
+
+  const [status, setStatus] =
+    useState("");
+
+  useEffect(() => {
+    getAccount()
+      .then((account) =>
+        setTelegramChatId(
+          account.telegramChatId ?? ""
+        )
+      )
+      .catch(() =>
+        setStatus("Failed to load settings")
+      );
+  }, []);
+
+  const handleSave = async (
+    e: React.FormEvent
+  ) => {
+    e.preventDefault();
+    setStatus("");
+
+    try {
+      await updateTelegramChatId(
+        telegramChatId
+      );
+      setStatus("Settings saved");
+    } catch (err) {
+      setStatus(
+        err instanceof Error
+          ? err.message
+          : "Failed to save settings"
+      );
+    }
+  };
+
   return (
-    <>
-      <h1 className="text-5xl font-bold mb-8">
+    <div className="space-y-8">
+      <h1 className="text-5xl font-bold">
         Settings
       </h1>
 
-      <div className="grid gap-4">
+      <form
+        onSubmit={handleSave}
+        className="bg-[#111827] border border-cyan-700/40 rounded-3xl p-5 space-y-5"
+      >
+        <h2 className="text-3xl font-bold">
+          Notifications
+        </h2>
 
-        <div className="bg-[#111827] rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Detection
-          </h2>
+        <label className="block">
+          <span className="block mb-2 text-sm text-slate-300">
+            Telegram Chat ID
+          </span>
 
-          <p>Power Threshold: 150 kW</p>
-        </div>
+          <input
+            value={telegramChatId}
+            onChange={(e) =>
+              setTelegramChatId(e.target.value)
+            }
+            className="w-full px-4 py-3 text-white rounded-xl bg-[#020617] border border-slate-700 focus:border-cyan-500 outline-none"
+          />
+        </label>
 
-        <div className="bg-[#111827] rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Machine Learning
-          </h2>
+        <button
+          type="submit"
+          className="px-8 py-3 rounded-2xl bg-cyan-500 text-slate-900 font-semibold hover:bg-cyan-400 transition"
+        >
+          Save
+        </button>
 
-          <p>ML Threshold: 0.80</p>
-        </div>
-
-        <div className="bg-[#111827] rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Telegram
-          </h2>
-
-          <p className="text-emerald-400">
-            Connected
-          </p>
-        </div>
-
-      </div>
-    </>
+        {status && (
+          <div className="text-slate-300">
+            {status}
+          </div>
+        )}
+      </form>
+    </div>
   );
 }

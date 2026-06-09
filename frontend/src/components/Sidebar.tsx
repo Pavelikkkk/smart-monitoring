@@ -1,9 +1,30 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import {
+    type Account,
+    getAccount,
+} from "../services/api";
 
 export default function Sidebar() {
     const [open, setOpen] =
         useState(false);
+
+    const [account, setAccount] =
+        useState<Account | null>(null);
+
+    useEffect(() => {
+        getAccount()
+            .then(setAccount)
+            .catch(() => setAccount(null));
+    }, []);
+
+    const isBusiness =
+        account?.accountType ===
+        "BUSINESS";
+
+    const isAdmin =
+        account?.role === "ADMIN";
 
     return (
         <>
@@ -12,14 +33,14 @@ export default function Sidebar() {
             <button
                 onClick={() => setOpen(true)}
                 className="
-            w-12
-            h-12
-            rounded-2xl
-            bg-[#111827]
-            border
-            border-cyan-900/40
-            hover:bg-slate-700
-            transition
+          w-12
+          h-12
+          rounded-2xl
+          bg-[#111827]
+          border
+          border-cyan-700/40
+          hover:bg-cyan-500
+          transition
         "
             >
                 ☰
@@ -44,7 +65,7 @@ export default function Sidebar() {
               bg-slate-950
               border-r
               border-slate-800
-              p-6
+              p-5
               flex
               flex-col
             "
@@ -60,15 +81,15 @@ export default function Sidebar() {
               "
                         >
                             <Link
-                                to="/"
+                                to="/account"
+                                onClick={() =>
+                                    setOpen(false)
+                                }
                                 className="
                   flex
                   items-center
                   gap-3
                 "
-                                onClick={() =>
-                                    setOpen(false)
-                                }
                             >
                                 <span className="text-4xl">
                                     ⚡
@@ -76,11 +97,11 @@ export default function Sidebar() {
 
                                 <span
                                     className="
-                    text-xl
+                    text-2xl
                     font-bold
                   "
                                 >
-                                    Monitoring System
+                                    SMATI
                                 </span>
                             </Link>
 
@@ -99,16 +120,74 @@ export default function Sidebar() {
 
                         {/* NAVIGATION */}
 
-                        <div className="space-y-4 text-lg">
-
+                        <div
+                            className="
+                space-y-5
+                text-lg
+              "
+                        >
                             <Link
-                                to="/buildings"
+                                to="/account"
                                 onClick={() =>
                                     setOpen(false)
                                 }
-                                className="block hover:text-cyan-400"
+                                className="
+                  block
+                  hover:text-cyan-400
+                  transition
+                "
                             >
-                                🏢 Buildings
+                                👤 Account
+                            </Link>
+
+                            {/* BUSINESS ONLY */}
+
+                            {isBusiness && (
+                                <>
+                                    <Link
+                                        to="/buildings"
+                                        onClick={() =>
+                                            setOpen(false)
+                                        }
+                                        className="
+                      block
+                      hover:text-cyan-400
+                      transition
+                    "
+                                    >
+                                        🏢 Buildings
+                                    </Link>
+
+                                    <Link
+                                        to="/analytics"
+                                        onClick={() =>
+                                            setOpen(false)
+                                        }
+                                        className="
+                      block
+                      hover:text-cyan-400
+                      transition
+                    "
+                                    >
+                                        📈 Analytics
+                                    </Link>
+                                </>
+                            )}
+
+                            {/* COMMON */}
+
+                            <Link
+                                to="/rooms"
+                                onClick={() =>
+                                    setOpen(false)
+                                }
+                                className="
+                  block
+                  hover:text-cyan-400
+                  transition
+                "
+                            >
+                                🚪 Rooms
                             </Link>
 
                             <Link
@@ -116,7 +195,11 @@ export default function Sidebar() {
                                 onClick={() =>
                                     setOpen(false)
                                 }
-                                className="block hover:text-cyan-400"
+                                className="
+                  block
+                  hover:text-cyan-400
+                  transition
+                "
                             >
                                 📡 Devices
                             </Link>
@@ -126,12 +209,115 @@ export default function Sidebar() {
                                 onClick={() =>
                                     setOpen(false)
                                 }
-                                className="block hover:text-cyan-400"
+                                className="
+                  block
+                  hover:text-cyan-400
+                  transition
+                "
                             >
                                 ⚠️ Anomalies
                             </Link>
 
+                            <Link
+                                to="/settings"
+                                onClick={() =>
+                                    setOpen(false)
+                                }
+                                className="
+                  block
+                  hover:text-cyan-400
+                  transition
+                "
+                            >
+                                ⚙️ Settings
+                            </Link>
+
+                            {isAdmin && (
+                                <Link
+                                    to="/admin"
+                                    onClick={() =>
+                                        setOpen(false)
+                                    }
+                                    className="
+                  block
+                  text-cyan-400
+                  hover:text-cyan-300
+                  transition
+                "
+                                >
+                                    Admin
+                                </Link>
+                            )}
+
+                            {/* UPGRADE */}
+
+                            <Link
+                                to="/upgrade"
+                                onClick={() =>
+                                    setOpen(false)
+                                }
+                                className="
+                  block
+                  mt-8
+                  text-cyan-400
+                  font-semibold
+                  hover:text-cyan-300
+                  transition
+                "
+                            >
+                                🚀 Upgrade
+                            </Link>
                         </div>
+
+                        {/* USER */}
+
+                        <div
+                            className="
+                mt-auto
+                pt-6
+                border-t
+                border-slate-800
+              "
+                        >
+                            <div
+                                className="
+                  text-sm
+                  text-slate-300
+                  mb-2
+                "
+                            >
+                                Logged in as
+                            </div>
+
+                            <div
+                                className="
+                  text-lg
+                  font-semibold
+                "
+                            >
+                                {account?.username ?? "Guest"}
+                            </div>
+
+                            <div
+                                className="
+                  text-cyan-400
+                  text-sm
+                  mt-2
+                "
+                            >
+                                {account?.accountType ?? "PERSONAL"}
+                            </div>
+
+                            <div
+                                className="
+                  text-slate-300
+                  text-sm
+                "
+                            >
+                                {account?.subscription.plan ?? "STANDARD"}
+                            </div>
+                        </div>
+
                     </aside>
                 </div>
             )}

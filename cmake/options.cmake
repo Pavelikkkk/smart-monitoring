@@ -10,6 +10,10 @@ set(SPDLOG_FMT_EXTERNAL ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY
     "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
+if(MSVC)
+    add_compile_options(/FS)
+endif()
+
 # if(MSVC)
 #     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 #     add_compile_options(/W4 /WX)

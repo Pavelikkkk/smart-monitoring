@@ -75,7 +75,7 @@ export default function PowerChart() {
             Energy Usage Analytics
           </h3>
 
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-300 text-sm">
             Last 24 hours power consumption
           </p>
         </div>
@@ -86,8 +86,8 @@ export default function PowerChart() {
 
       <div className="grid grid-cols-3 gap-4 mb-6">
 
-        <div className="bg-[#0B1220] rounded-lg p-4">
-          <p className="text-slate-500 text-sm">
+        <div className="bg-[#020617] rounded-lg p-4">
+          <p className="text-slate-300 text-sm">
             Current
           </p>
 
@@ -96,8 +96,8 @@ export default function PowerChart() {
           </h3>
         </div>
 
-        <div className="bg-[#0B1220] rounded-lg p-4">
-          <p className="text-slate-500 text-sm">
+        <div className="bg-[#020617] rounded-lg p-4">
+          <p className="text-slate-300 text-sm">
             Average
           </p>
 
@@ -106,8 +106,8 @@ export default function PowerChart() {
           </h3>
         </div>
 
-        <div className="bg-[#0B1220] rounded-lg p-4">
-          <p className="text-slate-500 text-sm">
+        <div className="bg-[#020617] rounded-lg p-4">
+          <p className="text-slate-300 text-sm">
             Peak
           </p>
 

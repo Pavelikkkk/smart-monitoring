@@ -17,7 +17,7 @@ namespace dorm_energy::detection
             const AnomalyInfo &anomaly);
 
         void resolveRoom(
-            const std::string &roomId);
+            const std::string &deviceId);
 
     private:
         std::unordered_set<std::string>

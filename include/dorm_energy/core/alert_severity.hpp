@@ -12,4 +12,4 @@ namespace dorm_energy::core
     };
 
     std::string toString(AlertSeverity severity);
-} // namespace dorm_energy::coreё
+} // namespace dorm_energy::core

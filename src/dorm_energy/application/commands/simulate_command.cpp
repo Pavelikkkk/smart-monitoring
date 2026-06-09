@@ -84,7 +84,7 @@ namespace dorm_energy::application
 
             context.history =
                 &aggregator.getHistory(
-                    state->roomId);
+                    state->deviceId);
 
             auto info =
                 detector_->detect(context);
@@ -124,7 +124,7 @@ namespace dorm_energy::application
 
             std::cout
                 << "[ANOMALY] "
-                << state->roomId
+                << state->deviceId
                 << " -> "
                 << info.anomalyType
                 << " score="

@@ -13,7 +13,9 @@
     "curl",
     "openssl",
     "paho-mqttpp3",
-    "drogon"
+    "drogon",
+    "jwt-cpp",
+    "gtest"
   ],
   "default-features": [],
   "features": {}

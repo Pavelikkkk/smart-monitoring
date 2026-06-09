@@ -17,7 +17,7 @@ namespace dorm_energy::detection
             const core::SensorReading &reading);
 
         const std::deque<core::RoomState> &getHistory(
-            const std::string &roomId) const;
+            const std::string &deviceId) const;
 
         const std::unordered_map<
             std::string,

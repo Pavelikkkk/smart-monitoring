@@ -52,7 +52,7 @@ namespace dorm_energy::handlers
 
         context.history =
             &aggregator_->getHistory(
-                state->roomId);
+                state->deviceId);
 
         auto anomalyInfo =
             detector_->detect(context);
@@ -60,7 +60,7 @@ namespace dorm_energy::handlers
         if (!anomalyInfo.isAnomaly)
         {
             tracker_.resolveRoom(
-                state->roomId);
+                state->deviceId);
 
             return true;
         }

@@ -8,7 +8,7 @@ export default function MainLayout({
   children,
 }: Props) {
   return (
-    <div className="min-h-screen bg-[#0B1220] text-white">
+    <div className="min-h-screen bg-[#020617] text-white">
 
       <Header />
 

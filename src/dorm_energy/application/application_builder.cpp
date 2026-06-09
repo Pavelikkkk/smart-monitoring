@@ -13,6 +13,9 @@
 #include "dorm_energy/infrastructure/detection/onnx_detector.hpp"
 #include "dorm_energy/infrastructure/detection/hybrid_detector.hpp"
 #include "dorm_energy/infrastructure/web/server/web_server.hpp"
+#include "dorm_energy/application/auth/auth_service.hpp"
+#include "dorm_energy/infrastructure/auth/jwt_service.hpp"
+#include "dorm_energy/infrastructure/auth/openssl_password_hasher.hpp"
 
 namespace dorm_energy::application
 {
@@ -37,12 +40,40 @@ namespace dorm_energy::application
         return logger;
     }
 
-    std::unique_ptr<simulation::IDataGenerator> ApplicationBuilder::createGenerator()
+    std::unique_ptr<simulation::IDataGenerator>
+    ApplicationBuilder::createGenerator()
     {
-        return std::make_unique<simulation::SyntheticDataGenerator>(
+        auto repository =
+            createRepository();
+
+        return std::make_unique<
+            simulation::SyntheticDataGenerator>(
             config_.getRandomSeed(),
             config_.getInjectAnomalies(),
-            config_.getAnomalyRate());
+            config_.getAnomalyRate(),
+            repository);
+    }
+
+    std::shared_ptr<AuthService>
+    ApplicationBuilder::createAuthService()
+    {
+        auto repository =
+            createRepository();
+
+        auto passwordHasher =
+            std::make_shared<
+                OpenSslPasswordHasher>();
+
+        auto jwtService =
+            std::make_shared<
+                JwtService>(
+                "super-secret-key");
+
+        return std::make_shared<
+            AuthService>(
+            repository,
+            passwordHasher,
+            jwtService);
     }
 
     std::unique_ptr<detection::IStateDetector> ApplicationBuilder::createDetector()
@@ -194,7 +225,8 @@ namespace dorm_energy::application
     {
         return std::make_shared<web::WebServer>(
             createAggregator(),
-            createRepository());
+            createRepository(),
+            createAuthService());
     }
 
     std::unique_ptr<DaemonCommand> ApplicationBuilder::createDaemonCommand()

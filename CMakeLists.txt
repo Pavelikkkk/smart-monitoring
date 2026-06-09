@@ -16,6 +16,7 @@ include(options)
 include(dependencies)
 include(core_library)
 include(executable)
+include(tests)
 
 # ============================================
 # Дополнительно

@@ -2,19 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-  getBuildings,
-  getRooms,
-  getDevices,
-  getAnomalies,
+  getUserBuilding,
+  getUserBuildingRooms,
+  getUserBuildingDevices,
+  getUserBuildingAnomalies,
 } from "../services/api";
 
 import StatCard from "../components/StatCard";
 import AlertCard from "../components/AlertCard";
-
-import PowerChart from "../components/PowerChart";
-import TopConsumersChart from "../components/TopConsumersChart";
-import AnomaliesChart from "../components/AnomaliesChart";
-import SeverityDistributionChart from "../components/SeverityDistributionChart";
 
 export default function BuildingAnalytics() {
   const { id } = useParams();
@@ -33,65 +28,29 @@ export default function BuildingAnalytics() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [id]);
 
   async function loadData() {
     try {
       const [
-        buildingsData,
+        buildingData,
         roomsData,
         devicesData,
         anomaliesData,
       ] = await Promise.all([
-        getBuildings(),
-        getRooms(),
-        getDevices(),
-        getAnomalies(),
+        getUserBuilding(id!),
+        getUserBuildingRooms(id!),
+        getUserBuildingDevices(id!),
+        getUserBuildingAnomalies(id!),
       ]);
 
-      const currentBuilding =
-        buildingsData.find(
-          (b: any) =>
-            String(b.id) === id
-        );
+      setBuilding(buildingData);
 
-      setBuilding(currentBuilding);
+      setRooms(roomsData);
 
-      const buildingRooms =
-        roomsData.filter(
-          (r: any) =>
-            String(r.buildingId) === id
-        );
+      setDevices(devicesData);
 
-      setRooms(buildingRooms);
-
-      const roomNames =
-        buildingRooms.map(
-          (r: any) =>
-            r.roomName
-        );
-
-      const buildingDevices =
-        devicesData.filter(
-          (d: any) =>
-            roomNames.includes(
-              d.roomName
-            )
-        );
-
-      setDevices(buildingDevices);
-
-      const buildingAnomalies =
-        anomaliesData.filter(
-          (a: any) =>
-            roomNames.includes(
-              a.room
-            )
-        );
-
-      setAnomalies(
-        buildingAnomalies
-      );
+      setAnomalies(anomaliesData);
     }
     catch (error) {
       console.error(error);
@@ -100,11 +59,56 @@ export default function BuildingAnalytics() {
 
   if (!building) {
     return (
-      <div>
+      <div className="text-slate-300">
         Loading...
       </div>
     );
   }
+
+  const onlineDevices =
+    devices.filter(
+      (device) => device.isOnline
+    ).length;
+
+  const criticalAnomalies =
+    anomalies.filter(
+      (anomaly) =>
+        anomaly.severity === "CRITICAL"
+    ).length;
+
+  const averageScore =
+    anomalies.length > 0
+      ? (
+          anomalies.reduce(
+            (sum, anomaly) =>
+              sum + Number(anomaly.score ?? 0),
+            0
+          ) / anomalies.length
+        ).toFixed(2)
+      : "0.00";
+
+  const devicesByRoom =
+    rooms.map((room) => ({
+      roomName: room.roomName,
+      count: devices.filter(
+        (device) =>
+          device.roomId === room.roomId
+      ).length,
+    }));
+
+  const anomaliesByType =
+    anomalies.reduce<Record<string, number>>(
+      (acc, anomaly) => {
+        const type =
+          anomaly.type ?? "Unknown";
+
+        acc[type] =
+          (acc[type] ?? 0) + 1;
+
+        return acc;
+      },
+      {}
+    );
 
   return (
     <div className="space-y-8">
@@ -117,9 +121,35 @@ export default function BuildingAnalytics() {
           {building.name}
         </h1>
 
-              <p className="text-slate-500">
-          Energy consumption and anomaly
-          analytics for this building.
+        <p className="text-slate-300">
+          Building energy analytics and
+          anomaly monitoring dashboard.
+        </p>
+
+      </div>
+
+      {/* BUILDING INFO */}
+
+      <div
+        className="
+          bg-[#111827]
+          border
+          border-cyan-700/40
+          rounded-2xl
+          p-5
+        "
+      >
+
+        <h2 className="text-3xl font-bold">
+          {building.name}
+        </h2>
+
+        <p className="text-slate-300 mt-2">
+          {building.address}
+        </p>
+
+        <p className="mt-4">
+          {building.description}
         </p>
 
       </div>
@@ -147,74 +177,130 @@ export default function BuildingAnalytics() {
         />
 
         <StatCard
-          title="Alerts"
+          title="Anomalies"
           value={anomalies.length}
         />
 
         <StatCard
-          title="Status"
-          value="Active"
+          title="Online"
+          value={onlineDevices}
         />
 
       </div>
-
-      {/* POWER */}
-
-      <div>
-
-        <h2 className="text-3xl font-bold mb-4">
-          Power Consumption
-        </h2>
-
-        <div
-          className="
-            bg-[#111827]
-            border
-            border-cyan-900/40
-            rounded-2xl
-            p-6
-          "
-        >
-          <PowerChart />
-        </div>
-
-      </div>
-
-      {/* CHARTS */}
 
       <div
         className="
           grid
           grid-cols-1
           xl:grid-cols-2
-          gap-6
+          gap-5
         "
       >
 
-        <TopConsumersChart />
+        <div
+          className="
+            bg-[#111827]
+            border
+            border-cyan-700/40
+            rounded-2xl
+            p-5
+          "
+        >
+          <h2 className="text-2xl font-bold mb-6">
+            Devices by Room
+          </h2>
 
-        <AnomaliesChart />
+          <div className="space-y-4">
+            {devicesByRoom.map((item) => (
+              <div key={item.roomName}>
+                <div className="flex justify-between mb-2">
+                  <span>{item.roomName}</span>
+                  <span className="text-cyan-400">
+                    {item.count}
+                  </span>
+                </div>
+
+                <div className="h-3 rounded-full bg-[#020617] overflow-hidden">
+                  <div
+                    className="h-full bg-cyan-500"
+                    style={{
+                      width: `${
+                        devices.length > 0
+                          ? (item.count / devices.length) * 100
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="
+            bg-[#111827]
+            border
+            border-cyan-700/40
+            rounded-2xl
+            p-5
+          "
+        >
+          <h2 className="text-2xl font-bold mb-6">
+            Building Anomalies
+          </h2>
+
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-[#020617] rounded-xl p-4">
+              <div className="text-slate-300 text-sm">
+                Critical
+              </div>
+              <div className="text-3xl font-bold text-red-400">
+                {criticalAnomalies}
+              </div>
+            </div>
+
+            <div className="bg-[#020617] rounded-xl p-4">
+              <div className="text-slate-300 text-sm">
+                Avg Score
+              </div>
+              <div className="text-3xl font-bold text-cyan-400">
+                {averageScore}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {Object.entries(anomaliesByType).map(
+              ([type, count]) => (
+                <div
+                  key={type}
+                  className="flex justify-between border-b border-slate-800 pb-2"
+                >
+                  <span>{type}</span>
+                  <span className="text-cyan-400">
+                    {count}
+                  </span>
+                </div>
+              )
+            )}
+
+            {anomalies.length === 0 && (
+              <div className="text-slate-300">
+                No anomalies for this building
+              </div>
+            )}
+          </div>
+        </div>
 
       </div>
 
-      <div
-        className="
-          grid
-          grid-cols-1
-          gap-6
-        "
-      >
-
-        <SeverityDistributionChart />
-
-      </div>
-
-      {/* RECENT ALERTS */}
+      {/* RECENT ANOMALIES */}
 
       <div>
 
         <h2 className="text-3xl font-bold mb-4">
-          Recent Alerts
+          Recent Anomalies
         </h2>
 
         <div className="grid gap-4">
@@ -224,8 +310,8 @@ export default function BuildingAnalytics() {
               className="
                 bg-[#111827]
                 rounded-2xl
-                p-6
-                text-slate-500
+                p-5
+                text-slate-300
               "
             >
               No anomalies detected

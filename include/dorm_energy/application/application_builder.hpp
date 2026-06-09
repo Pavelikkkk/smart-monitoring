@@ -22,6 +22,7 @@
 #include "dorm_energy/infrastructure/notifier/console_notifier.hpp"
 #include "dorm_energy/infrastructure/notifier/telegram_notifier.hpp"
 #include "dorm_energy/infrastructure/web/server/web_server.hpp"
+#include "dorm_energy/application/auth/auth_service.hpp"
 
 #include <memory>
 
@@ -68,6 +69,7 @@ namespace dorm_energy::application
         std::unique_ptr<dorm_energy::application::DaemonCommand> createDaemonCommand();
         std::shared_ptr<dorm_energy::web::WebServer> createWebServer();
         std::shared_ptr<dorm_energy::detection::RoomStateAggregator> createAggregator();
+        std::shared_ptr<AuthService> createAuthService();
 
         void applyCliOverrides(dorm_energy::cli::CommandOptions cliOptions);
     };

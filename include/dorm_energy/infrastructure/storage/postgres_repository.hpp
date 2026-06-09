@@ -10,6 +10,7 @@
 #include "dorm_energy/domain/storage/power_point_dto.hpp"
 #include "dorm_energy/domain/storage/energy_by_room_dto.hpp"
 #include "dorm_energy/domain/storage/severity_stats_dto.hpp"
+#include "dorm_energy/domain/storage/user_dto.hpp"
 
 #include <pqxx/pqxx>
 #include <memory>
@@ -42,33 +43,90 @@ namespace dorm_energy::storage
 
         std::vector<AnomalyDto>
         getLatestAnomalies(
-            std::size_t limit = 20) override;
+            std::size_t limit = 20,
+            int organizationId = 0) override;
 
         std::vector<PowerPointDto>
         getPowerHistory(
-            int hours = 24) override;
+            int hours = 24,
+            int organizationId = 0) override;
 
         std::vector<DeviceDto>
-        getDevices() override;
+        getDevices(
+            int organizationId = 0) override;
 
         std::vector<BuildingDto>
-        getBuildings() override;
+        getBuildings(
+            int organizationId = 0) override;
 
         std::vector<RoomDto>
-        getRooms() override;
+        getRooms(
+            int organizationId = 0) override;
 
         std::vector<TopConsumerDto>
         getTopConsumers(
-            int limit = 10) override;
+            int limit = 10,
+            int organizationId = 0) override;
 
         std::vector<AnomalyStatsDto>
-        getAnomalyStatistics() override;
+        getAnomalyStatistics(
+            int organizationId = 0) override;
 
         std::vector<EnergyByRoomDto>
-        getEnergyByRoom() override;
+        getEnergyByRoom(
+            int organizationId = 0) override;
 
         std::vector<SeverityStatsDto>
-        getSeverityDistribution() override;
+        getSeverityDistribution(
+            int organizationId = 0) override;
+
+        std::optional<UserDto>
+        findUserByEmail(
+            const std::string &email) override;
+        std::optional<UserDto>
+        findUserById(
+            int id) override;
+        int
+        createUser(
+            const UserDto &user) override;
+
+        std::optional<UserDto>
+        getUserById(
+            int userId) override;
+
+        bool
+        updateUserTelegramChatId(
+            int userId,
+            const std::string &telegramChatId) override;
+
+        Json::Value
+        getUserSubscription(
+            int userId) override;
+
+        Json::Value
+        getAdminOverview() override;
+
+        int
+        createBuildingForOrganization(
+            int organizationId,
+            const std::string &name,
+            const std::string &address,
+            const std::string &description) override;
+
+        int
+        createRoomForBuilding(
+            int buildingId,
+            const std::string &roomName,
+            const std::string &roomType,
+            int floorNumber) override;
+
+        bool
+        createDeviceForRoom(
+            const std::string &deviceId,
+            const std::string &deviceName,
+            const std::string &deviceModel,
+            const std::string &firmwareVersion,
+            int roomId) override;
 
     private:
         void connect();

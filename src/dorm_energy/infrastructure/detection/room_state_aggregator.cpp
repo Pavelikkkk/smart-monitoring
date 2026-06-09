@@ -10,7 +10,7 @@ namespace dorm_energy::detection
         auto &state =
             states_[reading.deviceId];
 
-        state.roomId =
+        state.deviceId =
             reading.deviceId;
 
         state.timestamp =
@@ -58,13 +58,13 @@ namespace dorm_energy::detection
 
     const std::deque<core::RoomState> &
     RoomStateAggregator::getHistory(
-        const std::string &roomId) const
+        const std::string &deviceId) const
     {
         static const std::deque<core::RoomState>
             emptyHistory;
 
         auto it =
-            history_.find(roomId);
+            history_.find(deviceId);
 
         if (it == history_.end())
         {

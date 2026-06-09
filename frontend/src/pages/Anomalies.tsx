@@ -1,46 +1,48 @@
 import { useEffect, useState } from "react";
 
-import { getAnomalies } from "../services/api";
+import {
+  getUserAnomalies,
+  getUserRooms,
+} from "../services/api";
 
 export default function Anomalies() {
   const [anomalies, setAnomalies] =
     useState<any[]>([]);
 
+  const [rooms, setRooms] =
+    useState<any[]>([]);
+
   const [search, setSearch] =
     useState("");
+
+  const [selectedRoom, setSelectedRoom] =
+    useState("all");
 
   const [visibleCount, setVisibleCount] =
     useState(12);
 
   useEffect(() => {
-    getAnomalies()
-      .then(setAnomalies)
-      .catch(console.error);
+    async function loadData() {
+      try {
+        const [
+          anomaliesData,
+          roomsData,
+        ] = await Promise.all([
+          getUserAnomalies(),
+          getUserRooms(),
+        ]);
+
+        setAnomalies(anomaliesData);
+
+        setRooms(roomsData);
+      }
+      catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadData();
   }, []);
-
-  const filteredAnomalies =
-    anomalies.filter((anomaly) =>
-      `${anomaly.room} ${anomaly.type}`
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
-
-  const criticalCount =
-    anomalies.filter(
-      (a) =>
-        a.severity ===
-        "CRITICAL"
-    ).length;
-
-  const mlCount =
-    anomalies.filter(
-      (a) =>
-        String(a.type)
-          .toLowerCase()
-          .includes("ml")
-    ).length;
 
   function severityColor(
     severity: string
@@ -57,6 +59,43 @@ export default function Anomalies() {
     }
   }
 
+  function borderColor(
+    severity: string
+  ) {
+    switch (severity) {
+      case "CRITICAL":
+        return "border-t-rose-500";
+
+      case "WARNING":
+        return "border-t-yellow-500";
+
+      default:
+        return "border-t-cyan-500";
+    }
+  }
+
+  const filteredAnomalies =
+    anomalies.filter(
+      (anomaly) => {
+        const matchesSearch =
+          `${anomaly.room} ${anomaly.type}`
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            );
+
+        const matchesRoom =
+          selectedRoom === "all" ||
+          anomaly.room ===
+          selectedRoom;
+
+        return (
+          matchesSearch &&
+          matchesRoom
+        );
+      }
+    );
+
   return (
     <div className="space-y-8">
 
@@ -68,98 +107,82 @@ export default function Anomalies() {
           Anomalies
         </h1>
 
-        <p className="text-slate-500">
-          Monitor rule-based and
-          machine learning alerts.
+        <p className="text-slate-300">
+          Browse detected anomalies
+          across your rooms and devices.
         </p>
 
       </div>
 
-      {/* STATS */}
+      {/* FILTERS */}
 
       <div
         className="
           grid
           grid-cols-1
-          md:grid-cols-3
+          md:grid-cols-2
           gap-4
         "
       >
 
-        <div
+        <input
+          type="text"
+          placeholder="Search anomalies..."
+          value={search}
+          onChange={(e) =>
+            setSearch(
+              e.target.value
+            )
+          }
           className="
             bg-[#111827]
+            border
+            border-cyan-700/40
             rounded-2xl
-            p-6
+            p-5
+            text-lg
+            outline-none
+            focus:border-cyan-400
           "
-        >
-          <p className="text-slate-500">
-            ⚠️ Total Alerts
-          </p>
+        />
 
-          <h2 className="text-3xl font-bold">
-            {anomalies.length}
-          </h2>
-        </div>
-
-        <div
+        <select
+          value={selectedRoom}
+          onChange={(e) =>
+            setSelectedRoom(
+              e.target.value
+            )
+          }
           className="
             bg-[#111827]
+            border
+            border-cyan-700/40
             rounded-2xl
-            p-6
+            p-5
+            text-lg
+            outline-none
+            focus:border-cyan-400
           "
         >
-          <p className="text-slate-500">
-            🤖 ML Alerts
-          </p>
+          <option value="all">
+            All Rooms
+          </option>
 
-          <h2 className="text-3xl font-bold text-cyan-400">
-            {mlCount}
-          </h2>
-        </div>
-
-        <div
-          className="
-            bg-[#111827]
-            rounded-2xl
-            p-6
-          "
-        >
-          <p className="text-slate-500">
-            🔥 Critical
-          </p>
-
-          <h2 className="text-3xl font-bold text-rose-400">
-            {criticalCount}
-          </h2>
-        </div>
+          {rooms.map(
+            (room) => (
+              <option
+                key={room.roomId}
+                value={room.name}
+              >
+                {room.name}
+              </option>
+            )
+          )}
+        </select>
 
       </div>
 
-      {/* SEARCH */}
-
-      <input
-        type="text"
-        placeholder="Search anomalies..."
-        value={search}
-        onChange={(e) =>
-          setSearch(
-            e.target.value
-          )
-        }
-        className="
-          w-full
-          bg-[#111827]
-          border
-          border-cyan-900/40
-          rounded-2xl
-          p-5
-          outline-none
-          focus:border-orange-300
-        "
-      />
-
-      {/* CARDS */}
+      {/* ANOMALIES */}
 
       <div
         className="
@@ -183,53 +206,56 @@ export default function Anomalies() {
             ) => (
               <div
                 key={`${anomaly.room}-${anomaly.type}-${index}`}
-                className="
+                className={`
                   bg-[#111827]
                   border
-                  border-cyan-900/40
+                  border-cyan-700/40
+                  border-t-4
+                  ${borderColor(
+                    anomaly.severity
+                  )}
                   rounded-2xl
-                  p-6
+                  p-5
                   hover:border-cyan-400
+                  hover:-translate-y-1
                   transition
-                "
+                `}
               >
 
-                <div className="flex justify-between mb-4">
-
-                  <h2
-                    className="
-                      text-xl
-                      font-bold
-                    "
-                  >
-                    {anomaly.type}
-                  </h2>
-
-                  <span
-                    className={
-                      severityColor(
-                        anomaly.severity
-                      )
-                    }
-                  >
-                    ●
-                  </span>
-
+                <div className="text-4xl mb-4">
+                  ⚠️
                 </div>
+
+                <h2
+                  className="
+                    text-xl
+                    font-bold
+                    mb-4
+                  "
+                >
+                  {anomaly.type}
+                </h2>
 
                 <div className="space-y-3">
 
                   <div>
-                    <span className="text-slate-500">
+
+                    <span className="text-slate-300">
                       Room:
-                    </span>{" "}
+                    </span>
+
+                    {" "}
                     {anomaly.room}
+
                   </div>
 
                   <div>
-                    <span className="text-slate-500">
+
+                    <span className="text-slate-300">
                       Severity:
-                    </span>{" "}
+                    </span>
+
+                    {" "}
 
                     <span
                       className={
@@ -242,23 +268,32 @@ export default function Anomalies() {
                         anomaly.severity
                       }
                     </span>
+
                   </div>
 
                   <div>
-                    <span className="text-slate-500">
+
+                    <span className="text-slate-300">
                       Score:
-                    </span>{" "}
+                    </span>
+
+                    {" "}
+
                     {Number(
                       anomaly.score
                     ).toFixed(3)}
+
                   </div>
 
-                  <div className="text-slate-500 text-sm">
-
+                  <div
+                    className="
+                      text-slate-300
+                      text-sm
+                    "
+                  >
                     {new Date(
                       anomaly.detectedAt
                     ).toLocaleString()}
-
                   </div>
 
                 </div>
@@ -282,15 +317,15 @@ export default function Anomalies() {
               )
             }
             className="
-              px-8
-              py-4
-              rounded-2xl
-              text-cyan-400
-              text-slate-900
-              font-semibold
-              hover:bg-cyan-400
-              transition
-            "
+                px-8
+                py-4
+                rounded-2xl
+                bg-cyan-500
+                text-slate-900
+                font-semibold
+                hover:bg-cyan-400
+                transition
+              "
           >
             Show More
           </button>

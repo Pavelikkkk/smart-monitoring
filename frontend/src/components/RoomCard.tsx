@@ -20,7 +20,7 @@ export default function RoomCard({
   };
 
   return (
-    <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
+    <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
       <div className="flex justify-between mb-4">
         <h2 className="font-bold text-xl">
           🏠 {roomId}

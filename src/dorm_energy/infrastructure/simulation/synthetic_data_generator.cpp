@@ -1,6 +1,8 @@
 // src/dorm_energy/infrastructure/simulation/synthetic_data_generator.cpp
 #include "dorm_energy/infrastructure/simulation/synthetic_data_generator.hpp"
 #include "dorm_energy/core/measurement.hpp"
+#include "dorm_energy/domain/storage/device_dto.hpp"
+#include "dorm_energy/domain/storage/imeasurement_repository.hpp"
 
 #include <chrono>
 #include <vector>
@@ -15,13 +17,14 @@ namespace dorm_energy::simulation
     SyntheticDataGenerator::SyntheticDataGenerator::SyntheticDataGenerator(
         unsigned seed,
         bool inject_anomalies,
-        double anomaly_rate)
+        double anomaly_rate,
+        std::shared_ptr<storage::IMeasurementRepository> repository)
         : rng_(seed),
           inject_anomalies_(inject_anomalies),
-          anomaly_rate_(anomaly_rate)
+          anomaly_rate_(anomaly_rate),
+          repository_(repository)
     {
     }
-
     void SyntheticDataGenerator::setSeed(unsigned seed)
     {
         rng_.seed(seed);
@@ -153,7 +156,8 @@ namespace dorm_energy::simulation
         return generate_for_days(1);
     }
 
-    core::ReadingsBatch SyntheticDataGenerator::generate_for_days(
+    core::ReadingsBatch
+    SyntheticDataGenerator::generate_for_days(
         int days) const
     {
         if (days <= 0)
@@ -161,15 +165,19 @@ namespace dorm_energy::simulation
 
         core::ReadingsBatch batch;
 
-        static const std::vector<std::string> devices = {
-            "kitchen",
-            "bedroom-1",
-            "bedroom-2",
-            "living-room",
-            "bathroom",
-            "corridor"};
+        auto devices =
+            repository_->getDevices();
 
-        auto now = std::chrono::system_clock::now();
+        if (devices.empty())
+        {
+            std::cout
+                << "[Generator] No devices found in database\n";
+
+            return batch;
+        }
+
+        auto now =
+            std::chrono::system_clock::now();
 
         auto start =
             now - std::chrono::hours(24 * days);
@@ -189,46 +197,85 @@ namespace dorm_energy::simulation
 
                         auto state =
                             generateRoomState(
-                                device,
+                                device.deviceId,
                                 timestamp);
 
-                        // std::cout
-                        //     << device
-                        //     << " motion=" << state.motion
-                        //     << " power=" << state.power
-                        //     << " light=" << state.light
-                        //     << '\n';
+                        // Motion
 
                         core::SensorReading motion;
-                        motion.timestamp = timestamp;
-                        motion.deviceId = device;
-                        motion.sensorType = "motion";
-                        motion.boolValue = state.motion;
-                        motion.unit = "bool";
 
-                        batch.push_back(motion);
+                        motion.timestamp =
+                            timestamp;
+
+                        motion.deviceId =
+                            device.deviceId;
+
+                        motion.sensorType =
+                            "motion";
+
+                        motion.boolValue =
+                            state.motion;
+
+                        motion.unit =
+                            "bool";
+
+                        batch.push_back(
+                            motion);
+
+                        // Power
 
                         core::SensorReading power;
-                        power.timestamp = timestamp;
-                        power.deviceId = device;
-                        power.sensorType = "power";
-                        power.value = state.power;
-                        power.unit = "kW";
 
-                        batch.push_back(power);
+                        power.timestamp =
+                            timestamp;
+
+                        power.deviceId =
+                            device.deviceId;
+
+                        power.sensorType =
+                            "power";
+
+                        power.value =
+                            state.power;
+
+                        power.unit =
+                            "kW";
+
+                        batch.push_back(
+                            power);
+
+                        // Light
 
                         core::SensorReading light;
-                        light.timestamp = timestamp;
-                        light.deviceId = device;
-                        light.sensorType = "light";
-                        light.value = state.light;
-                        light.unit = "lux";
 
-                        batch.push_back(light);
+                        light.timestamp =
+                            timestamp;
+
+                        light.deviceId =
+                            device.deviceId;
+
+                        light.sensorType =
+                            "light";
+
+                        light.value =
+                            state.light;
+
+                        light.unit =
+                            "lux";
+
+                        batch.push_back(
+                            light);
                     }
                 }
             }
         }
+
+        std::cout
+            << "[Generator] Generated "
+            << batch.size()
+            << " readings for "
+            << devices.size()
+            << " devices\n";
 
         return batch;
     }

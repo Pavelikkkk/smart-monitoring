@@ -91,7 +91,7 @@ export default function BuildingDetails() {
           {building.name}
         </h1>
 
-        <p className="text-slate-500">
+        <p className="text-slate-300">
           {building.address}
         </p>
 
@@ -112,10 +112,10 @@ export default function BuildingDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             🚪 Rooms
           </p>
 
@@ -128,10 +128,10 @@ export default function BuildingDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             📡 Devices
           </p>
 
@@ -144,10 +144,10 @@ export default function BuildingDetails() {
           className="
             bg-[#111827]
             rounded-2xl
-            p-6
+            p-5
           "
         >
-          <p className="text-slate-500">
+          <p className="text-slate-300">
             ⚡ Status
           </p>
 
@@ -192,7 +192,7 @@ export default function BuildingDetails() {
           w-full
           bg-[#111827]
           border
-          border-cyan-900/40
+          border-cyan-700/40
           rounded-2xl
           p-5
           outline-none
@@ -230,7 +230,7 @@ export default function BuildingDetails() {
                 className="
                   bg-[#111827]
                   border
-                  border-cyan-900/40
+                  border-cyan-700/40
                   rounded-2xl
                   p-5
                   hover:border-cyan-400
@@ -248,7 +248,7 @@ export default function BuildingDetails() {
                   {room.roomName}
                 </h3>
 
-                <p className="text-slate-500 mb-4">
+                <p className="text-slate-300 mb-4">
                   {room.roomType}
                 </p>
 

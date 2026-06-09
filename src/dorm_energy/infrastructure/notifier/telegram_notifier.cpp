@@ -113,7 +113,7 @@ namespace dorm_energy::notifier
             << " АНОМАЛИЯ*\n\n";
 
         oss << "🏠 *Комната:* `"
-            << state.roomId
+            << state.deviceId
             << "`\n";
 
         oss << "⚡ *Power:* `"

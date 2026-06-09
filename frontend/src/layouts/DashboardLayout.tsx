@@ -1,5 +1,5 @@
 
-import DashboardHeader from "../components/DashboardHeader";
+import Navbar from "../components/Navbar";
 
 type Props = {
   children: React.ReactNode;
@@ -9,9 +9,9 @@ export default function DashboardLayout({
   children,
 }: Props) {
   return (
-      <div className="min-h-screen bg-[#0B1220] text-white">
+    <div className="min-h-screen bg-[#020617] text-white">
 
-      <DashboardHeader />
+      <Navbar />
 
       <main
         className="

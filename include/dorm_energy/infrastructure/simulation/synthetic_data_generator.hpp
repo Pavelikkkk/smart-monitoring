@@ -3,6 +3,7 @@
 
 #include "dorm_energy/core/measurement.hpp"
 #include "dorm_energy/domain/simulation/idata_generator.hpp"
+#include "dorm_energy/domain/storage/imeasurement_repository.hpp"
 
 #include <random>
 #include <chrono>
@@ -15,7 +16,8 @@ namespace dorm_energy::simulation
         explicit SyntheticDataGenerator(
             unsigned seed = 42,
             bool inject_anomalies = false,
-            double anomaly_rate = 0.03);
+            double anomaly_rate = 0.03,
+            std::shared_ptr<storage::IMeasurementRepository> repository = nullptr);
 
         void setSeed(unsigned seed) override;
 
@@ -42,6 +44,7 @@ namespace dorm_energy::simulation
         mutable std::mt19937 rng_;
         bool inject_anomalies_;
         double anomaly_rate_;
+        std::shared_ptr<storage::IMeasurementRepository> repository_;
 
         core::SensorReading generate_one_reading(
             std::chrono::system_clock::time_point base_time,

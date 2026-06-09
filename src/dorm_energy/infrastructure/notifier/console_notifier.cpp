@@ -14,7 +14,7 @@ namespace dorm_energy::notifier
         std::ostringstream oss;
 
         oss << "[ANOMALY] "
-            << state.roomId
+            << state.deviceId
             << " -> "
             << info.anomalyType;
 

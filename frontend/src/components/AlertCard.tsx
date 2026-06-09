@@ -27,7 +27,7 @@ export default function AlertCard({
   };
 
   return (
-    <div className="bg-[#111827] border border-cyan-900/40 rounded-2xl p-5">
+    <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
 
       <div className="flex justify-between items-start mb-4">
 
@@ -36,7 +36,7 @@ export default function AlertCard({
             ⚠ {room}
           </h3>
 
-          <p className="text-slate-500 mt-1">
+          <p className="text-slate-300 mt-1">
             {type}
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function AlertCard({
 
       {score !== undefined && (
         <div className="mt-2">
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-300 text-sm">
             ML Score
           </p>
 

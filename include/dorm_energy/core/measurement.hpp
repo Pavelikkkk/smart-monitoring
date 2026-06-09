@@ -13,35 +13,22 @@ namespace dorm_energy::core
      *
      * Это основная единица данных всего проекта.
      */
+
+    using TimePoint = std::chrono::system_clock::time_point;
+
     struct SensorReading
     {
-        using TimePoint = std::chrono::system_clock::time_point;
+        TimePoint timestamp;
 
-        TimePoint timestamp{};    ///< Время измерения
-        std::string deviceId{};   ///< Идентификатор устройства/датчика
-        std::string sensorType{}; ///< "power", "motion", "light", "temperature" и т.д.
+        std::string deviceId;
 
-        double value{0.0};               ///< Используется для числовых датчиков (power, temp, lux)
-        std::optional<bool> boolValue{}; ///< Используется для булевых датчиков (motion)
+        std::string sensorType;
 
-        std::string unit{}; ///< "kW", "bool", "lux", "°C" и т.д.
+        double value;
 
-        SensorReading() = default;
+        std::optional<bool> boolValue;
 
-        SensorReading(TimePoint ts,
-                      std::string device,
-                      std::string type,
-                      double val = 0.0,
-                      std::optional<bool> bval = std::nullopt,
-                      std::string u = "")
-            : timestamp{ts},
-              deviceId{std::move(device)},
-              sensorType{std::move(type)},
-              value{val},
-              boolValue{bval},
-              unit{std::move(u)}
-        {
-        }
+        std::string unit;
     };
 
     /**

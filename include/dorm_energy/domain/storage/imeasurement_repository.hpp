@@ -12,6 +12,10 @@
 #include "dorm_energy/domain/storage/anomaly_stats_dto.hpp"
 #include "dorm_energy/domain/storage/energy_by_room_dto.hpp"
 #include "dorm_energy/domain/storage/severity_stats_dto.hpp"
+#include "dorm_energy/domain/storage/user_dto.hpp"
+
+#include <json/json.h>
+#include <optional>
 
 namespace dorm_energy::storage
 {
@@ -36,33 +40,92 @@ namespace dorm_energy::storage
 
         virtual std::vector<AnomalyDto>
         getLatestAnomalies(
-            std::size_t limit = 20) = 0;
+            std::size_t limit = 20,
+            int organizationId = 0) = 0;
 
         virtual std::vector<PowerPointDto>
         getPowerHistory(
-            int hours = 24) = 0;
+            int hours = 24,
+            int organizationId = 0) = 0;
 
         virtual std::vector<DeviceDto>
-        getDevices() = 0;
+        getDevices(
+            int organizationId = 0) = 0;
         
         virtual std::vector<BuildingDto>
-        getBuildings() = 0;
+        getBuildings(
+            int organizationId = 0) = 0;
 
         virtual std::vector<RoomDto>
-        getRooms() = 0;
+        getRooms(
+            int organizationId = 0) = 0;
 
         virtual std::vector<TopConsumerDto>
         getTopConsumers(
-            int limit = 10) = 0;
+            int limit = 10,
+            int organizationId = 0) = 0;
 
         virtual std::vector<AnomalyStatsDto>
-        getAnomalyStatistics() = 0;
+        getAnomalyStatistics(
+            int organizationId = 0) = 0;
 
         virtual std::vector<EnergyByRoomDto>
-        getEnergyByRoom() = 0;
+        getEnergyByRoom(
+            int organizationId = 0) = 0;
 
         virtual std::vector<SeverityStatsDto>
-        getSeverityDistribution() = 0;
+        getSeverityDistribution(
+            int organizationId = 0) = 0;
+
+        virtual std::optional<UserDto>
+        findUserByEmail(
+            const std::string &email) = 0;
+
+        virtual std::optional<UserDto>
+        findUserById(
+            int userId) = 0;
+
+        virtual int
+        createUser(
+            const UserDto &user) = 0;
+
+        virtual std::optional<UserDto>
+        getUserById(
+            int userId) = 0;
+
+        virtual bool
+        updateUserTelegramChatId(
+            int userId,
+            const std::string &telegramChatId) = 0;
+
+        virtual Json::Value
+        getUserSubscription(
+            int userId) = 0;
+
+        virtual Json::Value
+        getAdminOverview() = 0;
+
+        virtual int
+        createBuildingForOrganization(
+            int organizationId,
+            const std::string &name,
+            const std::string &address,
+            const std::string &description) = 0;
+
+        virtual int
+        createRoomForBuilding(
+            int buildingId,
+            const std::string &roomName,
+            const std::string &roomType,
+            int floorNumber) = 0;
+
+        virtual bool
+        createDeviceForRoom(
+            const std::string &deviceId,
+            const std::string &deviceName,
+            const std::string &deviceModel,
+            const std::string &firmwareVersion,
+            int roomId) = 0;
         // virtual void shutdown() = 0;
     };
 } // namespace dorm_energy::storage

@@ -57,14 +57,53 @@ namespace dorm_energy::web
                 ccb();
             });
 
+        auto statusForError =
+            [](const std::string &error)
+            {
+                if (error == "Missing token" ||
+                    error == "User not found" ||
+                    error.find("token") != std::string::npos ||
+                    error.find("Invalid input") != std::string::npos ||
+                    error.find("signature") != std::string::npos ||
+                    error.find("issuer") != std::string::npos)
+                {
+                    return drogon::k401Unauthorized;
+                }
+
+                if (error == "Admin role is required")
+                {
+                    return drogon::k403Forbidden;
+                }
+
+                return drogon::k400BadRequest;
+            };
+
+        auto makeJsonResponse =
+            [](const Json::Value &json,
+               drogon::HttpStatusCode status = drogon::k200OK)
+            {
+                auto response =
+                    drogon::HttpResponse::newHttpJsonResponse(json);
+
+                response->setStatusCode(status);
+
+                response->addHeader(
+                    "Access-Control-Allow-Origin",
+                    "*");
+
+                return response;
+            };
+
         drogon::app().registerHandler(
             "/api/auth/me",
-            [this](
+            [this, statusForError, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value json;
+                auto status =
+                    drogon::k200OK;
 
                 try
                 {
@@ -130,18 +169,16 @@ namespace dorm_energy::web
 
                     json["error"] =
                         ex.what();
+
+                    status =
+                        statusForError(
+                            ex.what());
                 }
 
-                auto response =
-                    drogon::HttpResponse::
-                        newHttpJsonResponse(
-                            json);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                callback(
+                    makeJsonResponse(
+                        json,
+                        status));
             },
             {drogon::Get});
 
@@ -389,10 +426,12 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/stats",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value json;
+                auto status =
+                    drogon::k200OK;
 
                 try
                 {
@@ -431,16 +470,15 @@ namespace dorm_energy::web
                 {
                     json["success"] = false;
                     json["error"] = ex.what();
+                    status =
+                        statusForError(
+                            ex.what());
                 }
 
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(json);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                callback(
+                    makeJsonResponse(
+                        json,
+                        status));
             });
 
         // ============================================
@@ -475,53 +513,61 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/anomalies/latest",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value anomalies(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto latest =
-                    repository_->getLatestAnomalies(
-                        20,
-                        user.organizationId);
-
-                for (const auto &a : latest)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["room"] =
-                        a.room;
+                    auto latest =
+                        repository_->getLatestAnomalies(
+                            20,
+                            user.organizationId);
 
-                    item["type"] =
-                        a.type;
+                    for (const auto &a : latest)
+                    {
+                        Json::Value item;
 
-                    item["severity"] =
-                        a.severity;
+                        item["room"] =
+                            a.room;
 
-                    item["score"] =
-                        a.score;
+                        item["type"] =
+                            a.type;
 
-                    item["description"] =
-                        a.description;
+                        item["severity"] =
+                            a.severity;
 
-                    item["detectedAt"] =
-                        a.detectedAt;
+                        item["score"] =
+                            a.score;
 
-                    anomalies.append(item);
+                        item["description"] =
+                            a.description;
+
+                        item["detectedAt"] =
+                            a.detectedAt;
+
+                        anomalies.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            anomalies));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        anomalies);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
 
         // ============================================
@@ -530,49 +576,57 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/rooms",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value rooms(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto list =
-                    repository_->getRooms(
-                        user.organizationId);
-
-                for (const auto &r : list)
+                try
                 {
-                    Json::Value room;
+                    auto user =
+                        requireUser(req);
 
-                    room["id"] =
-                        r.id;
+                    auto list =
+                        repository_->getRooms(
+                            user.organizationId);
 
-                    room["buildingId"] =
-                        r.buildingId;
+                    for (const auto &r : list)
+                    {
+                        Json::Value room;
 
-                    room["roomName"] =
-                        r.roomName;
+                        room["id"] =
+                            r.id;
 
-                    room["roomType"] =
-                        r.roomType;
+                        room["buildingId"] =
+                            r.buildingId;
 
-                    room["floorNumber"] =
-                        r.floorNumber;
+                        room["roomName"] =
+                            r.roomName;
 
-                    rooms.append(room);
+                        room["roomType"] =
+                            r.roomType;
+
+                        room["floorNumber"] =
+                            r.floorNumber;
+
+                        rooms.append(room);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            rooms));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        rooms);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
 
         // ============================================
@@ -581,140 +635,164 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/devices",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value devices(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto list =
-                    repository_->getDevices(
-                        user.organizationId);
-
-                for (const auto &d : list)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["deviceId"] =
-                        d.deviceId;
+                    auto list =
+                        repository_->getDevices(
+                            user.organizationId);
 
-                    item["deviceName"] =
-                        d.deviceName;
+                    for (const auto &d : list)
+                    {
+                        Json::Value item;
 
-                    item["deviceModel"] =
-                        d.deviceModel;
+                        item["deviceId"] =
+                            d.deviceId;
 
-                    item["firmwareVersion"] =
-                        d.firmwareVersion;
+                        item["deviceName"] =
+                            d.deviceName;
 
-                    item["roomName"] =
-                        d.roomName;
+                        item["deviceModel"] =
+                            d.deviceModel;
 
-                    item["roomId"] =
-                        d.roomId;
+                        item["firmwareVersion"] =
+                            d.firmwareVersion;
 
-                    item["buildingId"] =
-                        d.buildingId;
+                        item["roomName"] =
+                            d.roomName;
 
-                    item["organizationId"] =
-                        d.organizationId;
+                        item["roomId"] =
+                            d.roomId;
 
-                    item["isOnline"] =
-                        d.isOnline;
+                        item["buildingId"] =
+                            d.buildingId;
 
-                    item["lastSeenAt"] =
-                        d.lastSeenAt;
+                        item["organizationId"] =
+                            d.organizationId;
 
-                    devices.append(item);
+                        item["isOnline"] =
+                            d.isOnline;
+
+                        item["lastSeenAt"] =
+                            d.lastSeenAt;
+
+                        devices.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            devices));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        devices);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
         drogon::app().registerHandler(
             "/api/analytics/top-consumers",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value result(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto consumers =
-                    repository_->getTopConsumers(
-                        10,
-                        user.organizationId);
-
-                for (const auto &c : consumers)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["roomName"] =
-                        c.roomName;
+                    auto consumers =
+                        repository_->getTopConsumers(
+                            10,
+                            user.organizationId);
 
-                    item["power"] =
-                        c.power;
+                    for (const auto &c : consumers)
+                    {
+                        Json::Value item;
 
-                    result.append(item);
+                        item["roomName"] =
+                            c.roomName;
+
+                        item["power"] =
+                            c.power;
+
+                        result.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            result));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        result);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
 
         drogon::app().registerHandler(
             "/api/analytics/anomalies-by-type",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value result(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto stats =
-                    repository_->getAnomalyStatistics(
-                        user.organizationId);
-
-                for (const auto &s : stats)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["type"] =
-                        s.type;
+                    auto stats =
+                        repository_->getAnomalyStatistics(
+                            user.organizationId);
 
-                    item["count"] =
-                        s.count;
+                    for (const auto &s : stats)
+                    {
+                        Json::Value item;
 
-                    result.append(item);
+                        item["type"] =
+                            s.type;
+
+                        item["count"] =
+                            s.count;
+
+                        result.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            result));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        result);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
 
         // ============================================
@@ -723,50 +801,58 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/buildings",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value buildings(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto list =
-                    repository_->getBuildings(
-                        user.organizationId);
-
-                for (const auto &b : list)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["id"] =
-                        b.id;
+                    auto list =
+                        repository_->getBuildings(
+                            user.organizationId);
 
-                    item["name"] =
-                        b.name;
+                    for (const auto &b : list)
+                    {
+                        Json::Value item;
 
-                    item["address"] =
-                        b.address;
+                        item["id"] =
+                            b.id;
 
-                    item["description"] =
-                        b.description;
+                        item["name"] =
+                            b.name;
 
-                    buildings.append(item);
+                        item["address"] =
+                            b.address;
+
+                        item["description"] =
+                            b.description;
+
+                        buildings.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            buildings));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        buildings);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
         drogon::app().registerHandler(
             "/api/analytics/energy-by-room",
-            [this, requireUser](
+            [this, requireUser, statusForError, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
@@ -774,39 +860,47 @@ namespace dorm_energy::web
                 Json::Value data(
                     Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto rooms =
-                    repository_->getEnergyByRoom(
-                        user.organizationId);
-
-                for (const auto &room : rooms)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["roomName"] =
-                        room.roomName;
+                    auto rooms =
+                        repository_->getEnergyByRoom(
+                            user.organizationId);
 
-                    item["power"] =
-                        room.avgPower;
+                    for (const auto &room : rooms)
+                    {
+                        Json::Value item;
 
-                    data.append(item);
+                        item["roomName"] =
+                            room.roomName;
+
+                        item["power"] =
+                            room.avgPower;
+
+                        data.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            data));
                 }
-
-                auto response =
-                    drogon::HttpResponse::
-                        newHttpJsonResponse(data);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
         drogon::app().registerHandler(
             "/api/analytics/severity-distribution",
-            [this, requireUser](
+            [this, requireUser, statusForError, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
@@ -814,35 +908,43 @@ namespace dorm_energy::web
                 Json::Value data(
                     Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto stats =
-                    repository_->getSeverityDistribution(
-                        user.organizationId);
-
-                for (const auto &s : stats)
+                try
                 {
-                    Json::Value item;
+                    auto user =
+                        requireUser(req);
 
-                    item["severity"] =
-                        s.severity;
+                    auto stats =
+                        repository_->getSeverityDistribution(
+                            user.organizationId);
 
-                    item["count"] =
-                        s.count;
+                    for (const auto &s : stats)
+                    {
+                        Json::Value item;
 
-                    data.append(item);
+                        item["severity"] =
+                            s.severity;
+
+                        item["count"] =
+                            s.count;
+
+                        data.append(item);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            data));
                 }
-
-                auto response =
-                    drogon::HttpResponse::
-                        newHttpJsonResponse(data);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
 
         // ============================================
@@ -851,41 +953,49 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/power/history",
-            [this, requireUser](const drogon::HttpRequestPtr &req,
+            [this, requireUser, statusForError, makeJsonResponse](const drogon::HttpRequestPtr &req,
                    std::function<void(const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value history(Json::arrayValue);
 
-                auto user =
-                    requireUser(req);
-
-                auto points =
-                    repository_->getPowerHistory(
-                        24,
-                        user.organizationId);
-
-                for (const auto &p : points)
+                try
                 {
-                    Json::Value point;
+                    auto user =
+                        requireUser(req);
 
-                    point["time"] =
-                        p.time;
+                    auto points =
+                        repository_->getPowerHistory(
+                            24,
+                            user.organizationId);
 
-                    point["power"] =
-                        p.power;
+                    for (const auto &p : points)
+                    {
+                        Json::Value point;
 
-                    history.append(point);
+                        point["time"] =
+                            p.time;
+
+                        point["power"] =
+                            p.power;
+
+                        history.append(point);
+                    }
+
+                    callback(
+                        makeJsonResponse(
+                            history));
                 }
-
-                auto response =
-                    drogon::HttpResponse::newHttpJsonResponse(
-                        history);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                catch (const std::exception &ex)
+                {
+                    Json::Value json;
+                    json["success"] = false;
+                    json["error"] = ex.what();
+                    callback(
+                        makeJsonResponse(
+                            json,
+                            statusForError(
+                                ex.what())));
+                }
             });
 
         drogon::app().registerHandler(
@@ -947,12 +1057,14 @@ namespace dorm_energy::web
 
         drogon::app().registerHandler(
             "/api/auth/login",
-            [this](
+            [this, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value responseJson;
+                auto status =
+                    drogon::k200OK;
 
                 try
                 {
@@ -983,29 +1095,28 @@ namespace dorm_energy::web
 
                     responseJson["error"] =
                         ex.what();
+
+                    status =
+                        drogon::k401Unauthorized;
                 }
 
-                auto response =
-                    drogon::HttpResponse::
-                        newHttpJsonResponse(
-                            responseJson);
-
-                response->addHeader(
-                    "Access-Control-Allow-Origin",
-                    "*");
-
-                callback(response);
+                callback(
+                    makeJsonResponse(
+                        responseJson,
+                        status));
             },
             {drogon::Post});
 
         drogon::app().registerHandler(
             "/api/account",
-            [this](
+            [this, statusForError, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value json;
+                auto status =
+                    drogon::k200OK;
 
                 try
                 {
@@ -1048,32 +1159,28 @@ namespace dorm_energy::web
                 {
                     json["success"] = false;
                     json["error"] = ex.what();
+                    status =
+                        statusForError(
+                            ex.what());
                 }
 
                 callback(
-                    [&json]()
-                    {
-                        auto response =
-                            drogon::HttpResponse::
-                                newHttpJsonResponse(json);
-
-                        response->addHeader(
-                            "Access-Control-Allow-Origin",
-                            "*");
-
-                        return response;
-                    }());
+                    makeJsonResponse(
+                        json,
+                        status));
             },
             {drogon::Get});
 
         drogon::app().registerHandler(
             "/api/account/telegram-chat-id",
-            [this](
+            [this, statusForError, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value json;
+                auto status =
+                    drogon::k200OK;
 
                 try
                 {
@@ -1114,32 +1221,28 @@ namespace dorm_energy::web
                 {
                     json["success"] = false;
                     json["error"] = ex.what();
+                    status =
+                        statusForError(
+                            ex.what());
                 }
 
                 callback(
-                    [&json]()
-                    {
-                        auto response =
-                            drogon::HttpResponse::
-                                newHttpJsonResponse(json);
-
-                        response->addHeader(
-                            "Access-Control-Allow-Origin",
-                            "*");
-
-                        return response;
-                    }());
+                    makeJsonResponse(
+                        json,
+                        status));
             },
             {drogon::Put});
 
         drogon::app().registerHandler(
             "/api/subscription",
-            [this](
+            [this, statusForError, makeJsonResponse](
                 const drogon::HttpRequestPtr &req,
                 std::function<void(
                     const drogon::HttpResponsePtr &)> &&callback)
             {
                 Json::Value json;
+                auto status =
+                    drogon::k200OK;
 
                 try
                 {
@@ -1165,21 +1268,15 @@ namespace dorm_energy::web
                 {
                     json["success"] = false;
                     json["error"] = ex.what();
+                    status =
+                        statusForError(
+                            ex.what());
                 }
 
                 callback(
-                    [&json]()
-                    {
-                        auto response =
-                            drogon::HttpResponse::
-                                newHttpJsonResponse(json);
-
-                        response->addHeader(
-                            "Access-Control-Allow-Origin",
-                            "*");
-
-                        return response;
-                    }());
+                    makeJsonResponse(
+                        json,
+                        status));
             },
             {drogon::Get});
 

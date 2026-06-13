@@ -29,8 +29,8 @@ namespace dorm_energy::simulation
     {
         rng_.seed(seed);
     }
-    SyntheticDataGenerator::RoomState
-    SyntheticDataGenerator::generateRoomState(
+
+    SyntheticDataGenerator::RoomState SyntheticDataGenerator::generateRoomState(
         const std::string &deviceId,
         std::chrono::system_clock::time_point timestamp) const
     {
@@ -51,8 +51,7 @@ namespace dorm_energy::simulation
         else
             motionProbability = 0.65;
 
-        std::bernoulli_distribution motionDist(
-            motionProbability);
+        std::bernoulli_distribution motionDist(motionProbability);
 
         bool motion = motionDist(rng_);
 
@@ -61,27 +60,15 @@ namespace dorm_energy::simulation
 
         if (motion)
         {
-            power =
-                std::uniform_real_distribution<double>(
-                    2.5,
-                    6.5)(rng_);
+            power = std::uniform_real_distribution<double>(2.5, 6.5)(rng_);
 
-            light =
-                std::uniform_real_distribution<double>(
-                    300.0,
-                    800.0)(rng_);
+            light = std::uniform_real_distribution<double>(300.0, 800.0)(rng_);
         }
         else
         {
-            power =
-                std::uniform_real_distribution<double>(
-                    0.1,
-                    0.8)(rng_);
+            power = std::uniform_real_distribution<double>(0.1, 0.8)(rng_);
 
-            light =
-                std::uniform_real_distribution<double>(
-                    0.0,
-                    30.0)(rng_);
+            light = std::uniform_real_distribution<double>(0.0, 30.0)(rng_);
         }
 
         if (isNight)
@@ -104,41 +91,27 @@ namespace dorm_energy::simulation
             power *= 1.2;
         }
 
-        if (inject_anomalies_ &&
-            std::uniform_real_distribution<double>(
-                0.0,
-                1.0)(rng_) < anomaly_rate_)
+        if (inject_anomalies_ && std::uniform_real_distribution<double>(0.0, 1.0)(rng_) < anomaly_rate_)
         {
-            int anomalyType =
-                std::uniform_int_distribution<int>(
-                    0,
-                    2)(rng_);
+            int anomalyType = std::uniform_int_distribution<int>(0, 2)(rng_);
 
             switch (anomalyType)
             {
             case 0:
                 motion = false;
-                power = std::uniform_real_distribution<double>(
-                    5.0,
-                    10.0)(rng_);
+                power = std::uniform_real_distribution<double>(5.0, 10.0)(rng_);
                 break;
 
             case 1:
                 motion = false;
-                light = std::uniform_real_distribution<double>(
-                    500.0,
-                    900.0)(rng_);
+                light = std::uniform_real_distribution<double>(500.0, 900.0)(rng_);
                 break;
 
             case 2:
                 motion = false;
-                power = std::uniform_real_distribution<double>(
-                    5.0,
-                    10.0)(rng_);
+                power = std::uniform_real_distribution<double>(5.0, 10.0)(rng_);
 
-                light = std::uniform_real_distribution<double>(
-                    500.0,
-                    900.0)(rng_);
+                light = std::uniform_real_distribution<double>(500.0, 900.0)(rng_);
                 break;
             }
         }
@@ -156,8 +129,7 @@ namespace dorm_energy::simulation
         return generate_for_days(1);
     }
 
-    core::ReadingsBatch
-    SyntheticDataGenerator::generate_for_days(
+    core::ReadingsBatch SyntheticDataGenerator::generate_for_days(
         int days) const
     {
         if (days <= 0)
@@ -176,11 +148,9 @@ namespace dorm_energy::simulation
             return batch;
         }
 
-        auto now =
-            std::chrono::system_clock::now();
+        auto now = std::chrono::system_clock::now();
 
-        auto start =
-            now - std::chrono::hours(24 * days);
+        auto start = now - std::chrono::hours(24 * days);
 
         for (int day = 0; day < days; ++day)
         {
@@ -190,34 +160,21 @@ namespace dorm_energy::simulation
                 {
                     for (int sample = 0; sample < 6; ++sample)
                     {
-                        auto timestamp =
-                            start +
-                            std::chrono::hours(day * 24 + hour) +
-                            std::chrono::minutes(sample * 10);
+                        auto timestamp = start +
+                                         std::chrono::hours(day * 24 + hour) +
+                                         std::chrono::minutes(sample * 10);
 
-                        auto state =
-                            generateRoomState(
-                                device.deviceId,
-                                timestamp);
+                        auto state = generateRoomState(device.deviceId, timestamp);
 
                         // Motion
 
                         core::SensorReading motion;
 
-                        motion.timestamp =
-                            timestamp;
-
-                        motion.deviceId =
-                            device.deviceId;
-
-                        motion.sensorType =
-                            "motion";
-
-                        motion.boolValue =
-                            state.motion;
-
-                        motion.unit =
-                            "bool";
+                        motion.timestamp = timestamp;
+                        motion.deviceId = device.deviceId;
+                        motion.sensorType = "motion";
+                        motion.boolValue = state.motion;
+                        motion.unit = "bool";
 
                         batch.push_back(
                             motion);
@@ -226,20 +183,11 @@ namespace dorm_energy::simulation
 
                         core::SensorReading power;
 
-                        power.timestamp =
-                            timestamp;
-
-                        power.deviceId =
-                            device.deviceId;
-
-                        power.sensorType =
-                            "power";
-
-                        power.value =
-                            state.power;
-
-                        power.unit =
-                            "kW";
+                        power.timestamp = timestamp;
+                        power.deviceId = device.deviceId;
+                        power.sensorType = "power";
+                        power.value = state.power;
+                        power.unit = "kW";
 
                         batch.push_back(
                             power);
@@ -248,20 +196,11 @@ namespace dorm_energy::simulation
 
                         core::SensorReading light;
 
-                        light.timestamp =
-                            timestamp;
-
-                        light.deviceId =
-                            device.deviceId;
-
-                        light.sensorType =
-                            "light";
-
-                        light.value =
-                            state.light;
-
-                        light.unit =
-                            "lux";
+                        light.timestamp = timestamp;
+                        light.deviceId = device.deviceId;
+                        light.sensorType = "light";
+                        light.value = state.light;
+                        light.unit = "lux";
 
                         batch.push_back(
                             light);
@@ -270,21 +209,14 @@ namespace dorm_energy::simulation
             }
         }
 
-        std::cout
-            << "[Generator] Generated "
-            << batch.size()
-            << " readings for "
-            << devices.size()
-            << " devices\n";
+        std::cout << "[Generator] Generated " << batch.size() << " readings for " << devices.size() << " devices\n";
 
         return batch;
     }
 
-    int SyntheticDataGenerator::extract_hour(
-        std::chrono::system_clock::time_point tp) const
+    int SyntheticDataGenerator::extract_hour(std::chrono::system_clock::time_point tp) const
     {
         auto tt = std::chrono::system_clock::to_time_t(tp);
-
         std::tm localTime{};
 
 #ifdef _WIN32

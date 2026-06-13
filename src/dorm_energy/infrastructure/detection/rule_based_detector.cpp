@@ -1,5 +1,3 @@
-// src/dorm_energy/infrastructure/detection/rule_based_detector.cpp
-
 #include "dorm_energy/infrastructure/detection/rule_based_detector.hpp"
 #include "dorm_energy/core/detection_context.hpp"
 
@@ -8,8 +6,7 @@
 namespace dorm_energy::detection
 {
 
-    RuleBasedDetector::RuleBasedDetector(double maxPowerKw)
-        : maxPowerKw_(maxPowerKw)
+    RuleBasedDetector::RuleBasedDetector(double maxPowerKw) : maxPowerKw_(maxPowerKw)
     {
         if (maxPowerKw_ <= 0.0)
             maxPowerKw_ = 25.0;
@@ -35,14 +32,11 @@ namespace dorm_energy::detection
         {
             info.isAnomaly = true;
 
-            info.anomalyType =
-                "rule_high_power";
+            info.anomalyType = "rule_high_power";
 
-            info.description =
-                "Power consumption exceeds threshold";
+            info.description = "Power consumption exceeds threshold";
 
-            info.severity =
-                core::AlertSeverity::Warning;
+            info.severity = core::AlertSeverity::Warning;
 
             return info;
         }
@@ -50,19 +44,15 @@ namespace dorm_energy::detection
         //
         // 2. Свет включён без движения
         //
-        if (!state.motion &&
-            state.light > 500)
+        if (!state.motion && state.light > 500)
         {
             info.isAnomaly = true;
 
-            info.anomalyType =
-                "rule_light_without_motion";
+            info.anomalyType = "rule_light_without_motion";
 
-            info.description =
-                "Light is on but no motion detected";
+            info.description = "Light is on but no motion detected";
 
-            info.severity =
-                core::AlertSeverity::Info;
+            info.severity = core::AlertSeverity::Info;
 
             return info;
         }
@@ -71,21 +61,15 @@ namespace dorm_energy::detection
         // 3. Нет движения 30 минут
         //    но есть высокое потребление
         //
-        if (context.history &&
-            noMotionFor30Minutes(
-                *context.history) &&
-            state.power > 5.0)
+        if (context.history && noMotionFor30Minutes(*context.history) && state.power > 5.0)
         {
             info.isAnomaly = true;
 
-            info.anomalyType =
-                "rule_power_without_motion_30m";
+            info.anomalyType = "rule_power_without_motion_30m";
 
-            info.description =
-                "Power consumption without motion for 30 minutes";
+            info.description = "Power consumption without motion for 30 minutes";
 
-            info.severity =
-                core::AlertSeverity::Warning;
+            info.severity = core::AlertSeverity::Warning;
 
             return info;
         }
@@ -99,9 +83,7 @@ namespace dorm_energy::detection
         if (history.size() < 2)
             return false;
 
-        auto duration =
-            history.back().timestamp -
-            history.front().timestamp;
+        auto duration = history.back().timestamp - history.front().timestamp;
 
         if (duration < std::chrono::minutes(30))
         {

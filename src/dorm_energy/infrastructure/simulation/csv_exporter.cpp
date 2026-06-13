@@ -11,8 +11,7 @@ namespace dorm_energy::simulation
         const core::ReadingsBatch &readings,
         const std::filesystem::path &filePath)
     {
-        std::filesystem::create_directories(
-            filePath.parent_path());
+        std::filesystem::create_directories(filePath.parent_path());
 
         std::ofstream file(filePath);
 
@@ -30,9 +29,7 @@ namespace dorm_energy::simulation
                 value = reading.boolValue.value_or(false);
             }
 
-            auto tt =
-                std::chrono::system_clock::to_time_t(
-                    reading.timestamp);
+            auto tt = std::chrono::system_clock::to_time_t(reading.timestamp);
 
             std::tm tm{};
 
@@ -42,15 +39,7 @@ namespace dorm_energy::simulation
             localtime_r(&tt, &tm);
 #endif
 
-            file
-                << std::put_time(&tm, "%Y-%m-%d %H:%M:%S")
-                << ","
-                << reading.deviceId
-                << ","
-                << reading.sensorType
-                << ","
-                << value
-                << "\n";
+            file << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "," << reading.deviceId << "," << reading.sensorType << "," << value << "\n";
         }
 
         return true;

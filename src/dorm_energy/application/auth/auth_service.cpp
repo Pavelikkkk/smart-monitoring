@@ -20,89 +20,61 @@ int AuthService::registerUser(
 {
     if (username.size() < 3)
     {
-        throw std::runtime_error(
-            "Username must be at least 3 characters");
+        throw std::runtime_error("Username must be at least 3 characters");
     }
 
-    if (email.empty() ||
-        email.find('@') == std::string::npos)
+    if (email.empty() || email.find('@') == std::string::npos)
     {
-        throw std::runtime_error(
-            "Invalid email");
+        throw std::runtime_error("Invalid email");
     }
 
     if (password.size() < 8)
     {
-        throw std::runtime_error(
-            "Password must be at least 8 characters");
+        throw std::runtime_error("Password must be at least 8 characters");
     }
 
-    auto existing =
-        repository_->findUserByEmail(
-            email);
+    auto existing = repository_->findUserByEmail(email);
 
     if (existing.has_value())
     {
-        throw std::runtime_error(
-            "User already exists");
+        throw std::runtime_error("User already exists");
     }
 
     UserDto user;
 
     user.username = username;
     user.email = email;
-
-    user.passwordHash =
-        passwordHasher_->hash(password);
-
+    user.passwordHash = passwordHasher_->hash(password);
     user.role = "USER";
-
     user.organizationId = 0;
-
-    user.accountType =
-        accountType == "BUSINESS"
-            ? "BUSINESS"
-            : "PERSONAL";
+    user.accountType = accountType == "BUSINESS" ? "BUSINESS" : "PERSONAL";
 
     return repository_->createUser(user);
 }
 
-std::string
-AuthService::loginUser(
+std::string AuthService::loginUser(
     const std::string &email,
     const std::string &password)
 {
-    auto user =
-        repository_->findUserByEmail(
-            email);
+    auto user = repository_->findUserByEmail(email);
 
     if (!user.has_value())
     {
-        throw std::runtime_error(
-            "Invalid credentials");
+        throw std::runtime_error("Invalid credentials");
     }
 
-    const bool valid =
-        passwordHasher_->verify(
-            password,
-            user->passwordHash);
+    const bool valid = passwordHasher_->verify(password, user->passwordHash);
 
     if (!valid)
     {
-        throw std::runtime_error(
-            "Invalid credentials");
+        throw std::runtime_error("Invalid credentials");
     }
 
-    return jwtService_->generateToken(
-        user->id,
-        user->email,
-        user->role);
+    return jwtService_->generateToken(user->id, user->email, user->role);
 }
 
-UserClaims
-    AuthService::validateToken(
-        const std::string &token)
-    {
-        return jwtService_->validateToken(
-            token);
-    }
+UserClaims AuthService::validateToken(
+    const std::string &token)
+{
+    return jwtService_->validateToken(token);
+}

@@ -27,11 +27,9 @@
 
   /* Shadows */
 
-  --shadow-card:
-    0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
 
-  --shadow-hover:
-    0 8px 20px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* Global */
@@ -40,10 +38,7 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
 
-  font-family:
-    Inter,
-    system-ui,
-    sans-serif;
+  font-family: Inter, system-ui, sans-serif;
 }
 
 /* Generic Card */
@@ -51,8 +46,7 @@ body {
 .app-card {
   background: var(--bg-card);
 
-  border: 1px solid
-    var(--border-color);
+  border: 1px solid var(--border-color);
 
   border-radius: 16px;
 
@@ -74,8 +68,7 @@ body {
 }
 
 .bg-accent-soft {
-  background:
-    rgba(244, 162, 97, 0.12);
+  background: rgba(244, 162, 97, 0.12);
 }
 
 /* Status */

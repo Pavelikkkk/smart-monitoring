@@ -1,4 +1,3 @@
-// src/dorm_energy/core/alert_severity.cpp
 #include "dorm_energy/core/alert_severity.hpp"
 #include <string>
 

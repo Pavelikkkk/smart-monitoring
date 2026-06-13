@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "homepage": "https://pavelikkkk.github.io/dorm-energy-monitoring",
-
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -12,14 +11,12 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"
   },
-
   "dependencies": {
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.17.0",
     "recharts": "^3.8.1"
   },
-
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.0",

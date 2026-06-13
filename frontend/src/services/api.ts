@@ -1,6 +1,7 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ?? "http://localhost:8080/api";
-  import.meta.env.API_UEL ?? "https://aquarium-thinks-thursday-criterion.trycloudflare.com"
+import.meta.env.API_UEL ??
+  "https://aquarium-thinks-thursday-criterion.trycloudflare.com";
 const TOKEN_KEY = "dorm_energy_token";
 
 type ApiResult<T> = T & {
@@ -123,12 +124,8 @@ export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-async function request<T>(
-  path: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const headers =
-    new Headers(options.headers);
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const headers = new Headers(options.headers);
 
   headers.set("Content-Type", "application/json");
 
@@ -138,14 +135,12 @@ async function request<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response =
-    await fetch(`${API_BASE_URL}${path}`, {
-      ...options,
-      headers,
-    });
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers,
+  });
 
-  const data =
-    (await response.json()) as ApiResult<T>;
+  const data = (await response.json()) as ApiResult<T>;
 
   if (!response.ok || data.success === false) {
     throw new Error(data.error ?? "Request failed");
@@ -166,15 +161,11 @@ export async function registerUser(input: {
   });
 }
 
-export async function loginUser(input: {
-  email: string;
-  password: string;
-}) {
-  const response =
-    await request<{ token: string }>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(input),
-    });
+export async function loginUser(input: { email: string; password: string }) {
+  const response = await request<{ token: string }>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 
   setToken(response.token);
 
@@ -189,16 +180,11 @@ export async function getSubscription() {
   return request<Subscription>("/subscription");
 }
 
-export async function updateTelegramChatId(
-  telegramChatId: string
-) {
-  return request<{ success: boolean }>(
-    "/account/telegram-chat-id",
-    {
-      method: "PUT",
-      body: JSON.stringify({ telegramChatId }),
-    }
-  );
+export async function updateTelegramChatId(telegramChatId: string) {
+  return request<{ success: boolean }>("/account/telegram-chat-id", {
+    method: "PUT",
+    body: JSON.stringify({ telegramChatId }),
+  });
 }
 
 export async function getUserBuildings() {
@@ -206,8 +192,7 @@ export async function getUserBuildings() {
 }
 
 export async function getUserRooms() {
-  const rooms =
-    await request<Array<Partial<Room>>>("/rooms");
+  const rooms = await request<Array<Partial<Room>>>("/rooms");
 
   return rooms.map((room) => ({
     id: Number(room.id ?? room.roomId ?? 0),
@@ -231,13 +216,12 @@ export async function getUserAnomalies() {
 }
 
 export async function getUserStats() {
-  const [buildings, rooms, devices, anomalies] =
-    await Promise.all([
-      getUserBuildings(),
-      getUserRooms(),
-      getUserDevices(),
-      getUserAnomalies(),
-    ]);
+  const [buildings, rooms, devices, anomalies] = await Promise.all([
+    getUserBuildings(),
+    getUserRooms(),
+    getUserDevices(),
+    getUserAnomalies(),
+  ]);
 
   return {
     buildings: buildings.length,
@@ -252,117 +236,75 @@ export const getRooms = getUserRooms;
 export const getDevices = getUserDevices;
 
 export async function getUserBuilding(id: string) {
-  const buildings =
-    await getUserBuildings();
+  const buildings = await getUserBuildings();
 
   return (
-    buildings.find((building) =>
-      String(building.id) === String(id)
-    ) ?? null
+    buildings.find((building) => String(building.id) === String(id)) ?? null
   );
 }
 
-export async function getUserBuildingRooms(
-  buildingId: string
-) {
-  const rooms =
-    await getUserRooms();
+export async function getUserBuildingRooms(buildingId: string) {
+  const rooms = await getUserRooms();
 
-  return rooms.filter((room) =>
-    String(room.buildingId) === String(buildingId)
-  );
+  return rooms.filter((room) => String(room.buildingId) === String(buildingId));
 }
 
-export async function getUserBuildingDevices(
-  buildingId: string
-) {
-  const rooms =
-    await getUserBuildingRooms(buildingId);
+export async function getUserBuildingDevices(buildingId: string) {
+  const rooms = await getUserBuildingRooms(buildingId);
 
-  const roomNames =
-    new Set(rooms.map((room) => room.roomId));
+  const roomNames = new Set(rooms.map((room) => room.roomId));
 
-  const devices =
-    await getUserDevices();
+  const devices = await getUserDevices();
 
-  return devices.filter((device) =>
-    roomNames.has(device.roomId)
-  );
+  return devices.filter((device) => roomNames.has(device.roomId));
 }
 
-export async function getUserBuildingAnomalies(
-  buildingId: string
-) {
-  const rooms =
-    await getUserBuildingRooms(buildingId);
+export async function getUserBuildingAnomalies(buildingId: string) {
+  const rooms = await getUserBuildingRooms(buildingId);
 
-  const roomNames =
-    new Set(rooms.map((room) => room.roomName));
+  const roomNames = new Set(rooms.map((room) => room.roomName));
 
-  const anomalies =
-    await getUserAnomalies();
+  const anomalies = await getUserAnomalies();
 
-  return anomalies.filter((anomaly) =>
-    roomNames.has(anomaly.room)
-  );
+  return anomalies.filter((anomaly) => roomNames.has(anomaly.room));
 }
 
 export async function getUserDevice(id: string) {
-  const devices =
-    await getUserDevices();
+  const devices = await getUserDevices();
 
   return (
-    devices.find((device) =>
-      String(device.deviceId) === String(id)
-    ) ?? null
+    devices.find((device) => String(device.deviceId) === String(id)) ?? null
   );
 }
 
 export async function getUserRoom(id: string) {
-  const rooms =
-    await getUserRooms();
+  const rooms = await getUserRooms();
 
-  return (
-    rooms.find((room) =>
-      String(room.roomId) === String(id)
-    ) ?? null
-  );
+  return rooms.find((room) => String(room.roomId) === String(id)) ?? null;
 }
 
-export async function getUserRoomDevices(
-  roomId: string
-) {
-  const room =
-    await getUserRoom(roomId);
+export async function getUserRoomDevices(roomId: string) {
+  const room = await getUserRoom(roomId);
 
   if (!room) {
     return [];
   }
 
-  const devices =
-    await getUserDevices();
+  const devices = await getUserDevices();
 
-  return devices.filter((device) =>
-    device.roomId === room.roomId
-  );
+  return devices.filter((device) => device.roomId === room.roomId);
 }
 
-export async function getUserRoomAnomalies(
-  roomId: string
-) {
-  const room =
-    await getUserRoom(roomId);
+export async function getUserRoomAnomalies(roomId: string) {
+  const room = await getUserRoom(roomId);
 
   if (!room) {
     return [];
   }
 
-  const anomalies =
-    await getUserAnomalies();
+  const anomalies = await getUserAnomalies();
 
-  return anomalies.filter((anomaly) =>
-    anomaly.room === room.roomName
-  );
+  return anomalies.filter((anomaly) => anomaly.room === room.roomName);
 }
 
 export async function getPowerHistory() {

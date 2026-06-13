@@ -9,62 +9,44 @@ import {
   Tooltip,
 } from "recharts";
 
-import {
-  getEnergyByRoom,
-} from "../services/api";
+import { getEnergyByRoom } from "../services/api";
 
 export default function EnergyByRoomChart() {
-  const [data, setData] =
-    useState<any[]>([]);
+  const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    getEnergyByRoom()
-      .then(setData)
-      .catch(console.error);
+    getEnergyByRoom().then(setData).catch(console.error);
   }, []);
 
   return (
-    <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
-
-      <h2 className="text-2xl font-bold mb-6">
-        Energy By Room
-      </h2>
+    <div className="bg-[#111827]
+          border
+          border-cyan-700/40
+          rounded-2xl
+          p-5">
+      <h2 className="text-2xl
+            font-bold
+            mb-6">Energy By Room</h2>
 
       <div style={{ height: 350 }}>
-
         <ResponsiveContainer>
-
-          <BarChart
-            data={data}
-            layout="vertical"
-          >
-
+          <BarChart data={data} layout="vertical">
             <XAxis type="number" />
 
-            <YAxis
-              type="category"
-              dataKey="roomName"
-            />
+            <YAxis type="category" dataKey="roomName" />
 
             <Tooltip
               contentStyle={{
                 backgroundColor: "#111827",
                 border: "1px solid #164e63",
-                borderRadius: "12px"
+                borderRadius: "12px",
               }}
             />
 
-            <Bar
-              dataKey="power"
-              fill="#60a5fa"
-            />
-
+            <Bar dataKey="power" fill="#60a5fa" />
           </BarChart>
-
         </ResponsiveContainer>
-
       </div>
-
     </div>
   );
 }

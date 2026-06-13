@@ -27,22 +27,24 @@ export default function AlertCard({
   };
 
   return (
-    <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
-
-      <div className="flex justify-between items-start mb-4">
-
+    <div className="bg-[#111827]
+          border
+          border-cyan-700/40
+          rounded-2xl
+          p-5">
+      <div className="flex
+            justify-between
+            items-start
+            mb-4">
         <div>
-          <h3 className="text-xl font-bold">
-            ⚠ {room}
-          </h3>
+          <h3 className="text-xl
+                font-bold">⚠ {room}</h3>
 
-          <p className="text-slate-300 mt-1">
-            {type}
-          </p>
+          <p className="text-slate-300
+                mt-1">{type}</p>
         </div>
 
         <div className="text-right">
-
           <div
             className={`
               ${severityColor[severity]}
@@ -53,13 +55,11 @@ export default function AlertCard({
           </div>
 
           <div
-            className="
-              flex
-              items-center
-              justify-end
-              gap-2
-              mt-2
-            "
+            className="flex
+                  items-center
+                  justify-end
+                  gap-2
+                  mt-2"
           >
             <div
               className={`
@@ -70,28 +70,21 @@ export default function AlertCard({
               `}
             />
 
-            <span className="text-xs text-slate-300">
-              {status}
-            </span>
-
+            <span className="text-xs
+                  text-slate-300">{status}</span>
           </div>
-
         </div>
-
       </div>
 
       {score !== undefined && (
         <div className="mt-2">
-          <p className="text-slate-300 text-sm">
-            ML Score
-          </p>
+          <p className="text-slate-300
+                text-sm">ML Score</p>
 
-          <p className="text-cyan-400 font-bold">
-            {score.toFixed(2)}
-          </p>
+          <p className="text-cyan-400
+                font-bold">{score.toFixed(2)}</p>
         </div>
       )}
-
     </div>
   );
 }

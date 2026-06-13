@@ -1,4 +1,3 @@
-// src/dorm_energy/infrastructure/mqtt/mqtt_client.cpp
 #include "dorm_energy/infrastructure/mqtt/mqtt_client.hpp"
 #include "dorm_energy/infrastructure/mqtt/message_parser.hpp"
 
@@ -63,8 +62,6 @@ namespace dorm_energy::mqtt
         static constexpr int MAX_RECONNECT_ATTEMPTS = 5;
     };
 
-    // ===================== Implementation =====================
-
     MqttClient::Impl::Impl()
     {
         callbackHandler_ = std::make_unique<CallbackHandler>(*this);
@@ -105,7 +102,6 @@ namespace dorm_energy::mqtt
 
             connected_ = true;
             reconnectAttempts_ = 0;
-            std::cout << "[MQTT] Successfully connected!\n";
             return true;
         }
         catch (const ::mqtt::exception &e)
@@ -148,8 +144,7 @@ namespace dorm_energy::mqtt
     {
         std::lock_guard<std::mutex> lock(mutex_);
         currentMode_ = mode;
-        std::cout << "[MqttClient] Mode changed to: "
-                  << (mode == MqttMode::Simulation ? "SIMULATION" : "REAL") << std::endl;
+        std::cout << "[MqttClient] Mode changed to: " << (mode == MqttMode::Simulation ? "SIMULATION" : "REAL") << std::endl;
     }
 
     void MqttClient::Impl::subscribe(const std::string &topic)
@@ -185,7 +180,6 @@ namespace dorm_energy::mqtt
         messageCallback_ = std::move(callback);
     }
 
-    // Callback methods
     void MqttClient::Impl::CallbackHandler::connected(const std::string &cause)
     {
         std::cout << "[MQTT] Connected: " << cause << std::endl;
@@ -201,14 +195,12 @@ namespace dorm_energy::mqtt
         if (parent_.reconnectAttempts_ < Impl::MAX_RECONNECT_ATTEMPTS)
         {
             parent_.reconnectAttempts_++;
-            std::cout << "[MQTT] Scheduling reconnect attempt "
-                      << parent_.reconnectAttempts_ << "/" << Impl::MAX_RECONNECT_ATTEMPTS << std::endl;
+            std::cout << "[MQTT] Scheduling reconnect attempt " << parent_.reconnectAttempts_ << "/" << Impl::MAX_RECONNECT_ATTEMPTS << std::endl;
 
             std::thread([this]()
                         {
             std::this_thread::sleep_for(std::chrono::seconds(3));
-            parent_.connect(parent_.broker_, parent_.clientId_); })
-                .detach();
+            parent_.connect(parent_.broker_, parent_.clientId_); }).detach();
         }
     }
 
@@ -231,8 +223,6 @@ namespace dorm_energy::mqtt
             std::cerr << "[MQTT] Message processing error: " << e.what() << std::endl;
         }
     }
-
-    // ===================== Public Interface =====================
 
     MqttClient::MqttClient() : pimpl_(std::make_unique<Impl>()) {}
     MqttClient::~MqttClient() = default;

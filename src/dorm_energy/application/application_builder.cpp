@@ -1,7 +1,5 @@
-// src/dorm_energy/application/application_builder.cpp
 #include "dorm_energy/application/application_builder.hpp"
 #include "dorm_energy/application/application.hpp"
-
 #include "dorm_energy/infrastructure/logging/spdlog_logger.hpp"
 #include "dorm_energy/infrastructure/simulation/synthetic_data_generator.hpp"
 #include "dorm_energy/infrastructure/detection/rule_based_detector.hpp"
@@ -40,37 +38,24 @@ namespace dorm_energy::application
         return logger;
     }
 
-    std::unique_ptr<simulation::IDataGenerator>
-    ApplicationBuilder::createGenerator()
+    std::unique_ptr<simulation::IDataGenerator> ApplicationBuilder::createGenerator()
     {
-        auto repository =
-            createRepository();
+        auto repository = createRepository();
 
-        return std::make_unique<
-            simulation::SyntheticDataGenerator>(
+        return std::make_unique<simulation::SyntheticDataGenerator>(
             config_.getRandomSeed(),
             config_.getInjectAnomalies(),
             config_.getAnomalyRate(),
             repository);
     }
 
-    std::shared_ptr<AuthService>
-    ApplicationBuilder::createAuthService()
+    std::shared_ptr<AuthService> ApplicationBuilder::createAuthService()
     {
-        auto repository =
-            createRepository();
+        auto repository = createRepository();
+        auto passwordHasher = std::make_shared<OpenSslPasswordHasher>();
+        auto jwtService = std::make_shared<JwtService>("super-secret-key");
 
-        auto passwordHasher =
-            std::make_shared<
-                OpenSslPasswordHasher>();
-
-        auto jwtService =
-            std::make_shared<
-                JwtService>(
-                "super-secret-key");
-
-        return std::make_shared<
-            AuthService>(
+        return std::make_shared<AuthService>(
             repository,
             passwordHasher,
             jwtService);
@@ -78,15 +63,8 @@ namespace dorm_energy::application
 
     std::unique_ptr<detection::IStateDetector> ApplicationBuilder::createDetector()
     {
-        auto ruleDetector =
-            std::make_unique<
-                detection::RuleBasedDetector>(
-                25.0);
-
-        auto mlDetector =
-            std::make_unique<
-                detection::OnnxDetector>(
-                "../../ml/models/anomaly_autoencoder.onnx");
+        auto ruleDetector = std::make_unique<detection::RuleBasedDetector>(25.0);
+        auto mlDetector = std::make_unique<detection::OnnxDetector>("../../ml/models/anomaly_autoencoder.onnx");
 
         return std::make_unique<
             detection::HybridDetector>(
@@ -102,17 +80,8 @@ namespace dorm_energy::application
         try
         {
             std::string connStr = config_.getDbConnectionString();
+            repository_ = std::make_shared<storage::PostgresMeasurementRepository>(connStr, config_.getDbMaxBufferSize());
 
-            std::cout << "[Builder] Connecting to TimescaleDB: "
-                      << config_.getDbHost() << ":" << config_.getDbPort()
-                      << "/" << config_.getDbName() << std::endl;
-
-            repository_ = std::make_shared<storage::PostgresMeasurementRepository>(
-                connStr,
-                config_.getDbMaxBufferSize());
-
-            std::cout << "[Builder] PostgresMeasurementRepository created successfully (buffer = "
-                      << config_.getDbMaxBufferSize() << ")\n";
             return repository_;
         }
         catch (const std::exception &e)
@@ -128,25 +97,21 @@ namespace dorm_energy::application
 
         service->addNotifier(std::make_unique<notifier::ConsoleNotifier>());
 
-        if (config_.isTelegramEnabled() &&
-            !config_.getTelegramBotToken().empty() &&
-            !config_.getTelegramChatId().empty())
+        if (config_.isTelegramEnabled() && !config_.getTelegramBotToken().empty() && !config_.getTelegramChatId().empty())
         {
             try
             {
                 auto telegramNotifier = std::make_unique<notifier::TelegramNotifier>(config_);
                 service->addNotifier(std::move(telegramNotifier));
-
-                std::cout << "[Builder] ✅ TelegramNotifier successfully enabled\n";
             }
             catch (const std::exception &e)
             {
-                std::cerr << "[Builder] ❌ Failed to initialize TelegramNotifier: " << e.what() << std::endl;
+                std::cerr << "[Builder] Failed to initialize TelegramNotifier: " << e.what() << std::endl;
             }
         }
         else if (config_.isTelegramEnabled())
         {
-            std::cout << "[Builder] ⚠️ Telegram enabled in config, but token or chat_id is missing\n";
+            std::cerr << "[Builder] Telegram enabled in config, but token or chat_id is missing\n";
         }
 
         return service;
@@ -155,14 +120,12 @@ namespace dorm_energy::application
     {
         if (!aggregator_)
         {
-            aggregator_ =
-                std::make_shared<
-                    dorm_energy::detection::RoomStateAggregator>();
+            aggregator_ = std::make_shared<dorm_energy::detection::RoomStateAggregator>();
         }
 
         return aggregator_;
     }
-    
+
     std::unique_ptr<application::IMessageHandler> ApplicationBuilder::createMessageHandler()
     {
         return std::make_unique<handlers::MessageHandler>(

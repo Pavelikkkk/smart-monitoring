@@ -21,13 +21,10 @@ import Rooms from "./pages/Rooms";
 import RoomDetails from "./pages/RoomDetails";
 import Admin from "./pages/Admin";
 
-
 export default function App() {
   return (
     <HashRouter>
-
       <Routes>
-
         <Route
           path="/"
           element={
@@ -108,7 +105,12 @@ export default function App() {
 
         <Route
           path="/settings"
-          element={<DashboardLayout><Settings /></DashboardLayout>} />
+          element={
+            <DashboardLayout>
+              <Settings />
+            </DashboardLayout>
+          }
+        />
 
         <Route
           path="/anomalies"
@@ -172,9 +174,7 @@ export default function App() {
             </DashboardLayout>
           }
         />
-
       </Routes>
-
     </HashRouter>
   );
 }

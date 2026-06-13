@@ -1,4 +1,3 @@
-// src/dorm_energy/application/application.cpp
 #include "dorm_energy/application/application.hpp"
 #include "dorm_energy/application/config/app_config.hpp"
 #include "dorm_energy/application/cli/command_options.hpp"
@@ -25,7 +24,6 @@ namespace dorm_energy::application
     int Application::run(int argc, char **argv)
     {
         cli::CommandOptions options;
-
         cli::ParseResult parseResult = cliParser_->parse(argc, argv, options);
 
         if (parseResult != cli::ParseResult::Continue)
@@ -36,9 +34,10 @@ namespace dorm_energy::application
         config_.overrideFromCli(options);
 
         std::string validationError = config_.validate();
+
         if (!validationError.empty())
         {
-            std::cerr << "Ошибка конфигурации: " << validationError << std::endl;
+            std::cerr << "Configuration error: " << validationError << std::endl; 
             return 1;
         }
 
@@ -56,7 +55,7 @@ namespace dorm_energy::application
         }
         else
         {
-            std::cerr << "Неизвестная команда. Используйте --help для справки.\n";
+            std::cerr << "Unknown command. Use --help for help.\n";
             return 1;
         }
     }

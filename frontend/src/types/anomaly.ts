@@ -1,7 +1,4 @@
-export type Severity =
-  | "INFO"
-  | "WARNING"
-  | "CRITICAL";
+export type Severity = "INFO" | "WARNING" | "CRITICAL";
 
 export interface Anomaly {
   id: number;

@@ -1,4 +1,3 @@
-// src/dorm_energy/application/config/app_config.cpp
 #include "dorm_energy/application/config/app_config.hpp"
 #include "dorm_energy/application/cli/command_options.hpp"
 
@@ -32,11 +31,13 @@ namespace dorm_energy::application
         return config;
     }
 
-    AppConfig AppConfig::loadFromEnvFile(const std::string &filename)
+    AppConfig AppConfig::loadFromEnvFile(
+        const std::string &filename)
     {
         AppConfig config;
 
         std::filesystem::path exePath;
+
         try
         {
             exePath = std::filesystem::current_path() / filename;
@@ -44,27 +45,20 @@ namespace dorm_energy::application
             if (!std::filesystem::exists(exePath))
             {
                 auto parentPath = std::filesystem::current_path().parent_path();
-                if (parentPath.filename() == "build" ||
-                    parentPath.filename() == "Debug" ||
-                    parentPath.filename() == "Release")
+                if (parentPath.filename() == "build" || parentPath.filename() == "Debug" || parentPath.filename() == "Release")
                 {
                     exePath = parentPath.parent_path() / filename;
                 }
             }
         }
-        catch (...)
+        catch (...) // норм сделать
         {
             exePath = filename;
         }
 
         std::ifstream file(exePath);
-        if (!file.is_open())
-        {
-            std::cout << "[Config] .env file not found\n";
-            return config;
-        }
-
         std::string line;
+
         while (std::getline(file, line))
         {
             if (line.empty() || line[0] == '#')
@@ -104,7 +98,7 @@ namespace dorm_energy::application
                 {
                     config.simulationDays_ = std::stoi(value);
                 }
-                catch (...)
+                catch (...) // тоже
                 {
                 }
             }
@@ -114,7 +108,7 @@ namespace dorm_energy::application
                 {
                     config.dbMaxBufferSize_ = std::stoul(value);
                 }
-                catch (...)
+                catch (...) // same
                 {
                 }
             }
@@ -170,7 +164,7 @@ namespace dorm_energy::application
             {
                 config.simulationDays_ = std::stoi(val);
             }
-            catch (...)
+            catch (...) 
             {
             }
         }
@@ -209,10 +203,7 @@ namespace dorm_energy::application
     std::string AppConfig::getDbConnectionString() const
     {
         std::ostringstream oss;
-        oss << "host=" << dbHost_
-            << " port=" << dbPort_
-            << " dbname=" << dbName_
-            << " user=" << dbUser_;
+        oss << "host=" << dbHost_ << " port=" << dbPort_ << " dbname=" << dbName_ << " user=" << dbUser_;
 
         if (!dbPassword_.empty())
             oss << " password=" << dbPassword_;

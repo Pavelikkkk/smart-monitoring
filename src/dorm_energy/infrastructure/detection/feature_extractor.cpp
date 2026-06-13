@@ -7,17 +7,11 @@
 namespace dorm_energy::detection
 {
 
-    std::array<float, 5>
-    FeatureExtractor::extract(
+    std::array<float, 5> FeatureExtractor::extract(
         const DetectionContext &context)
     {
-        auto timestamp =
-            context.current.timestamp;
-
-        auto time =
-            std::chrono::system_clock::to_time_t(
-                timestamp);
-
+        auto timestamp = context.current.timestamp;
+        auto time = std::chrono::system_clock::to_time_t(timestamp);
         std::tm tm{};
 
 #ifdef _WIN32
@@ -30,29 +24,16 @@ namespace dorm_energy::detection
             &tm);
 #endif
 
-        int hour =
-            tm.tm_hour;
+        int hour = tm.tm_hour;
 
-        float hourSin =
-            std::sin(
-                2.0f *
-                std::numbers::pi_v<float> *
-                hour /
-                24.0f);
+        float hourSin = std::sin(2.0f * std::numbers::pi_v<float> * hour / 24.0f);
 
-        float hourCos =
-            std::cos(
-                2.0f *
-                std::numbers::pi_v<float> *
-                hour /
-                24.0f);
+        float hourCos = std::cos(2.0f * std::numbers::pi_v<float> * hour / 24.0f);
 
         return {
             context.current.motion ? 1.f : 0.f,
-            static_cast<float>(
-                context.current.power),
-            static_cast<float>(
-                context.current.light),
+            static_cast<float>(context.current.power),
+            static_cast<float>(context.current.light),
             hourSin,
             hourCos};
     }

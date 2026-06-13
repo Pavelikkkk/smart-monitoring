@@ -7,35 +7,28 @@ type Props = {
   rooms: Room[];
 };
 
-export default function TopRooms({
-  rooms,
-}: Props) {
+export default function TopRooms({ rooms }: Props) {
   return (
-    <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
-
-      <h2 className="text-2xl font-bold mb-4">
-        Top Active Rooms
-      </h2>
+    <div className="bg-[#111827]
+          border
+          border-cyan-700/40
+          rounded-2xl
+          p-5">
+      <h2 className="text-2xl
+            font-bold
+            mb-4">Top Active Rooms</h2>
 
       <div className="space-y-4">
-
         {rooms.map((room) => (
-          <div
-            key={room.roomId}
-            className="flex justify-between"
-          >
-            <span>
-              {room.roomId}
-            </span>
+          <div key={room.roomId} className="flex
+                justify-between">
+            <span>{room.roomId}</span>
 
-            <span className="text-cyan-400 font-bold">
-              {room.power} W
-            </span>
+            <span className="text-cyan-400
+                  font-bold">{room.power} W</span>
           </div>
         ))}
-
       </div>
-
     </div>
   );
 }

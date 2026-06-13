@@ -10,9 +10,7 @@ namespace dorm_energy::detection
     class FeatureExtractor
     {
     public:
-        static std::array<float, 5>
-        extract(
-            const DetectionContext &context);
+        static std::array<float, 5> extract(const DetectionContext &context);
     };
 
-}
+} // namespace dorm_energy::detection

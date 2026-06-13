@@ -1,22 +1,21 @@
 // include/dorm_energy/infrastructure/mqtt/mqtt_client.hpp
 #pragma once
 
-#include "dorm_energy/domain/mqtt/imqtt_connection.hpp"
-#include "dorm_energy/domain/mqtt/imqtt_subscription.hpp"
-#include "dorm_energy/domain/mqtt/imqtt_message_dispatcher.hpp"
 #include "dorm_energy/application/imessage_handler.hpp"
+#include "dorm_energy/domain/mqtt/imqtt_connection.hpp"
+#include "dorm_energy/domain/mqtt/imqtt_message_dispatcher.hpp"
+#include "dorm_energy/domain/mqtt/imqtt_subscription.hpp"
 
-#include <memory>
 #include <atomic>
+#include <memory>
 #include <string>
 
 namespace dorm_energy::mqtt
 {
 
-    class MqttClient final
-        : public IMqttConnection,
-          public IMqttSubscription,
-          public IMqttMessageDispatcher
+    class MqttClient final : public IMqttConnection,
+                             public IMqttSubscription,
+                             public IMqttMessageDispatcher
     {
     public:
         MqttClient();

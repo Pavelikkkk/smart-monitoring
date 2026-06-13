@@ -9,4 +9,4 @@ namespace dorm_energy::storage
         std::string roomName;
         double avgPower{};
     };
-}
+} // namespace dorm_energy::storage

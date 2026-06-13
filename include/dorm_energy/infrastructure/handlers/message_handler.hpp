@@ -1,14 +1,14 @@
 // include/dorm_energy/infrastructure/handlers/message_handler.hpp
 #pragma once
 
-#include "dorm_energy/domain/detection/istate_detector.hpp"
-#include "dorm_energy/infrastructure/detection/room_state_aggregator.hpp"
-#include "dorm_energy/domain/storage/imeasurement_repository.hpp"
-#include "dorm_energy/application/inotifier.hpp"
 #include "dorm_energy/application/imessage_handler.hpp"
+#include "dorm_energy/application/inotifier.hpp"
 #include "dorm_energy/core/measurement.hpp"
-#include "dorm_energy/infrastructure/detection/rule_based_detector.hpp"
+#include "dorm_energy/domain/detection/istate_detector.hpp"
+#include "dorm_energy/domain/storage/imeasurement_repository.hpp"
 #include "dorm_energy/infrastructure/detection/anomaly_tracker.hpp"
+#include "dorm_energy/infrastructure/detection/room_state_aggregator.hpp"
+#include "dorm_energy/infrastructure/detection/rule_based_detector.hpp"
 
 namespace dorm_energy::handlers
 {

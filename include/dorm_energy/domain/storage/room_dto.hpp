@@ -16,4 +16,4 @@ namespace dorm_energy::storage
 
         int floorNumber{};
     };
-}
+} // namespace dorm_energy::storage

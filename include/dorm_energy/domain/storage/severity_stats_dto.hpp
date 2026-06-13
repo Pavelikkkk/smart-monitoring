@@ -9,4 +9,4 @@ namespace dorm_energy::storage
         std::string severity;
         int count{};
     };
-}
+} // namespace dorm_energy::storage

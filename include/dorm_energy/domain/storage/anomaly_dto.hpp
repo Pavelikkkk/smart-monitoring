@@ -13,4 +13,4 @@ namespace dorm_energy::storage
         std::string description;
         std::string detectedAt;
     };
-}
+} // namespace dorm_energy::storage

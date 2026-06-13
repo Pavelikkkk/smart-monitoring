@@ -2,8 +2,8 @@
 #pragma once
 
 #include "dorm_energy/application/cli/command_options.hpp"
-#include <string>
 #include <cstddef>
+#include <string>
 
 namespace dorm_energy::application
 {

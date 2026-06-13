@@ -10,6 +10,6 @@ namespace dorm_energy::notifier
         std::string chatId;
         bool enabled = false;
 
-        static TelegramConfig fromAppConfig(const application::AppConfig& config);
+        static TelegramConfig fromAppConfig(const application::AppConfig &config);
     };
-}
+} // namespace dorm_energy::notifier

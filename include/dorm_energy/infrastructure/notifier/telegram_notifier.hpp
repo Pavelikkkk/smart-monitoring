@@ -4,11 +4,11 @@
 #include "dorm_energy/core/room_state.hpp"
 #include "dorm_energy/domain/detection/anomaly_info.hpp"
 #include "telegram_config.hpp"
-#include "telegram_queue.hpp"
 #include "telegram_poller.hpp"
+#include "telegram_queue.hpp"
 #include <atomic>
-#include <thread>
 #include <chrono>
+#include <thread>
 
 namespace dorm_energy::notifier
 {
@@ -19,13 +19,10 @@ namespace dorm_energy::notifier
         explicit TelegramNotifier(TelegramConfig cfg);
         ~TelegramNotifier();
 
-        bool sendAlert(
-            const core::RoomState &state,
-            const detection::AnomalyInfo &info) override;
+        bool sendAlert(const core::RoomState &state, const detection::AnomalyInfo &info) override;
 
-        std::size_t sendAlerts(
-            const std::vector<core::RoomState> &states,
-            const detection::AnomalyInfo &info) override;
+        std::size_t sendAlerts(const std::vector<core::RoomState> &states,
+                               const detection::AnomalyInfo &info) override;
 
     private:
         TelegramConfig config_;
@@ -38,9 +35,8 @@ namespace dorm_energy::notifier
         std::atomic<std::chrono::seconds> currentBackoff_{std::chrono::seconds{5}};
 
         bool sendMessage(const std::string &text);
-        std::string buildAlertMessage(
-            const core::RoomState &state,
-            const detection::AnomalyInfo &info) const;
+        std::string buildAlertMessage(const core::RoomState &state,
+                                      const detection::AnomalyInfo &info) const;
 
         void startQueueWorker();
         void stopQueueWorker();
@@ -48,4 +44,4 @@ namespace dorm_energy::notifier
         bool flushQueue();
         void logQueueStatus();
     };
-}
+} // namespace dorm_energy::notifier

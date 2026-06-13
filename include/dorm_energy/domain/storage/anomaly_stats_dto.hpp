@@ -10,4 +10,4 @@ namespace dorm_energy::storage
 
         int count{};
     };
-}
+} // namespace dorm_energy::storage

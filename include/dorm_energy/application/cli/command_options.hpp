@@ -21,11 +21,11 @@ namespace dorm_energy::cli
 
         CommonOptions common;
 
-        int simulateDays{30}; 
+        int simulateDays{30};
         bool injectAnomalies{false};
         double anomalyRate{0.03};
 
-        std::string mqttBroker; 
+        std::string mqttBroker;
         std::string mqttTopic;
 
         bool isSimulate() const noexcept { return type == CommandType::Simulate; }

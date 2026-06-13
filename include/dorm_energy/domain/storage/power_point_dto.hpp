@@ -9,4 +9,4 @@ namespace dorm_energy::storage
         std::string time;
         double power{0.0};
     };
-}
+} // namespace dorm_energy::storage

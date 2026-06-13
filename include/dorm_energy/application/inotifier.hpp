@@ -1,10 +1,10 @@
 // include/dorm_energy/application/inotifier.hpp
 #pragma once
 
-#include "dorm_energy/core/measurement.hpp"
 #include "dorm_energy/core/alert_severity.hpp"
-#include "dorm_energy/domain/detection/anomaly_info.hpp"
+#include "dorm_energy/core/measurement.hpp"
 #include "dorm_energy/core/room_state.hpp"
+#include "dorm_energy/domain/detection/anomaly_info.hpp"
 #include <string>
 #include <vector>
 

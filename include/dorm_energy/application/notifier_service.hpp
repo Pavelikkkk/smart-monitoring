@@ -3,8 +3,8 @@
 #include "dorm_energy/application/inotifier.hpp"
 #include "dorm_energy/core/room_state.hpp"
 #include "dorm_energy/domain/detection/anomaly_info.hpp"
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace dorm_energy::application
 {
@@ -19,8 +19,7 @@ namespace dorm_energy::application
 
         void addNotifier(std::unique_ptr<INotifier> notifier);
 
-        bool sendAlert(const core::RoomState &state,
-                       const detection::AnomalyInfo &info) override;
+        bool sendAlert(const core::RoomState &state, const detection::AnomalyInfo &info) override;
 
         std::size_t sendAlerts(const std::vector<core::RoomState> &states,
                                const detection::AnomalyInfo &info) override;
@@ -28,4 +27,4 @@ namespace dorm_energy::application
     private:
         std::vector<std::unique_ptr<INotifier>> notifiers_;
     };
-}
+} // namespace dorm_energy::application

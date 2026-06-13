@@ -6,7 +6,6 @@
 #include "dorm_energy/application/imessage_handler.hpp"
 #include "dorm_energy/core/measurement.hpp"
 
-
 namespace dorm_energy::mqtt
 {
 

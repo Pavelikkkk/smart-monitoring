@@ -14,4 +14,4 @@ namespace dorm_energy::detection
         const std::deque<core::RoomState> *history{nullptr};
     };
 
-}
+} // namespace dorm_energy::detection

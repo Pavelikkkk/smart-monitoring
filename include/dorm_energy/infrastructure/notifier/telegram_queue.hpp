@@ -1,11 +1,11 @@
 #pragma once
 
-#include "dorm_energy/core/measurement.hpp"
 #include "dorm_energy/core/alert_severity.hpp"
-#include <vector>
-#include <string>
-#include <mutex>
+#include "dorm_energy/core/measurement.hpp"
 #include <chrono>
+#include <mutex>
+#include <string>
+#include <vector>
 
 namespace dorm_energy::notifier
 {
@@ -20,11 +20,10 @@ namespace dorm_energy::notifier
     class TelegramQueue
     {
     public:
-        static constexpr std::size_t MAX_QUEUE_SIZE = 500;  
+        static constexpr std::size_t MAX_QUEUE_SIZE = 500;
 
-        void push(const core::SensorReading& reading, 
-                  core::AlertSeverity severity, 
-                  const std::string& reason);
+        void push(const core::SensorReading &reading, core::AlertSeverity severity,
+                  const std::string &reason);
 
         std::vector<QueuedAlert> getAllAndClear();
         bool empty() const;
@@ -34,4 +33,4 @@ namespace dorm_energy::notifier
         std::vector<QueuedAlert> queue_;
         mutable std::mutex mutex_;
     };
-}
+} // namespace dorm_energy::notifier

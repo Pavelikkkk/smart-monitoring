@@ -26,4 +26,4 @@ namespace dorm_energy::storage
 
         std::string lastSeenAt;
     };
-}
+} // namespace dorm_energy::storage

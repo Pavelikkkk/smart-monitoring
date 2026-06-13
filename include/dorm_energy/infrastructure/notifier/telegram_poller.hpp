@@ -1,9 +1,9 @@
 #pragma once
 
 #include "telegram_config.hpp"
+#include <atomic>
 #include <string>
 #include <thread>
-#include <atomic>
 
 namespace dorm_energy::notifier
 {
@@ -27,14 +27,8 @@ namespace dorm_energy::notifier
 
         void pollingLoop();
 
-        bool handleCallbackQuery(
-            const std::string &callbackData,
-            long messageId,
-            long chatId);
+        bool handleCallbackQuery(const std::string &callbackData, long messageId, long chatId);
 
-        bool editMessage(
-            long chatId,
-            long messageId,
-            const std::string &newText);
+        bool editMessage(long chatId, long messageId, const std::string &newText);
     };
-}
+} // namespace dorm_energy::notifier

@@ -19,4 +19,4 @@ namespace dorm_energy::core
         double light{0.0};
     };
 
-}
+} // namespace dorm_energy::core

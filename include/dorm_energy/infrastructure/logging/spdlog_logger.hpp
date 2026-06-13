@@ -1,11 +1,11 @@
 // include/dorm_energy/infrastructure/logging/spdlog_logger.hpp
 #pragma once
 
-#include "dorm_energy/domain/logging/ilogger.hpp"
 #include "dorm_energy/application/config/app_config.hpp"
+#include "dorm_energy/domain/logging/ilogger.hpp"
 
-#include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 namespace dorm_energy::logging
 {

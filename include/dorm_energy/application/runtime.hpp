@@ -2,8 +2,8 @@
 #pragma once
 
 #include <atomic>
-#include <functional>
 #include <csignal>
+#include <functional>
 
 namespace dorm_energy::application
 {

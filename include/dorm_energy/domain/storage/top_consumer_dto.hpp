@@ -10,4 +10,4 @@ namespace dorm_energy::storage
 
         double power{};
     };
-}
+} // namespace dorm_energy::storage

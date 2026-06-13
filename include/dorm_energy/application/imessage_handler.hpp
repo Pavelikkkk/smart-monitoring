@@ -29,7 +29,7 @@ namespace dorm_energy::application
          * @brief Обрабатывает пакет новых показаний от датчиков
          * @param readings вектор полученных показаний
          */
-        virtual std::size_t handleBatch(const std::vector<core::SensorReading>& readings) = 0;
+        virtual std::size_t handleBatch(const std::vector<core::SensorReading> &readings) = 0;
     };
 
 } // namespace dorm_energy::application

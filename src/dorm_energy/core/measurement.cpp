@@ -1,4 +1,3 @@
-// src/dorm_energy/core/measurement.cpp
 #include "dorm_energy/core/measurement.hpp"
 
 #include <chrono>
@@ -41,8 +40,7 @@ namespace dorm_energy::core
             oss << "0000-00-00 00:00:00";
         }
 
-        oss << " | " << reading.deviceId
-            << " | " << reading.sensorType;
+        oss << " | " << reading.deviceId << " | " << reading.sensorType;
 
         if (reading.boolValue.has_value())
         {
@@ -84,13 +82,12 @@ namespace dorm_energy::core
             oss << "null";
         }
 
-        oss << ",\"deviceId\":\"" << reading.deviceId << "\""
-            << ",\"sensorType\":\"" << reading.sensorType << "\"";
+        oss << ",\"deviceId\":\"" << reading.deviceId << "\"" << ",\"sensorType\":\"" << reading.sensorType << "\"";
 
         if (reading.boolValue.has_value())
         {
-            oss << ",\"value\":" << (reading.boolValue.value() ? "true" : "false")
-                << ",\"boolValue\":" << (reading.boolValue.value() ? "true" : "false");
+            oss << ",\"value\":" << (reading.boolValue.value() ? "true" : "false") 
+            << ",\"boolValue\":" << (reading.boolValue.value() ? "true" : "false");
         }
         else
         {

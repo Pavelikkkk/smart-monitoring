@@ -9,18 +9,15 @@ namespace dorm_energy::detection
         const core::RoomState &state,
         const AnomalyInfo &anomaly) const
     {
-        return state.deviceId +
-               ":" +
-               anomaly.anomalyType;
+        return state.deviceId + ":" + anomaly.anomalyType;
     }
 
     bool AnomalyTracker::shouldReport(
         const core::RoomState &state,
         const AnomalyInfo &anomaly)
     {
-        auto key =
-            makeKey(state, anomaly);
 
+        auto key = makeKey(state, anomaly);
         if (active_.contains(key))
         {
             return false;
@@ -34,8 +31,8 @@ namespace dorm_energy::detection
     void AnomalyTracker::resolveRoom(
         const std::string &deviceId)
     {
-        std::vector<std::string> remove;
 
+        std::vector<std::string> remove;
         for (const auto &key : active_)
         {
             if (key.starts_with(deviceId + ":"))

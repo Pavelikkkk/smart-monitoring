@@ -2,11 +2,11 @@ type Props = {
   online: boolean;
 };
 
-export default function StatusBadge({
-  online,
-}: Props) {
+export default function StatusBadge({ online }: Props) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex
+          items-center
+          gap-2">
       <div
         className={`
           w-3
@@ -16,9 +16,7 @@ export default function StatusBadge({
         `}
       />
 
-      <span>
-        {online ? "Online" : "Offline"}
-      </span>
+      <span>{online ? "Online" : "Offline"}</span>
     </div>
   );
 }

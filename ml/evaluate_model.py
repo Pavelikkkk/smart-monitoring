@@ -12,8 +12,7 @@ from sklearn.preprocessing import StandardScaler
 
 print("Loading test dataset...")
 
-df = pd.read_csv(
-    "../data/test_dataset.csv"
+df = pd.read_csv("../data/test_dataset.csv"
 )
 
 print(f"Rows: {len(df)}")
@@ -38,18 +37,15 @@ print(f"States: {len(pivot)}")
 # FEATURES
 # ============================================================
 
-pivot["timestamp"] = pd.to_datetime(
-    pivot["timestamp"]
+pivot["timestamp"] = pd.to_datetime(pivot["timestamp"]
 )
 
 pivot["hour"] = pivot["timestamp"].dt.hour
 
-pivot["hour_sin"] = np.sin(
-    2 * np.pi * pivot["hour"] / 24.0
+pivot["hour_sin"] = np.sin(2 * np.pi * pivot["hour"] / 24.0
 )
 
-pivot["hour_cos"] = np.cos(
-    2 * np.pi * pivot["hour"] / 24.0
+pivot["hour_cos"] = np.cos(2 * np.pi * pivot["hour"] / 24.0
 )
 
 features = pivot[
@@ -70,9 +66,7 @@ scaler = StandardScaler()
 
 X = scaler.fit_transform(features)
 
-X_tensor = torch.tensor(
-    X,
-    dtype=torch.float32
+X_tensor = torch.tensor(X, dtype=torch.float32
 )
 
 # ============================================================
@@ -81,7 +75,7 @@ X_tensor = torch.tensor(
 
 class Autoencoder(nn.Module):
 
-    def __init__(self):
+    def __init__(self): 
         super().__init__()
 
         self.encoder = nn.Sequential(
@@ -114,11 +108,7 @@ class Autoencoder(nn.Module):
 
 model = Autoencoder()
 
-model.load_state_dict(
-    torch.load(
-        "models/model.pth"
-    )
-)
+model.load_state_dict(torch.load("models/model.pth"))
 
 model.eval()
 
@@ -128,67 +118,43 @@ model.eval()
 
 with torch.no_grad():
 
-    reconstructed = model(
-        X_tensor
-    )
+    reconstructed = model(X_tensor)
 
-    errors = torch.mean(
-        (X_tensor - reconstructed) ** 2,
-        dim=1
-    )
+    errors = torch.mean((X_tensor - reconstructed) ** 2,dim=1)
 
 print()
 print("Error statistics")
 print("----------------")
 
-print(
-    "Mean:",
-    errors.mean().item()
+print("Mean:",errors.mean().item()
 )
 
-print(
-    "Std:",
-    errors.std().item()
+print("Std:",errors.std().item()
 )
 
-print(
-    "Min:",
-    errors.min().item()
+print("Min:",errors.min().item()
 )
 
-print(
-    "Max:",
-    errors.max().item()
+print("Max:",errors.max().item()
 )
 
 # ============================================================
 # THRESHOLD
 # ============================================================
 
-with open(
-    "models/threshold.txt"
+with open("models/threshold.txt"
 ) as f:
 
-    threshold = float(
-        f.read()
-    )
+    threshold = float(f.read())
 
 print()
 print("Threshold:", threshold)
 
-anomalies = (
-    errors > threshold
-)
+anomalies = (errors > threshold)
 
 count = anomalies.sum().item()
 
 print()
-print(
-    f"Detected anomalies: "
-    f"{count}"
-)
+print(f"Detected anomalies: "f"{count}")
 
-print(
-    f"Percentage: "
-    f"{100 * count / len(errors):.2f}%"
-)
+print(f"Percentage: "f"{100 * count / len(errors):.2f}%")

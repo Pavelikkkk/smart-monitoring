@@ -12,16 +12,11 @@ namespace dorm_energy::notifier
 
         if (queue_.size() >= MAX_QUEUE_SIZE)
         {
-            std::cout << "[TelegramQueue] Queue is full (" << MAX_QUEUE_SIZE
-                      << "). Removing oldest message.\n";
-            queue_.erase(queue_.begin()); 
+            std::cout << "[TelegramQueue] Queue is full (" << MAX_QUEUE_SIZE << "). Removing oldest message.\n";
+            queue_.erase(queue_.begin());
         }
 
-        queue_.push_back(QueuedAlert{
-            reading,
-            severity,
-            reason,
-            std::chrono::system_clock::now()});
+        queue_.push_back(QueuedAlert{reading, severity, reason, std::chrono::system_clock::now()});
     }
 
     std::vector<QueuedAlert> TelegramQueue::getAllAndClear()

@@ -1,4 +1,3 @@
-// src/dorm_energy/application/runtime.cpp
 #include "dorm_energy/application/runtime.hpp"
 
 #include <csignal>

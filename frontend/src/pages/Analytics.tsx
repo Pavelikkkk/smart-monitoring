@@ -23,11 +23,9 @@ export default function Analytics() {
     anomalies: 0,
   });
 
-  const [devices, setDevices] =
-    useState<any[]>([]);
+  const [devices, setDevices] = useState<any[]>([]);
 
-  const [anomalies, setAnomalies] =
-    useState<any[]>([]);
+  const [anomalies, setAnomalies] = useState<any[]>([]);
 
   useEffect(() => {
     loadAnalytics();
@@ -35,11 +33,7 @@ export default function Analytics() {
 
   async function loadAnalytics() {
     try {
-      const [
-        statsData,
-        anomaliesData,
-        devicesData,
-      ] = await Promise.all([
+      const [statsData, anomaliesData, devicesData] = await Promise.all([
         getUserStats(),
         getUserAnomalies(),
         getUserDevices(),
@@ -49,117 +43,84 @@ export default function Analytics() {
 
       setDevices(devicesData);
 
-      setAnomalies(
-        anomaliesData.slice(0, 5)
-      );
-    }
-    catch (error) {
+      setAnomalies(anomaliesData.slice(0, 5));
+    } catch (error) {
       console.error(error);
     }
   }
 
   return (
     <div className="space-y-8">
-
       {/* HEADER */}
 
       <div>
-
-        <h1 className="text-5xl font-bold mb-3">
-          Analytics
-        </h1>
+        <h1 className="text-5xl
+              font-bold
+              mb-3">Analytics</h1>
 
         <p className="text-slate-300">
-          Monitor energy consumption,
-          device activity and anomaly
-          statistics across your buildings.
+          Monitor energy consumption, device activity and anomaly statistics
+          across your buildings.
         </p>
-
       </div>
 
       {/* STATS */}
 
       <div
-        className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-4
-          gap-4
-        "
+        className="grid
+              grid-cols-1
+              md:grid-cols-2
+              xl:grid-cols-4
+              gap-4"
       >
+        <StatCard title="Buildings" value={stats.buildings} />
 
-        <StatCard
-          title="Buildings"
-          value={stats.buildings}
-        />
+        <StatCard title="Rooms" value={stats.rooms} />
 
-        <StatCard
-          title="Rooms"
-          value={stats.rooms}
-        />
+        <StatCard title="Devices" value={devices.length} />
 
-        <StatCard
-          title="Devices"
-          value={devices.length}
-        />
-
-        <StatCard
-          title="Anomalies"
-          value={stats.anomalies}
-        />
-
+        <StatCard title="Anomalies" value={stats.anomalies} />
       </div>
 
       {/* POWER */}
 
       <div>
-
-        <h2 className="text-3xl font-bold mb-4">
-          Power Consumption
-        </h2>
+        <h2 className="text-3xl
+              font-bold
+              mb-4">Power Consumption</h2>
 
         <div
-          className="
-            bg-[#111827]
-            border
-            border-cyan-700/40
-            rounded-2xl
-            p-5
-          "
+          className="bg-[#111827]
+                border
+                border-cyan-700/40
+                rounded-2xl
+                p-5"
         >
           <PowerChart />
         </div>
-
       </div>
 
       {/* ENERGY BY ROOM */}
 
       <div>
-
-        <h2 className="text-3xl font-bold mb-4">
-          Energy by Room
-        </h2>
+        <h2 className="text-3xl
+              font-bold
+              mb-4">Energy by Room</h2>
 
         <EnergyByRoomChart />
-
       </div>
 
       {/* CHARTS */}
 
       <div
-        className="
-          grid
-          grid-cols-1
-          xl:grid-cols-2
-          gap-5
-        "
+        className="grid
+              grid-cols-1
+              xl:grid-cols-2
+              gap-5"
       >
-
         <TopConsumersChart />
 
         <AnomaliesChart />
-
       </div>
 
       <SeverityDistributionChart />
@@ -167,46 +128,35 @@ export default function Analytics() {
       {/* LATEST ANOMALIES */}
 
       <div>
+        <h2 className="text-3xl
+              font-bold
+              mb-4">Latest Anomalies</h2>
 
-        <h2 className="text-3xl font-bold mb-4">
-          Latest Anomalies
-        </h2>
-
-        <div className="grid gap-4">
-
+        <div className="grid
+              gap-4">
           {anomalies.length === 0 && (
             <div
-              className="
-                bg-[#111827]
-                rounded-2xl
-                p-5
-                text-slate-300
-              "
+              className="bg-[#111827]
+                    rounded-2xl
+                    p-5
+                    text-slate-300"
             >
               No anomalies detected
             </div>
           )}
 
-          {anomalies.map(
-            (anomaly, index) => (
-              <AlertCard
-                key={`${anomaly.room}-${anomaly.type}-${index}`}
-                room={anomaly.room}
-                type={anomaly.type}
-                severity={anomaly.severity}
-                score={anomaly.score}
-                status={
-                  anomaly.status ??
-                  "ACTIVE"
-                }
-              />
-            )
-          )}
-
+          {anomalies.map((anomaly, index) => (
+            <AlertCard
+              key={`${anomaly.room}-${anomaly.type}-${index}`}
+              room={anomaly.room}
+              type={anomaly.type}
+              severity={anomaly.severity}
+              score={anomaly.score}
+              status={anomaly.status ?? "ACTIVE"}
+            />
+          ))}
         </div>
-
       </div>
-
     </div>
   );
 }

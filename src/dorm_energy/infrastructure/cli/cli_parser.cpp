@@ -1,4 +1,3 @@
-// src/dorm_energy/infrastructure/cli/cli_parser.cpp
 #include "dorm_energy/infrastructure/cli/cli_parser.hpp"
 #include "dorm_energy/application/cli/command_type.hpp"
 #include "dorm_energy/application/cli/command_options.hpp"
@@ -9,8 +8,7 @@
 namespace dorm_energy::cli
 {
 
-    CliParser::CliParser()
-        : app_(std::make_unique<CLI::App>("Dorm Energy Monitor - monitoring of energy consumption in the dormitory"))
+    CliParser::CliParser() : app_(std::make_unique<CLI::App>("Dorm Energy Monitor - monitoring of energy consumption in the dormitory"))
     {
         app_->name("dorm-sim");
         app_->get_formatter()->column_width(25);
@@ -22,7 +20,6 @@ namespace dorm_energy::cli
         app_->require_subcommand(0, 1);
         app_->add_flag("-v,--verbose", "Enable verbose output");
 
-        // === Команда: simulate ===
         auto *simulate = app_->add_subcommand("simulate", "Run data generation simulation");
         simulate->add_option("--days", "Number of days to simulate")
             ->default_val(30)
@@ -33,7 +30,6 @@ namespace dorm_energy::cli
             ->default_val(0.03)
             ->capture_default_str();
 
-        // === Команда: daemon ===
         auto *daemon = app_->add_subcommand("daemon", "Run as a daemon (MQTT listener)");
 
         daemon->add_option("--mqtt-broker", "MQTT broker address (example: tcp://127.0.0.1:1883)")
@@ -44,7 +40,6 @@ namespace dorm_energy::cli
             ->default_val("devices/+/power")
             ->capture_default_str();
 
-        // Помощь
         app_->add_subcommand("help", "Show help message");
     }
 
@@ -61,7 +56,6 @@ namespace dorm_energy::cli
             else if (app_->get_subcommand("daemon")->parsed())
             {
                 options.type = CommandType::Daemon;
-
                 auto *daemon = app_->get_subcommand("daemon");
 
                 options.mqttBroker = daemon->get_option("--mqtt-broker")->as<std::string>();
@@ -71,12 +65,12 @@ namespace dorm_energy::cli
             {
                 options.type = CommandType::Help;
                 std::cout << app_->help() << std::endl;
+
                 return ParseResult::ExitSuccess;
             }
 
             options.common.verbose = app_->get_option("--verbose")->count() > 0;
 
-            // Для simulate
             if (options.isSimulate())
             {
                 auto *simulate = app_->get_subcommand("simulate");

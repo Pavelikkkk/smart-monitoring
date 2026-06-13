@@ -37,21 +37,16 @@ print(f"States: {len(pivot)}")
 # FEATURE ENGINEERING
 # ============================================================
 
-pivot["timestamp"] = pd.to_datetime(
-    pivot["timestamp"]
+pivot["timestamp"] = pd.to_datetime(pivot["timestamp"]
 )
 
 pivot["hour"] = pivot["timestamp"].dt.hour
 
 # cyclic time encoding
 
-pivot["hour_sin"] = np.sin(
-    2 * np.pi * pivot["hour"] / 24.0
-)
+pivot["hour_sin"] = np.sin(2 * np.pi * pivot["hour"] / 24.0)
 
-pivot["hour_cos"] = np.cos(
-    2 * np.pi * pivot["hour"] / 24.0
-)
+pivot["hour_cos"] = np.cos(2 * np.pi * pivot["hour"] / 24.0)
 
 features = pivot[
     [
@@ -71,10 +66,7 @@ scaler = StandardScaler()
 
 X = scaler.fit_transform(features)
 
-X_tensor = torch.tensor(
-    X,
-    dtype=torch.float32
-)
+X_tensor = torch.tensor(X,dtype=torch.float32)
 
 print(features.describe())
 
@@ -117,10 +109,7 @@ model = Autoencoder()
 
 criterion = nn.MSELoss()
 
-optimizer = torch.optim.Adam(
-    model.parameters(),
-    lr=0.001
-)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # ============================================================
 # TRAINING
@@ -136,42 +125,24 @@ for epoch in range(epochs):
 
     reconstructed = model(X_tensor)
 
-    loss = criterion(
-        reconstructed,
-        X_tensor
-    )
+    loss = criterion(reconstructed, X_tensor)
 
     loss.backward()
 
     optimizer.step()
 
     if epoch % 5 == 0:
-        print(
-            f"Epoch {epoch} "
-            f"Loss={loss.item():.6f}"
-        )
+        print(f"Epoch {epoch} " f"Loss={loss.item():.6f}")
 
 print("Training finished")
 
-torch.save(
-    model.state_dict(),
-    "models/model.pth"
-)
+torch.save(model.state_dict(),"models/model.pth")
 
-scaler_data = {
-    "mean": scaler.mean_.tolist(),
-    "scale": scaler.scale_.tolist()
-}
+scaler_data = {"mean": scaler.mean_.tolist(),"scale": scaler.scale_.tolist()}
 
-with open(
-    "models/scaler.json",
-    "w"
+with open("models/scaler.json","w"
 ) as file:
-    json.dump(
-        scaler_data,
-        file,
-        indent=4
-    )
+    json.dump(scaler_data, file, indent=4)
 
 # ============================================================
 # THRESHOLD CALCULATION
@@ -183,15 +154,9 @@ with torch.no_grad():
 
     reconstructed = model(X_tensor)
 
-    errors = torch.mean(
-        (X_tensor - reconstructed) ** 2,
-        dim=1
-    )
+    errors = torch.mean((X_tensor - reconstructed) ** 2, dim=1)
 
-    threshold = (
-        errors.mean() +
-        3 * errors.std()
-    )
+    threshold = (errors.mean() + 3 * errors.std())
 
 print()
 print(f"Threshold: {threshold.item()}")
@@ -200,16 +165,9 @@ print(f"Threshold: {threshold.item()}")
 # SAVE THRESHOLD
 # ============================================================
 
-with open(
-    "models/threshold.txt",
-    "w"
-) as file:
+with open("models/threshold.txt", "w") as file:
 
-    file.write(
-        str(
-            threshold.item()
-        )
-    )
+    file.write(str( threshold.item()))
 
 # ============================================================
 # EXPORT ONNX

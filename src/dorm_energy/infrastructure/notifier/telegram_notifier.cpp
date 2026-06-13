@@ -11,13 +11,11 @@
 namespace dorm_energy::notifier
 {
 
-    TelegramNotifier::TelegramNotifier(const application::AppConfig &config)
-        : TelegramNotifier(TelegramConfig::fromAppConfig(config))
+    TelegramNotifier::TelegramNotifier(const application::AppConfig &config) : TelegramNotifier(TelegramConfig::fromAppConfig(config))
     {
     }
 
-    TelegramNotifier::TelegramNotifier(TelegramConfig cfg)
-        : config_(std::move(cfg)), poller_(config_)
+    TelegramNotifier::TelegramNotifier(TelegramConfig cfg) : config_(std::move(cfg)), poller_(config_)
     {
         if (config_.enabled && !config_.botToken.empty() && !config_.chatId.empty())
         {
@@ -25,8 +23,7 @@ namespace dorm_energy::notifier
             std::cout << "[TelegramNotifier] Initialized (chat_id: " << config_.chatId << ")\n";
 
             startQueueWorker();
-            std::cout
-                << "[TelegramNotifier] Poller exists\n";
+            std::cout << "[TelegramNotifier] Poller exists\n";
             // poller_.start();
         }
     }
@@ -107,71 +104,41 @@ namespace dorm_energy::notifier
                 ? "⚠️"
                 : "ℹ️";
 
-        oss << emoji
-            << " *"
-            << core::toString(info.severity)
-            << " АНОМАЛИЯ*\n\n";
+        oss << emoji << " *" << core::toString(info.severity) << " АНОМАЛИЯ*\n\n";
 
-        oss << "🏠 *Комната:* `"
-            << state.deviceId
-            << "`\n";
+        oss << "🏠 *Комната:* `" << state.deviceId << "`\n";
 
-        oss << "⚡ *Power:* `"
-            << std::fixed
-            << std::setprecision(2)
-            << state.power
-            << "` kW\n";
+        oss << "⚡ *Power:* `" << std::fixed << std::setprecision(2) << state.power << "` kW\n";
 
-        oss << "🚶 *Motion:* `"
-            << (state.motion ? "true" : "false")
-            << "`\n";
+        oss << "🚶 *Motion:* `" << (state.motion ? "true" : "false") << "`\n";
 
-        oss << "💡 *Light:* `"
-            << std::fixed
-            << std::setprecision(2)
-            << state.light
-            << "` lx\n";
+        oss << "💡 *Light:* `" << std::fixed << std::setprecision(2) << state.light << "` lx\n";
 
-        oss << "🚨 *Тип:* `"
-            << info.anomalyType
-            << "`\n";
+        oss << "🚨 *Тип:* `" << info.anomalyType << "`\n";
 
         if (info.score > 0.0)
         {
-            oss << "🤖 *ML Score:* `"
-                << std::fixed
-                << std::setprecision(3)
-                << info.score
-                << "`\n";
+            oss << "🤖 *ML Score:* `" << std::fixed << std::setprecision(3) << info.score << "`\n";
         }
 
-        auto tt =
-            std::chrono::system_clock::to_time_t(
-                state.timestamp);
+        auto tt = std::chrono::system_clock::to_time_t(state.timestamp);
 
         std::ostringstream ts;
 
-        ts << std::put_time(
-            std::localtime(&tt),
-            "%Y-%m-%d %H:%M:%S");
+        ts << std::put_time(std::localtime(&tt), "%Y-%m-%d %H:%M:%S");
 
-        oss << "⏰ *Время:* `"
-            << ts.str()
-            << "`\n";
+        oss << "⏰ *Время:* `" << ts.str() << "`\n";
 
         if (!info.description.empty())
         {
-            oss << "\n🔍 *Причина:* "
-                << info.description
-                << "\n";
+            oss << "\n🔍 *Причина:* " << info.description << "\n";
         }
 
         oss << "\n_Нажми кнопку ниже после принятия_";
 
         std::string msg = oss.str();
 
-        const std::string special =
-            "_*[]()~`>#+-=|{}.!";
+        const std::string special = "_*[]()~`>#+-=|{}.!";
 
         for (char c : special)
         {
@@ -232,8 +199,7 @@ namespace dorm_energy::notifier
 
             if (queue_.size() > 0)
             {
-                std::cout << "[TelegramNotifier] 📭 Queue: " << queue_.size()
-                          << " | Backoff: " << currentBackoff_.load().count() << "s\n";
+                std::cout << "[TelegramNotifier] 📭 Queue: " << queue_.size() << " | Backoff: " << currentBackoff_.load().count() << "s\n";
             }
 
             std::this_thread::sleep_for(currentBackoff_.load());
@@ -249,8 +215,7 @@ namespace dorm_energy::notifier
         std::size_t sz = queue_.size();
         if (sz > 0)
         {
-            std::cout << "[TelegramNotifier] Queue: " << sz
-                      << " alerts | Backoff: " << currentBackoff_.load().count() << "s\n";
+            std::cout << "[TelegramNotifier] Queue: " << sz << " alerts | Backoff: " << currentBackoff_.load().count() << "s\n";
         }
     }
 

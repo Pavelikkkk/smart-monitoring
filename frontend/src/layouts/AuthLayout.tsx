@@ -2,20 +2,16 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function AuthLayout({
-  children,
-}: Props) {
+export default function AuthLayout({ children }: Props) {
   return (
     <div
-      className="
-        min-h-screen
-        bg-[#020617]
-        text-white
-        flex
-        items-center
-        justify-center
-        px-6
-      "
+      className="min-h-screen
+            bg-[#020617]
+            text-white
+            flex
+            items-center
+            justify-center
+            px-6"
     >
       {children}
     </div>

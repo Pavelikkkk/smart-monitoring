@@ -20,18 +20,22 @@ export default function RoomCard({
   };
 
   return (
-    <div className="bg-[#111827] border border-cyan-700/40 rounded-2xl p-5">
-      <div className="flex justify-between mb-4">
-        <h2 className="font-bold text-xl">
-          🏠 {roomId}
-        </h2>
+    <div className="bg-[#111827]
+          border
+          border-cyan-700/40
+          rounded-2xl
+          p-5">
+      <div className="flex
+            justify-between
+            mb-4">
+        <h2 className="font-bold
+              text-xl">🏠 {roomId}</h2>
 
-        <span className={statusColor[status]}>
-          {status}
-        </span>
+        <span className={statusColor[status]}>{status}</span>
       </div>
 
-      <div className="space-y-2 text-slate-300">
+      <div className="space-y-2
+            text-slate-300">
         <p>⚡ Power: {power} W</p>
         <p>💡 Light: {light} lx</p>
         <p>🚶 Motion: {motion ? "Yes" : "No"}</p>

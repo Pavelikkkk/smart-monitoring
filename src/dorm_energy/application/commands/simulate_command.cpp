@@ -28,89 +28,62 @@ namespace dorm_energy::application
     {
         if (!logger_ || !generator_ || !detector_ || !repository_)
         {
-            throw std::invalid_argument(
-                "SimulateCommand: all dependencies must be provided");
+            throw std::invalid_argument("SimulateCommand: all dependencies must be provided");
         }
     }
 
     int SimulateCommand::execute(
         const cli::CommandOptions &options)
     {
-        logger_->info(
-            "Starting simulation for " +
-            std::to_string(options.simulateDays) +
-            " days");
+        logger_->info("Starting simulation for " + std::to_string(options.simulateDays) + " days");
 
         if (options.injectAnomalies)
         {
-            logger_->info(
-                "Anomaly injection mode enabled");
+            logger_->info("Anomaly injection mode enabled");
         }
 
-        core::ReadingsBatch batch =
-            generator_->generate_for_days(
-                options.simulateDays);
+        core::ReadingsBatch batch = generator_->generate_for_days(options.simulateDays);
 
-        logger_->info(
-            "Generated " +
-            std::to_string(batch.size()) +
-            " sensor readings");
+        logger_->info("Generated " + std::to_string(batch.size()) + " sensor readings");
 
-        simulation::CsvExporter::exportReadings(
-            batch,
-            "../../data/training_dataset.csv");
+        simulation::CsvExporter::exportReadings(batch, "../../data/training_dataset.csv");
 
         detection::RoomStateAggregator aggregator;
         detection::AnomalyTracker tracker;
 
-        int anomalyCount = 0;
-        int savedAnomalies = 0;
-
-        int ruleCount = 0;
-        int mlCount = 0;
+        int anomalyCount{0};
+        int savedAnomalies{0};
+        int ruleCount{0};
+        int mlCount{0};
 
         for (const auto &reading : batch)
         {
-            auto state =
-                aggregator.update(reading);
+            auto state = aggregator.update(reading);
 
             if (!state.has_value())
                 continue;
 
             detection::DetectionContext context;
 
-            context.current =
-                *state;
+            context.current = *state;
+            context.history = &aggregator.getHistory(state->deviceId);
 
-            context.history =
-                &aggregator.getHistory(
-                    state->deviceId);
-
-            auto info =
-                detector_->detect(context);
+            auto info = detector_->detect(context);
 
             if (!info.isAnomaly)
-            {
                 continue;
-            }
 
-            if (!tracker.shouldReport(
-                    *state,
-                    info))
-            {
+            if (!tracker.shouldReport(*state, info))
                 continue;
-            }
 
             ++anomalyCount;
 
             if (info.anomalyType.starts_with("rule_"))
-            {
                 ++ruleCount;
-            }
+
             else if (info.anomalyType == "ml_anomaly")
-            {
                 ++mlCount;
-            }
+                
             bool success =
                 repository_->saveAnomaly(
                     reading,
@@ -122,42 +95,22 @@ namespace dorm_energy::application
             if (success)
                 ++savedAnomalies;
 
-            std::cout
-                << "[ANOMALY] "
-                << state->deviceId
-                << " -> "
-                << info.anomalyType
-                << " score="
-                << info.score
-                << '\n';
+            std::cout << "[ANOMALY] " << state->deviceId << " -> " << info.anomalyType << " score=" << info.score << '\n';
         }
 
-        logger_->info(
-            "Detected anomalies: " +
-            std::to_string(anomalyCount));
+        logger_->info("Detected anomalies: " + std::to_string(anomalyCount));
 
-        logger_->info(
-            "Rule anomalies: " +
-            std::to_string(ruleCount));
+        logger_->info("Rule anomalies: " + std::to_string(ruleCount));
 
-        logger_->info(
-            "ML anomalies: " +
-            std::to_string(mlCount));
+        logger_->info("ML anomalies: " + std::to_string(mlCount));
 
-        logger_->info(
-            "Saved anomalies: " +
-            std::to_string(savedAnomalies));
+        logger_->info("Saved anomalies: " + std::to_string(savedAnomalies));
 
-        std::size_t saved =
-            repository_->saveBatch(batch);
+        std::size_t saved = repository_->saveBatch(batch);
 
-        logger_->info(
-            "Saved " +
-            std::to_string(saved) +
-            " readings to the database");
+        logger_->info("Saved " + std::to_string(saved) + " readings to the database");
 
-        logger_->info(
-            "Simulation completed successfully");
+        logger_->info("Simulation completed successfully");
 
         return 0;
     }

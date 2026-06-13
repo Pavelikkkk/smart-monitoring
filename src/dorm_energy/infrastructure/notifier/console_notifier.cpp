@@ -13,17 +13,11 @@ namespace dorm_energy::notifier
     {
         std::ostringstream oss;
 
-        oss << "[ANOMALY] "
-            << state.deviceId
-            << " -> "
-            << info.anomalyType;
+        oss << "[ANOMALY] " << state.deviceId << " -> " << info.anomalyType;
 
         if (info.score > 0.0)
         {
-            oss << " score="
-                << std::fixed
-                << std::setprecision(3)
-                << info.score;
+            oss << " score=" << std::fixed << std::setprecision(3) << info.score;
         }
 
         return oss.str();
@@ -33,12 +27,7 @@ namespace dorm_energy::notifier
         const core::RoomState &state,
         const detection::AnomalyInfo &info)
     {
-        std::cout
-            << "["
-            << core::toString(info.severity)
-            << "] "
-            << formatAlert(state, info)
-            << '\n';
+        std::cout << "[" << core::toString(info.severity) << "] " << formatAlert(state, info) << '\n';
 
         return true;
     }
@@ -62,10 +51,7 @@ namespace dorm_energy::notifier
             }
         }
 
-        std::cout
-            << "Dispatched "
-            << sent
-            << " alerts to console\n";
+        std::cout << "Dispatched " << sent << " alerts to console\n";
 
         return sent;
     }

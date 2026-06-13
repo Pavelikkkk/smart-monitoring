@@ -1,4 +1,3 @@
-// src/dorm_energy/infrastructure/storage/postgres_repository.cpp
 #include "dorm_energy/infrastructure/storage/postgres_repository.hpp"
 #include "dorm_energy/core/alert_severity.hpp"
 #include "dorm_energy/domain/storage/user_dto.hpp"
@@ -20,8 +19,7 @@ namespace dorm_energy::storage
           maxBufferSize_(maxBufferSize)
     {
         connect();
-        std::cout << "[PostgresRepository] Successfully connected to TimescaleDB (buffer size = "
-                  << maxBufferSize << ")\n";
+        std::cout << "[PostgresRepository] Successfully connected to TimescaleDB (buffer size = " << maxBufferSize << ")\n";
     }
 
     PostgresMeasurementRepository::~PostgresMeasurementRepository()
@@ -197,9 +195,7 @@ namespace dorm_energy::storage
             txn.commit();
 
             std::cout << fmt::format("[Postgres] Anomaly saved: {} - {} ({})\n",
-                                     anomalyType,
-                                     reading.deviceId,
-                                     core::toString(severity));
+                                     anomalyType, reading.deviceId, core::toString(severity));
 
             return true;
         }
@@ -209,8 +205,7 @@ namespace dorm_energy::storage
             return false;
         }
     }
-    std::vector<storage::AnomalyDto>
-    PostgresMeasurementRepository::getLatestAnomalies(
+    std::vector<storage::AnomalyDto> PostgresMeasurementRepository::getLatestAnomalies(
         std::size_t limit,
         int organizationId)
     {
@@ -247,23 +242,12 @@ namespace dorm_energy::storage
         {
             AnomalyDto dto;
 
-            dto.room =
-                row["room_name"].c_str();
-
-            dto.type =
-                row["anomaly_type"].c_str();
-
-            dto.severity =
-                row["severity"].c_str();
-
-            dto.score =
-                row["score"].as<double>(0.0);
-
-            dto.description =
-                row["description"].c_str();
-
-            dto.detectedAt =
-                row["detected_at"].c_str();
+            dto.room = row["room_name"].c_str();
+            dto.type = row["anomaly_type"].c_str();
+            dto.severity = row["severity"].c_str();
+            dto.score = row["score"].as<double>(0.0);
+            dto.description = row["description"].c_str();
+            dto.detectedAt = row["detected_at"].c_str();
 
             result.push_back(dto);
         }
@@ -271,8 +255,7 @@ namespace dorm_energy::storage
         return result;
     }
 
-    std::vector<storage::PowerPointDto>
-    PostgresMeasurementRepository::getPowerHistory(
+    std::vector<storage::PowerPointDto> PostgresMeasurementRepository::getPowerHistory(
         int hours,
         int organizationId)
     {
@@ -306,11 +289,8 @@ namespace dorm_energy::storage
         {
             PowerPointDto dto;
 
-            dto.time =
-                row["bucket"].c_str();
-
-            dto.power =
-                row["avg_power"].as<double>(0.0);
+            dto.time = row["bucket"].c_str();
+            dto.power = row["avg_power"].as<double>(0.0);
 
             result.push_back(dto);
         }
@@ -318,8 +298,7 @@ namespace dorm_energy::storage
         return result;
     }
 
-    std::vector<storage::DeviceDto>
-    PostgresMeasurementRepository::getDevices(
+    std::vector<storage::DeviceDto> PostgresMeasurementRepository::getDevices(
         int organizationId)
     {
         std::vector<DeviceDto> result;
@@ -367,35 +346,16 @@ namespace dorm_energy::storage
         {
             DeviceDto dto;
 
-            dto.deviceId =
-                row["device_id"].c_str();
-
-            dto.deviceName =
-                row["device_name"].c_str();
-
-            dto.deviceModel =
-                row["device_model"].c_str();
-
-            dto.firmwareVersion =
-                row["firmware_version"].c_str();
-
-            dto.roomName =
-                row["room_name"].c_str();
-
-            dto.roomId =
-                row["room_id"].as<int>(0);
-
-            dto.buildingId =
-                row["building_id"].as<int>(0);
-
-            dto.organizationId =
-                row["organization_id"].as<int>(0);
-
-            dto.isOnline =
-                row["is_online"].as<bool>(false);
-
-            dto.lastSeenAt =
-                row["last_seen_at"].c_str();
+            dto.deviceId = row["device_id"].c_str();
+            dto.deviceName = row["device_name"].c_str();
+            dto.deviceModel = row["device_model"].c_str();
+            dto.firmwareVersion = row["firmware_version"].c_str();
+            dto.roomName = row["room_name"].c_str();
+            dto.roomId = row["room_id"].as<int>(0);
+            dto.buildingId = row["building_id"].as<int>(0);
+            dto.organizationId = row["organization_id"].as<int>(0);
+            dto.isOnline = row["is_online"].as<bool>(false);
+            dto.lastSeenAt = row["last_seen_at"].c_str();
 
             result.push_back(dto);
         }
@@ -403,8 +363,7 @@ namespace dorm_energy::storage
         return result;
     }
 
-    std::vector<storage::BuildingDto>
-    PostgresMeasurementRepository::getBuildings(
+    std::vector<storage::BuildingDto> PostgresMeasurementRepository::getBuildings(
         int organizationId)
     {
         std::vector<BuildingDto> result;
@@ -429,17 +388,10 @@ namespace dorm_energy::storage
         {
             BuildingDto dto;
 
-            dto.id =
-                row["id"].as<int>();
-
-            dto.name =
-                row["name"].c_str();
-
-            dto.address =
-                row["address"].c_str();
-
-            dto.description =
-                row["description"].c_str();
+            dto.id = row["id"].as<int>();
+            dto.name = row["name"].c_str();
+            dto.address = row["address"].c_str();
+            dto.description = row["description"].c_str();
 
             result.push_back(dto);
         }
@@ -447,8 +399,7 @@ namespace dorm_energy::storage
         return result;
     }
 
-    std::vector<storage::RoomDto>
-    PostgresMeasurementRepository::getRooms(
+    std::vector<storage::RoomDto> PostgresMeasurementRepository::getRooms(
         int organizationId)
     {
         std::vector<RoomDto> result;
@@ -476,28 +427,18 @@ namespace dorm_energy::storage
         {
             RoomDto dto;
 
-            dto.id =
-                row["id"].as<int>();
-
-            dto.buildingId =
-                row["building_id"].as<int>();
-
-            dto.roomName =
-                row["room_name"].c_str();
-
-            dto.roomType =
-                row["room_type"].c_str();
-
-            dto.floorNumber =
-                row["floor_number"].as<int>();
+            dto.id = row["id"].as<int>();
+            dto.buildingId = row["building_id"].as<int>();
+            dto.roomName = row["room_name"].c_str();
+            dto.roomType = row["room_type"].c_str();
+            dto.floorNumber = row["floor_number"].as<int>();
 
             result.push_back(dto);
         }
 
         return result;
     }
-    std::vector<storage::TopConsumerDto>
-    PostgresMeasurementRepository::getTopConsumers(
+    std::vector<storage::TopConsumerDto> PostgresMeasurementRepository::getTopConsumers(
         int limit,
         int organizationId)
     {
@@ -531,19 +472,15 @@ namespace dorm_energy::storage
         {
             TopConsumerDto dto;
 
-            dto.roomName =
-                row["device_id"].c_str();
-
-            dto.power =
-                row["avg_power"].as<double>(0.0);
+            dto.roomName = row["device_id"].c_str();
+            dto.power = row["avg_power"].as<double>(0.0);
 
             result.push_back(dto);
         }
 
         return result;
     }
-    std::vector<storage::AnomalyStatsDto>
-    PostgresMeasurementRepository::getAnomalyStatistics(
+    std::vector<storage::AnomalyStatsDto> PostgresMeasurementRepository::getAnomalyStatistics(
         int organizationId)
     {
         std::vector<AnomalyStatsDto> result;
@@ -573,19 +510,15 @@ namespace dorm_energy::storage
         {
             AnomalyStatsDto dto;
 
-            dto.type =
-                row["anomaly_type"].c_str();
-
-            dto.count =
-                row["total"].as<int>();
+            dto.type = row["anomaly_type"].c_str();
+            dto.count = row["total"].as<int>();
 
             result.push_back(dto);
         }
 
         return result;
     }
-    std::vector<storage::EnergyByRoomDto>
-    PostgresMeasurementRepository::getEnergyByRoom(
+    std::vector<storage::EnergyByRoomDto> PostgresMeasurementRepository::getEnergyByRoom(
         int organizationId)
     {
         std::vector<EnergyByRoomDto> result;
@@ -616,19 +549,15 @@ namespace dorm_energy::storage
         {
             EnergyByRoomDto dto;
 
-            dto.roomName =
-                row["room_name"].c_str();
-
-            dto.avgPower =
-                row["avg_power"].as<double>(0.0);
+            dto.roomName = row["room_name"].c_str();
+            dto.avgPower = row["avg_power"].as<double>(0.0);
 
             result.push_back(dto);
         }
 
         return result;
     }
-    std::vector<storage::SeverityStatsDto>
-    PostgresMeasurementRepository::getSeverityDistribution(
+    std::vector<storage::SeverityStatsDto> PostgresMeasurementRepository::getSeverityDistribution(
         int organizationId)
     {
         std::vector<SeverityStatsDto> result;
@@ -658,11 +587,8 @@ namespace dorm_energy::storage
         {
             SeverityStatsDto dto;
 
-            dto.severity =
-                row["severity"].c_str();
-
-            dto.count =
-                row["total"].as<int>(0);
+            dto.severity = row["severity"].c_str();
+            dto.count = row["total"].as<int>(0);
 
             result.push_back(dto);
         }
@@ -670,8 +596,7 @@ namespace dorm_energy::storage
         return result;
     }
 
-    std::optional<UserDto>
-    PostgresMeasurementRepository::findUserByEmail(
+    std::optional<UserDto> PostgresMeasurementRepository::findUserByEmail(
         const std::string &email)
     {
         pqxx::work txn(*connection_);
@@ -702,37 +627,19 @@ namespace dorm_energy::storage
 
         UserDto dto;
 
-        dto.id =
-            row["id"].as<int>();
-
-        dto.username =
-            row["username"].c_str();
-
-        dto.email =
-            row["email"].c_str();
-
-        dto.passwordHash =
-            row["password_hash"].c_str();
-
-        dto.role =
-            row["role"].c_str();
-
-        dto.organizationId =
-            row["organization_id"].is_null()
-                ? 0
-                : row["organization_id"].as<int>();
-
-        dto.accountType =
-            row["account_type"].c_str();
-
-        dto.telegramChatId =
-            row["telegram_chat_id"].c_str();
+        dto.id = row["id"].as<int>();
+        dto.username = row["username"].c_str();
+        dto.email = row["email"].c_str();
+        dto.passwordHash = row["password_hash"].c_str();
+        dto.role = row["role"].c_str();
+        dto.organizationId = row["organization_id"].is_null() ? 0 : row["organization_id"].as<int>();
+        dto.accountType = row["account_type"].c_str();
+        dto.telegramChatId = row["telegram_chat_id"].c_str();
 
         return dto;
     }
 
-    std::optional<UserDto>
-    PostgresMeasurementRepository::findUserById(
+    std::optional<UserDto> PostgresMeasurementRepository::findUserById(
         int userId)
     {
         pqxx::work txn(*connection_);
@@ -763,46 +670,26 @@ namespace dorm_energy::storage
 
         UserDto dto;
 
-        dto.id =
-            row["id"].as<int>();
-
-        dto.username =
-            row["username"].c_str();
-
-        dto.email =
-            row["email"].c_str();
-
-        dto.passwordHash =
-            row["password_hash"].c_str();
-
-        dto.role =
-            row["role"].c_str();
-
-        dto.organizationId =
-            row["organization_id"].is_null()
-                ? 0
-                : row["organization_id"].as<int>();
-
-        dto.accountType =
-            row["account_type"].c_str();
-
-        dto.telegramChatId =
-            row["telegram_chat_id"].c_str();
+        dto.id = row["id"].as<int>();
+        dto.username = row["username"].c_str();
+        dto.email = row["email"].c_str();
+        dto.passwordHash = row["password_hash"].c_str();
+        dto.role = row["role"].c_str();
+        dto.organizationId = row["organization_id"].is_null() ? 0 : row["organization_id"].as<int>();
+        dto.accountType = row["account_type"].c_str();
+        dto.telegramChatId = row["telegram_chat_id"].c_str();
 
         return dto;
     }
-    int
-    PostgresMeasurementRepository::createUser(
+
+    int PostgresMeasurementRepository::createUser(
         const UserDto &user)
     {
         try
         {
             pqxx::work txn(*connection_);
 
-            const auto organizationType =
-                user.accountType == "BUSINESS"
-                    ? "BUSINESS"
-                    : "PERSONAL";
+            const auto organizationType = user.accountType == "BUSINESS" ? "BUSINESS" : "PERSONAL";
 
             auto organizationRow =
                 txn.exec_params1(
@@ -822,12 +709,10 @@ namespace dorm_energy::storage
                     user.username + " workspace",
                     organizationType);
 
-            const auto organizationId =
-                organizationRow["id"].as<int>();
+            const auto organizationId = organizationRow["id"].as<int>();
 
-            auto row =
-                txn.exec_params1(
-                    R"(
+            auto row = txn.exec_params1(
+                R"(
         INSERT INTO users
         (
             username,
@@ -848,18 +733,16 @@ namespace dorm_energy::storage
         )
         RETURNING id
         )",
-                    user.username,
-                    user.email,
-                    user.passwordHash,
-                    user.role,
-                    user.accountType,
-                    organizationId);
+                user.username,
+                user.email,
+                user.passwordHash,
+                user.role,
+                user.accountType,
+                organizationId);
 
-            const auto userId =
-                row["id"].as<int>();
+            const auto userId = row["id"].as<int>();
 
-            const auto isBusiness =
-                user.accountType == "BUSINESS";
+            const auto isBusiness = user.accountType == "BUSINESS";
 
             txn.exec_params(
                 R"(
@@ -897,21 +780,16 @@ namespace dorm_energy::storage
         }
         catch (const std::exception &ex)
         {
-            std::cerr
-                << "CREATE USER ERROR: "
-                << ex.what()
-                << std::endl;
+            std::cerr << "CREATE USER ERROR: " << ex.what() << std::endl;
 
             throw;
         }
     }
 
-    std::optional<UserDto>
-    PostgresMeasurementRepository::getUserById(
+    std::optional<UserDto> PostgresMeasurementRepository::getUserById(
         int userId)
     {
-        pqxx::work txn(
-            *connection_);
+        pqxx::work txn(*connection_);
 
         auto rows =
             txn.exec_params(
@@ -937,35 +815,26 @@ namespace dorm_energy::storage
 
         UserDto dto;
 
-        dto.id =
-            rows[0]["id"].as<int>();
+        dto.id = rows[0]["id"].as<int>();
 
-        dto.username =
-            rows[0]["username"].c_str();
+        dto.username = rows[0]["username"].c_str();
 
-        dto.email =
-            rows[0]["email"].c_str();
+        dto.email = rows[0]["email"].c_str();
 
-        dto.passwordHash =
-            rows[0]["password_hash"].c_str();
+        dto.passwordHash = rows[0]["password_hash"].c_str();
 
-        dto.role =
-            rows[0]["role"].c_str();
+        dto.role = rows[0]["role"].c_str();
 
-        dto.organizationId =
-            rows[0]["organization_id"].as<int>(0);
+        dto.organizationId = rows[0]["organization_id"].as<int>(0);
 
-        dto.accountType =
-            rows[0]["account_type"].c_str();
+        dto.accountType = rows[0]["account_type"].c_str();
 
-        dto.telegramChatId =
-            rows[0]["telegram_chat_id"].c_str();
+        dto.telegramChatId = rows[0]["telegram_chat_id"].c_str();
 
         return dto;
     }
 
-    bool
-    PostgresMeasurementRepository::updateUserTelegramChatId(
+    bool PostgresMeasurementRepository::updateUserTelegramChatId(
         int userId,
         const std::string &telegramChatId)
     {
@@ -987,8 +856,7 @@ namespace dorm_energy::storage
         return result.affected_rows() == 1;
     }
 
-    Json::Value
-    PostgresMeasurementRepository::getUserSubscription(
+    Json::Value PostgresMeasurementRepository::getUserSubscription(
         int userId)
     {
         pqxx::work txn(*connection_);
@@ -1032,8 +900,7 @@ namespace dorm_energy::storage
         return json;
     }
 
-    Json::Value
-    PostgresMeasurementRepository::getAdminOverview()
+    Json::Value PostgresMeasurementRepository::getAdminOverview()
     {
         pqxx::work txn(*connection_);
 
@@ -1149,8 +1016,7 @@ namespace dorm_energy::storage
         return json;
     }
 
-    int
-    PostgresMeasurementRepository::createBuildingForOrganization(
+    int PostgresMeasurementRepository::createBuildingForOrganization(
         int organizationId,
         const std::string &name,
         const std::string &address,
@@ -1187,8 +1053,7 @@ namespace dorm_energy::storage
         return row["id"].as<int>();
     }
 
-    int
-    PostgresMeasurementRepository::createRoomForBuilding(
+    int PostgresMeasurementRepository::createRoomForBuilding(
         int buildingId,
         const std::string &roomName,
         const std::string &roomType,
@@ -1225,8 +1090,7 @@ namespace dorm_energy::storage
         return row["id"].as<int>();
     }
 
-    bool
-    PostgresMeasurementRepository::createDeviceForRoom(
+    bool PostgresMeasurementRepository::createDeviceForRoom(
         const std::string &deviceId,
         const std::string &deviceName,
         const std::string &deviceModel,

@@ -1,4 +1,3 @@
-// src/main.cpp
 #include "dorm_energy/application/application.hpp"
 #include "dorm_energy/application/application_builder.hpp"
 #include "dorm_energy/application/config/app_config.hpp"
@@ -8,8 +7,7 @@
 int main(int argc, char **argv)
 {
 
-    std::cout << "=== Dorm Energy Simulator ===\n"
-              << std::endl;
+    std::cout << "=== Dorm Energy Simulator ===\n" << std::endl;
 
     try
     {

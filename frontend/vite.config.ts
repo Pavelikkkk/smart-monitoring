@@ -5,8 +5,5 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   base: "/smart-monitoring/",
 
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react(), tailwindcss()],
 });

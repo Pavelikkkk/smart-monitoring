@@ -1,29 +1,20 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import {
-  getBuildings,
-  getRooms,
-  getDevices,
-} from "../services/api";
+import { getBuildings, getRooms, getDevices } from "../services/api";
 
 export default function BuildingDetails() {
   const { id } = useParams();
 
-  const [building, setBuilding] =
-    useState<any>(null);
+  const [building, setBuilding] = useState<any>(null);
 
-  const [rooms, setRooms] =
-    useState<any[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
 
-  const [devices, setDevices] =
-    useState<any[]>([]);
+  const [devices, setDevices] = useState<any[]>([]);
 
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
 
-  const [visibleRooms, setVisibleRooms] =
-    useState(12);
+  const [visibleRooms, setVisibleRooms] = useState(12);
 
   useEffect(() => {
     loadData();
@@ -31,148 +22,102 @@ export default function BuildingDetails() {
 
   async function loadData() {
     try {
-      const [
-        buildings,
-        roomsData,
-        devicesData,
-      ] = await Promise.all([
+      const [buildings, roomsData, devicesData] = await Promise.all([
         getBuildings(),
         getRooms(),
         getDevices(),
       ]);
 
-      const currentBuilding =
-        buildings.find(
-          (b: any) =>
-            String(b.id) === id
-        );
+      const currentBuilding = buildings.find((b: any) => String(b.id) === id);
 
       setBuilding(currentBuilding);
 
-      setRooms(
-        roomsData.filter(
-          (r: any) =>
-            String(r.buildingId) === id
-        )
-      );
+      setRooms(roomsData.filter((r: any) => String(r.buildingId) === id));
 
       setDevices(devicesData);
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   }
 
   if (!building) {
-    return (
-      <div>
-        Loading...
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  const filteredRooms =
-    rooms.filter((room) =>
-      room.roomName
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
+  const filteredRooms = rooms.filter((room) =>
+    room.roomName.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <div className="space-y-8">
-
       {/* HEADER */}
 
       <div>
+        <h1 className="text-5xl
+              font-bold
+              mb-3">{building.name}</h1>
 
-        <h1 className="text-5xl font-bold mb-3">
-          {building.name}
-        </h1>
-
-        <p className="text-slate-300">
-          {building.address}
-        </p>
-
+        <p className="text-slate-300">{building.address}</p>
       </div>
 
       {/* STATS */}
 
       <div
-        className="
-          grid
-          grid-cols-1
-          md:grid-cols-3
-          gap-4
-        "
+        className="grid
+              grid-cols-1
+              md:grid-cols-3
+              gap-4"
       >
-
         <div
-          className="
-            bg-[#111827]
-            rounded-2xl
-            p-5
-          "
+          className="bg-[#111827]
+                rounded-2xl
+                p-5"
         >
-          <p className="text-slate-300">
-            🚪 Rooms
-          </p>
+          <p className="text-slate-300">🚪 Rooms</p>
 
-          <h2 className="text-3xl font-bold text-cyan-400">
-            {rooms.length}
-          </h2>
+          <h2 className="text-3xl
+                font-bold
+                text-cyan-400">{rooms.length}</h2>
         </div>
 
         <div
-          className="
-            bg-[#111827]
-            rounded-2xl
-            p-5
-          "
+          className="bg-[#111827]
+                rounded-2xl
+                p-5"
         >
-          <p className="text-slate-300">
-            📡 Devices
-          </p>
+          <p className="text-slate-300">📡 Devices</p>
 
-          <h2 className="text-3xl font-bold text-cyan-400">
-            {devices.length}
-          </h2>
+          <h2 className="text-3xl
+                font-bold
+                text-cyan-400">{devices.length}</h2>
         </div>
 
         <div
-          className="
-            bg-[#111827]
-            rounded-2xl
-            p-5
-          "
+          className="bg-[#111827]
+                rounded-2xl
+                p-5"
         >
-          <p className="text-slate-300">
-            ⚡ Status
-          </p>
+          <p className="text-slate-300">⚡ Status</p>
 
-          <h2 className="text-3xl font-bold text-emerald-400">
-            ACTIVE
-          </h2>
+          <h2 className="text-3xl
+                font-bold
+                text-emerald-400">ACTIVE</h2>
         </div>
-
       </div>
 
       {/* ANALYTICS */}
 
       <Link
         to={`/buildings/${id}/analytics`}
-        className="
-          block
-          bg-cyan-500
-          text-slate-900
-          rounded-2xl
-          p-5
-          font-semibold
-          text-center
-          hover:bg-cyan-400
-          transition
-        "
+        className="block
+              bg-cyan-500
+              text-slate-900
+              rounded-2xl
+              p-5
+              font-semibold
+              text-center
+              hover:bg-cyan-400
+              transition"
       >
         Open Analytics →
       </Link>
@@ -183,132 +128,86 @@ export default function BuildingDetails() {
         type="text"
         placeholder="Search room..."
         value={search}
-        onChange={(e) =>
-          setSearch(
-            e.target.value
-          )
-        }
-        className="
-          w-full
-          bg-[#111827]
-          border
-          border-cyan-700/40
-          rounded-2xl
-          p-5
-          outline-none
-          focus:border-orange-300
-        "
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full
+              bg-[#111827]
+              border
+              border-cyan-700/40
+              rounded-2xl
+              p-5
+              outline-none
+              focus:border-orange-300"
       />
 
       {/* ROOMS */}
 
       <div>
-
-        <h2 className="text-3xl font-bold mb-5">
-          Rooms
-        </h2>
+        <h2 className="text-3xl
+              font-bold
+              mb-5">Rooms</h2>
 
         <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            xl:grid-cols-3
-            gap-5
-          "
+          className="grid
+                grid-cols-1
+                md:grid-cols-2
+                xl:grid-cols-3
+                gap-5"
         >
-
-          {filteredRooms
-            .slice(
-              0,
-              visibleRooms
-            )
-            .map((room) => (
-
-              <div
-                key={room.id}
-                className="
-                  bg-[#111827]
-                  border
-                  border-cyan-700/40
-                  rounded-2xl
-                  p-5
-                  hover:border-cyan-400
-                  transition
-                "
+          {filteredRooms.slice(0, visibleRooms).map((room) => (
+            <div
+              key={room.id}
+              className="bg-[#111827]
+                    border
+                    border-cyan-700/40
+                    rounded-2xl
+                    p-5
+                    hover:border-cyan-400
+                    transition"
+            >
+              <h3
+                className="text-xl
+                      font-bold
+                      mb-2"
               >
+                {room.roomName}
+              </h3>
 
-                <h3
-                  className="
-                    text-xl
-                    font-bold
-                    mb-2
-                  "
-                >
-                  {room.roomName}
-                </h3>
+              <p className="text-slate-300
+                    mb-4">{room.roomType}</p>
 
-                <p className="text-slate-300 mb-4">
-                  {room.roomType}
-                </p>
+              <div className="space-y-2">
+                <div>🏢 Floor {room.floorNumber}</div>
 
-                <div className="space-y-2">
-
-                  <div>
-                    🏢 Floor{" "}
-                    {room.floorNumber}
-                  </div>
-
-                  <div>
-                    📡 Devices:{" "}
-                    {
-                      devices.filter(
-                        (d: any) =>
-                          d.roomId ===
-                          room.id
-                      ).length
-                    }
-                  </div>
-
+                <div>
+                  📡 Devices:{" "}
+                  {devices.filter((d: any) => d.roomId === room.id).length}
                 </div>
-
               </div>
-
-            ))}
-
+            </div>
+          ))}
         </div>
-
       </div>
 
       {/* SHOW MORE */}
 
-      {visibleRooms <
-        filteredRooms.length && (
-          <div className="flex justify-center">
-
-            <button
-              onClick={() =>
-                setVisibleRooms(
-                  visibleRooms + 12
-                )
-              }
-              className="
-              px-8
-              py-4
-              rounded-2xl
-              bg-cyan-500
-              text-slate-900
-              font-semibold
-              hover:bg-cyan-400
-              transition
-            "
-            >
-              Show More
-            </button>
-
-          </div>
-        )}
-
+      {visibleRooms < filteredRooms.length && (
+        <div className="flex
+              justify-center">
+          <button
+            onClick={() => setVisibleRooms(visibleRooms + 12)}
+            className="px-8
+                  py-4
+                  rounded-2xl
+                  bg-cyan-500
+                  text-slate-900
+                  font-semibold
+                  hover:bg-cyan-400
+                  transition"
+          >
+            Show More
+          </button>
+        </div>
+      )}
     </div>
   );
 }

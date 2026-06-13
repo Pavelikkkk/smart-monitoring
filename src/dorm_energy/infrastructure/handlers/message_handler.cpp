@@ -19,8 +19,7 @@ namespace dorm_energy::handlers
     {
         if (!detector_ || !repository_ || !notifier_ || !aggregator_)
         {
-            throw std::invalid_argument(
-                "MessageHandler: all dependencies must be provided");
+            throw std::invalid_argument("MessageHandler: all dependencies must be provided");
         }
     }
 
@@ -29,16 +28,14 @@ namespace dorm_energy::handlers
     {
         batch_.push_back(reading);
 
-        constexpr std::size_t
-            BATCH_THRESHOLD = 100;
+        constexpr std::size_t BATCH_THRESHOLD = 100;
 
         if (batch_.size() >= BATCH_THRESHOLD)
         {
             persistCurrentBatch();
         }
 
-        auto state =
-            aggregator_->update(reading);
+        auto state = aggregator_->update(reading);
 
         if (!state)
         {
@@ -47,41 +44,27 @@ namespace dorm_energy::handlers
 
         detection::DetectionContext context;
 
-        context.current =
-            *state;
+        context.current = *state;
 
-        context.history =
-            &aggregator_->getHistory(
-                state->deviceId);
+        context.history = &aggregator_->getHistory(state->deviceId);
 
-        auto anomalyInfo =
-            detector_->detect(context);
+        auto anomalyInfo = detector_->detect(context);
 
         if (!anomalyInfo.isAnomaly)
         {
-            tracker_.resolveRoom(
-                state->deviceId);
+            tracker_.resolveRoom(state->deviceId);
 
             return true;
         }
 
-        if (!tracker_.shouldReport(
-                *state,
-                anomalyInfo))
+        if (!tracker_.shouldReport(*state, anomalyInfo))
         {
             return true;
         }
 
-        repository_->saveAnomaly(
-            reading,
-            anomalyInfo.anomalyType,
-            anomalyInfo.severity,
-            anomalyInfo.description,
-            anomalyInfo.score);
+        repository_->saveAnomaly(reading, anomalyInfo.anomalyType, anomalyInfo.severity, anomalyInfo.description, anomalyInfo.score);
 
-        notifier_->sendAlert(
-            *state,
-            anomalyInfo);
+        notifier_->sendAlert(*state, anomalyInfo);
 
         return true;
     }
@@ -113,14 +96,9 @@ namespace dorm_energy::handlers
         if (batch_.empty())
             return;
 
-        std::size_t saved =
-            repository_->saveBatch(batch_);
+        std::size_t saved = repository_->saveBatch(batch_);
 
-        std::cout
-            << fmt::format(
-                   "[MessageHandler] Saved {} readings to repository (batch size: {})\n",
-                   saved,
-                   batch_.size());
+        std::cout << fmt::format("[MessageHandler] Saved {} readings to repository (batch size: {})\n", saved, batch_.size());
 
         batch_.clear();
     }

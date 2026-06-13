@@ -1,4 +1,3 @@
-// src/dorm_energy/logging/spdlog_logger.cpp
 #include "dorm_energy/infrastructure/logging/spdlog_logger.hpp"
 #include "dorm_energy/application/config/app_config.hpp"
 
@@ -28,16 +27,14 @@ namespace dorm_energy::logging
         }
     }
 
-    SpdlogLogger::SpdlogLogger(const std::string &name)
-        : logger_(spdlog::stdout_color_mt(name))
+    SpdlogLogger::SpdlogLogger(const std::string &name) : logger_(spdlog::stdout_color_mt(name))
     {
         logger_->set_level(spdlog::level::info);
         logger_->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
     }
 
     SpdlogLogger::SpdlogLogger(const application::AppConfig &config,
-                               const std::string &name)
-        : logger_(spdlog::stdout_color_mt(name))
+                               const std::string &name) : logger_(spdlog::stdout_color_mt(name))
     {
         spdlog::level::level_enum spdLevel = spdlog::level::info;
 

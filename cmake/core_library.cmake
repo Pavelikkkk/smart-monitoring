@@ -1,5 +1,5 @@
 # ============================================
-# Основная библиотека проекта
+# РћСЃРЅРѕРІРЅР°СЏ Р±РёР±Р»РёРѕС‚РµРєР° РїСЂРѕРµРєС‚Р°
 # ============================================
 
 add_library(dorm_energy_core STATIC
@@ -11,13 +11,18 @@ add_library(dorm_energy_core STATIC
     src/dorm_energy/infrastructure/logging/spdlog_logger.cpp
     src/dorm_energy/infrastructure/simulation/synthetic_data_generator.cpp
     src/dorm_energy/infrastructure/notifier/console_notifier.cpp
-    src/dorm_energy/infrastructure/notifier/telegram_config.cpp      
+    src/dorm_energy/infrastructure/notifier/telegram_config.cpp
     src/dorm_energy/infrastructure/notifier/telegram_notifier.cpp
+    src/dorm_energy/infrastructure/notifier/telegram_poller.cpp
     src/dorm_energy/infrastructure/handlers/message_handler.cpp
     src/dorm_energy/infrastructure/cli/cli_parser.cpp
     src/dorm_energy/infrastructure/mqtt/mqtt_client.cpp
     src/dorm_energy/infrastructure/mqtt/message_parser.cpp
     src/dorm_energy/infrastructure/storage/postgres_repository.cpp
+    src/dorm_energy/infrastructure/storage/postgres_repository_admin.cpp
+    src/dorm_energy/infrastructure/storage/postgres_repository_analytics.cpp
+    src/dorm_energy/infrastructure/storage/postgres_repository_catalog.cpp
+    src/dorm_energy/infrastructure/storage/postgres_repository_users.cpp
     src/dorm_energy/infrastructure/detection/rule_based_detector.cpp
     src/dorm_energy/infrastructure/notifier/telegram_queue.cpp
     src/dorm_energy/infrastructure/simulation/csv_exporter.cpp
@@ -26,10 +31,19 @@ add_library(dorm_energy_core STATIC
     src/dorm_energy/infrastructure/detection/feature_extractor.cpp
     src/dorm_energy/infrastructure/detection/onnx_detector.cpp
     src/dorm_energy/infrastructure/detection/hybrid_detector.cpp
+    src/dorm_energy/infrastructure/web/controllers/admin_controller.cpp
+    src/dorm_energy/infrastructure/web/controllers/analytics_controller.cpp
+    src/dorm_energy/infrastructure/web/controllers/anomalies_controller.cpp
+    src/dorm_energy/infrastructure/web/controllers/auth_controller.cpp
+    src/dorm_energy/infrastructure/web/controllers/health_controller.cpp
+    src/dorm_energy/infrastructure/web/controllers/resources_controller.cpp
+    src/dorm_energy/infrastructure/web/middleware/auth_middleware.cpp
+    src/dorm_energy/infrastructure/web/middleware/cors_middleware.cpp
+    src/dorm_energy/infrastructure/web/routes/route_registrar.cpp
     src/dorm_energy/infrastructure/web/server/web_server.cpp
+    src/dorm_energy/infrastructure/web/utils/json_response.cpp
     src/dorm_energy/infrastructure/auth/jwt_service.cpp
     src/dorm_energy/infrastructure/auth/openssl_password_hasher.cpp
-
 
     # Application
     src/dorm_energy/application/config/app_config.cpp
@@ -40,7 +54,6 @@ add_library(dorm_energy_core STATIC
     src/dorm_energy/application/runtime.cpp
     src/dorm_energy/application/notifier_service.cpp
     src/dorm_energy/application/auth/auth_service.cpp
-    
 )
 
 target_include_directories(

@@ -10,9 +10,10 @@ import {
 } from "recharts";
 
 import { getTopConsumers } from "../services/api";
+import type { TopConsumer } from "../services/api";
 
 export default function TopConsumersChart() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<TopConsumer[]>([]);
 
   useEffect(() => {
     getTopConsumers().then(setData).catch(console.error);

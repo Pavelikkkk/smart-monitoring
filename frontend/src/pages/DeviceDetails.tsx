@@ -2,17 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { getUserDevice } from "../services/api";
-
-type Device = {
-  deviceId: string;
-  deviceName: string;
-  deviceModel: string;
-  firmwareVersion: string;
-  roomName: string;
-  buildingName?: string;
-  isOnline: boolean;
-  lastSeenAt: string;
-};
+import type { Device } from "../services/api";
 
 export default function DeviceDetails() {
   const { id } = useParams();
@@ -22,22 +12,22 @@ export default function DeviceDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function loadDevice() {
+      try {
+        const current = await getUserDevice(id!);
+
+        setDevice(current ?? null);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     if (id) {
       loadDevice();
     }
   }, [id]);
-
-  async function loadDevice() {
-    try {
-      const current = await getUserDevice(id!);
-
-      setDevice(current ?? null);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   if (loading) {
     return <div className="text-slate-300">Loading...</div>;

@@ -7,6 +7,7 @@ import {
   getUserBuildingDevices,
   getUserBuildingAnomalies,
 } from "../services/api";
+import type { Anomaly, Building, Device, Room } from "../services/api";
 
 import StatCard from "../components/StatCard";
 import AlertCard from "../components/AlertCard";
@@ -14,39 +15,39 @@ import AlertCard from "../components/AlertCard";
 export default function BuildingAnalytics() {
   const { id } = useParams();
 
-  const [building, setBuilding] = useState<any>(null);
+  const [building, setBuilding] = useState<Building | null>(null);
 
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
 
-  const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        const [buildingData, roomsData, devicesData, anomaliesData] =
+          await Promise.all([
+            getUserBuilding(id!),
+            getUserBuildingRooms(id!),
+            getUserBuildingDevices(id!),
+            getUserBuildingAnomalies(id!),
+          ]);
+
+        setBuilding(buildingData);
+
+        setRooms(roomsData);
+
+        setDevices(devicesData);
+
+        setAnomalies(anomaliesData);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     loadData();
   }, [id]);
-
-  async function loadData() {
-    try {
-      const [buildingData, roomsData, devicesData, anomaliesData] =
-        await Promise.all([
-          getUserBuilding(id!),
-          getUserBuildingRooms(id!),
-          getUserBuildingDevices(id!),
-          getUserBuildingAnomalies(id!),
-        ]);
-
-      setBuilding(buildingData);
-
-      setRooms(roomsData);
-
-      setDevices(devicesData);
-
-      setAnomalies(anomaliesData);
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   if (!building) {
     return <div className="text-slate-300">Loading...</div>;

@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from "recharts";
 
 import { getSeverityDistribution } from "../services/api";
+import type { SeverityDistribution } from "../services/api";
 
 const COLORS = ["#22c55e", "#f59e0b", "#ef4444"];
 
 export default function SeverityDistributionChart() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<SeverityDistribution[]>([]);
 
   useEffect(() => {
     getSeverityDistribution().then(setData).catch(console.error);

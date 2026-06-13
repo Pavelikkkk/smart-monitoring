@@ -12,18 +12,18 @@ import {
 
 import { getPowerHistory } from "../services/api";
 
-type PowerPoint = {
+type ChartPowerPoint = {
   time: string;
   power: number;
 };
 
 export default function PowerChart() {
-  const [data, setData] = useState<PowerPoint[]>([]);
+  const [data, setData] = useState<ChartPowerPoint[]>([]);
 
   useEffect(() => {
     getPowerHistory()
       .then((history) => {
-        const formatted = history.map((item: any) => ({
+        const formatted = history.map((item) => ({
           time: new Date(item.time).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",

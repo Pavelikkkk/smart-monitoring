@@ -33,13 +33,7 @@ namespace dorm_energy::application
 
         config_.overrideFromCli(options);
 
-        std::string validationError = config_.validate();
-
-        if (!validationError.empty())
-        {
-            std::cerr << "Configuration error: " << validationError << std::endl; 
-            return 1;
-        }
+        config_.validate();
 
         if (options.isSimulate())
         {

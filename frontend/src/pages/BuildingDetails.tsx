@@ -2,43 +2,44 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { getBuildings, getRooms, getDevices } from "../services/api";
+import type { Building, Device, Room } from "../services/api";
 
 export default function BuildingDetails() {
   const { id } = useParams();
 
-  const [building, setBuilding] = useState<any>(null);
+  const [building, setBuilding] = useState<Building | null>(null);
 
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
 
   const [search, setSearch] = useState("");
 
   const [visibleRooms, setVisibleRooms] = useState(12);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    async function loadData() {
+      try {
+        const [buildings, roomsData, devicesData] = await Promise.all([
+          getBuildings(),
+          getRooms(),
+          getDevices(),
+        ]);
 
-  async function loadData() {
-    try {
-      const [buildings, roomsData, devicesData] = await Promise.all([
-        getBuildings(),
-        getRooms(),
-        getDevices(),
-      ]);
+        const currentBuilding = buildings.find((b) => String(b.id) === id);
 
-      const currentBuilding = buildings.find((b: any) => String(b.id) === id);
+        setBuilding(currentBuilding ?? null);
 
-      setBuilding(currentBuilding);
+        setRooms(roomsData.filter((r) => String(r.buildingId) === id));
 
-      setRooms(roomsData.filter((r: any) => String(r.buildingId) === id));
-
-      setDevices(devicesData);
-    } catch (error) {
-      console.error(error);
+        setDevices(devicesData);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
+
+    loadData();
+  }, [id]);
 
   if (!building) {
     return <div>Loading...</div>;
@@ -180,7 +181,7 @@ export default function BuildingDetails() {
 
                 <div>
                   📡 Devices:{" "}
-                  {devices.filter((d: any) => d.roomId === room.id).length}
+                  {devices.filter((device) => device.roomId === room.id).length}
                 </div>
               </div>
             </div>

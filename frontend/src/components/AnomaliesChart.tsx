@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from "recharts";
 
 import { getAnomalyStatistics } from "../services/api";
+import type { AnomalyStatistic } from "../services/api";
 
 const COLORS = ["#06b6d4", "#22c55e", "#f59e0b", "#ef4444"];
 
 export default function AnomaliesChart() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<AnomalyStatistic[]>([]);
 
   useEffect(() => {
     getAnomalyStatistics().then(setData).catch(console.error);

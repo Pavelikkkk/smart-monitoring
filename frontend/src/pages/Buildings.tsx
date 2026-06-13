@@ -6,13 +6,14 @@ import {
   getUserRooms,
   getUserDevices,
 } from "../services/api";
+import type { Building, Device, Room } from "../services/api";
 
 export default function Buildings() {
-  const [buildings, setBuildings] = useState<any[]>([]);
+  const [buildings, setBuildings] = useState<Building[]>([]);
 
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
 
   const [search, setSearch] = useState("");
 

@@ -6,55 +6,46 @@ import {
   getUserRoomDevices,
   getUserRoomAnomalies,
 } from "../services/api";
+import type { Anomaly, Device, Room } from "../services/api";
 
 import AlertCard from "../components/AlertCard";
-
-type Room = {
-  roomId: number;
-  name: string;
-  buildingName: string;
-
-  motion: boolean;
-  power: number;
-  light: number;
-};
 
 export default function RoomDetails() {
   const { id } = useParams();
 
   const [room, setRoom] = useState<Room | null>(null);
 
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
 
-  const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function loadRoom() {
+      try {
+        const [roomData, devicesData, anomaliesData] = await Promise.all([
+          getUserRoom(id!),
+          getUserRoomDevices(id!),
+          getUserRoomAnomalies(id!),
+        ]);
+
+        setRoom(roomData);
+
+        setDevices(devicesData);
+
+        setAnomalies(anomaliesData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     if (id) {
       loadRoom();
     }
   }, [id]);
-
-  async function loadRoom() {
-    try {
-      const [roomData, devicesData, anomaliesData] = await Promise.all([
-        getUserRoom(id!),
-        getUserRoomDevices(id!),
-        getUserRoomAnomalies(id!),
-      ]);
-
-      setRoom(roomData);
-
-      setDevices(devicesData);
-
-      setAnomalies(anomaliesData);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   if (loading) {
     return <div className="text-slate-300">Loading...</div>;

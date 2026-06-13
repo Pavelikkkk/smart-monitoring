@@ -3,18 +3,21 @@
 #include "dorm_energy/application/config/app_config.hpp"
 
 #include <iostream>
+#include <utility>
 
 int main(int argc, char **argv)
 {
 
-    std::cout << "=== Dorm Energy Simulator ===\n" << std::endl;
+    std::cout << "=== Dorm Energy Simulator ===" << std::endl;
 
     try
     {
-        dorm_energy::application::AppConfig config =
-            dorm_energy::application::AppConfig::loadFromEnvironment();
+        using dorm_energy::application::AppConfig;
+        using dorm_energy::application::ApplicationBuilder;
 
-        auto application = dorm_energy::application::ApplicationBuilder()
+        AppConfig config = AppConfig::load(); 
+
+        auto application = ApplicationBuilder()
                                .withConfig(std::move(config))
                                .build();
 

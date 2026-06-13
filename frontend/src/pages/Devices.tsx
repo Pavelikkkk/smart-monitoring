@@ -23,18 +23,18 @@ export default function Devices() {
   >("all");
 
   useEffect(() => {
+    async function loadDevices() {
+      try {
+        const data = await getUserDevices();
+
+        setDevices(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     loadDevices();
   }, []);
-
-  async function loadDevices() {
-    try {
-      const data = await getUserDevices();
-
-      setDevices(data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
 
   const filteredDevices = devices.filter((device) => {
     const matchesSearch = device.deviceName

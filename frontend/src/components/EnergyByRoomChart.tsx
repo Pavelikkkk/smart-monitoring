@@ -10,9 +10,10 @@ import {
 } from "recharts";
 
 import { getEnergyByRoom } from "../services/api";
+import type { EnergyByRoom } from "../services/api";
 
 export default function EnergyByRoomChart() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<EnergyByRoom[]>([]);
 
   useEffect(() => {
     getEnergyByRoom().then(setData).catch(console.error);

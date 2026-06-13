@@ -2,54 +2,65 @@
 #include "dorm_energy/application/runtime.hpp"
 #include "dorm_energy/infrastructure/web/server/web_server.hpp"
 
-#include <fmt/format.h>
 #include <chrono>
+#include <fmt/format.h>
 #include <thread>
 
-namespace dorm_energy::application 
+namespace dorm_energy::application
 {
 
     DaemonCommand::DaemonCommand(
-        AppConfig config, 
-        std::shared_ptr<dorm_energy::logging::ILogger> logger,
+        std::shared_ptr<dorm_energy::logging::ILogger> logger, AppConfig config,
         std::shared_ptr<dorm_energy::mqtt::IMqttConnection> mqtt_connection,
         std::shared_ptr<dorm_energy::mqtt::IMqttSubscription> mqtt_subscription,
         std::shared_ptr<dorm_energy::mqtt::IMqttMessageDispatcher> mqtt_dispatcher,
         std::unique_ptr<application::IMessageHandler> message_handler,
         std::shared_ptr<dorm_energy::web::WebServer> web_server)
-        : config_(std::move(config)),
-          logger_(std::move(logger)),
+        : config_(std::move(config)), logger_(std::move(logger)),
           mqtt_connection_(std::move(mqtt_connection)),
           mqtt_subscription_(std::move(mqtt_subscription)),
           mqtt_dispatcher_(std::move(mqtt_dispatcher)),
-          message_handler_(std::move(message_handler)),
-          web_server_(std::move(web_server))
+          message_handler_(std::move(message_handler)), web_server_(std::move(web_server))
     {
-        if (!logger_ || !mqtt_connection_ || !mqtt_subscription_ || !mqtt_dispatcher_ || !message_handler_ || !web_server_)
+        if (!logger_ || !mqtt_connection_ || !mqtt_subscription_ || !mqtt_dispatcher_ ||
+            !message_handler_ || !web_server_)
         {
             throw std::invalid_argument("DaemonCommand: all dependencies must be provided");
         }
     }
 
-    int DaemonCommand::execute(
-        const cli::CommandOptions &options)
+    int DaemonCommand::execute(const cli::CommandOptions &options)
     {
         logger_->info("Launching Dorm Energy Daemon (MQTT listener)...");
 
         web_server_->start();
-        Runtime::setOnStopCallback([this]()
-                                   {
-        logger_->info("Stop signal received. Performing graceful shutdown...");
+        Runtime::setOnStopCallback(
+            [this]()
+            {
+                logger_->info("Stop signal received. Performing graceful shutdown...");
 
-        if (message_handler_) message_handler_->flush();
-        if (mqtt_connection_) mqtt_connection_->stop();
-        if (web_server_) web_server_->stop();
+                if (message_handler_)
+                {
+                    message_handler_->flush();
+                }
 
-        logger_->info("Daemon shutdown completed."); });
+                if (mqtt_connection_)
+                {
+                    mqtt_connection_->stop();
+                }
+
+                if (web_server_)
+                {
+                    web_server_->stop();
+                }
+
+                logger_->info("Daemon shutdown completed.");
+            });
 
         Runtime::init();
 
-        std::string broker = !options.mqttBroker.empty() ? options.mqttBroker : config_.getMqttBroker();
+        std::string broker =
+            !options.mqttBroker.empty() ? options.mqttBroker : config_.getMqttBroker();
         std::string topic = !options.mqttTopic.empty() ? options.mqttTopic : config_.getMqttTopic();
 
         logger_->info(fmt::format("Connecting to MQTT broker: {}", broker));
@@ -72,7 +83,8 @@ namespace dorm_energy::application
             return 1;
         }
 
-        logger_->info("Daemon successfully started and connected. Waiting for messages... (Ctrl+C to stop)");
+        logger_->info(
+            "Daemon successfully started and connected. Waiting for messages... (Ctrl+C to stop)");
 
         while (Runtime::isRunning())
         {

@@ -5,6 +5,7 @@ import {
   getUserAnomalies,
   getUserDevices,
 } from "../services/api";
+import type { Anomaly, Device } from "../services/api";
 
 import StatCard from "../components/StatCard";
 import AlertCard from "../components/AlertCard";
@@ -23,31 +24,31 @@ export default function Analytics() {
     anomalies: 0,
   });
 
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<Device[]>([]);
 
-  const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
 
   useEffect(() => {
+    async function loadAnalytics() {
+      try {
+        const [statsData, anomaliesData, devicesData] = await Promise.all([
+          getUserStats(),
+          getUserAnomalies(),
+          getUserDevices(),
+        ]);
+
+        setStats(statsData);
+
+        setDevices(devicesData);
+
+        setAnomalies(anomaliesData.slice(0, 5));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     loadAnalytics();
   }, []);
-
-  async function loadAnalytics() {
-    try {
-      const [statsData, anomaliesData, devicesData] = await Promise.all([
-        getUserStats(),
-        getUserAnomalies(),
-        getUserDevices(),
-      ]);
-
-      setStats(statsData);
-
-      setDevices(devicesData);
-
-      setAnomalies(anomaliesData.slice(0, 5));
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   return (
     <div className="space-y-8">

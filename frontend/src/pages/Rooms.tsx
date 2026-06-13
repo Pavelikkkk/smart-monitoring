@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getUserRooms, getUserBuildings } from "../services/api";
+import type { Building, Room } from "../services/api";
 
 export default function Rooms() {
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
-  const [buildings, setBuildings] = useState<any[]>([]);
+  const [buildings, setBuildings] = useState<Building[]>([]);
 
   const [search, setSearch] = useState("");
 

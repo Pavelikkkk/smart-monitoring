@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { getUserAnomalies, getUserRooms } from "../services/api";
+import type { Anomaly, Room } from "../services/api";
 
 export default function Anomalies() {
-  const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
 
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   const [search, setSearch] = useState("");
 
